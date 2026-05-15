@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paralian Residence — Malé, Maldives</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --coral:  #D2645E;
+      --coral-dark: #b8524c;
+      --ink:    #1a1a1a;
+      --mid:    #4a4a4a;
+      --light:  #f5f5f5;
+      --border: #e0e0e0;
+      --white:  #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV — matches paralian.mv exactly ──────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 60px;
+      background: var(--coral);
+    }
+    .nav-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      color: #fff; letter-spacing: 0.18em;
+      text-decoration: none; text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.88);
+      text-decoration: none; font-size: 0.7rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      font-family: 'Lato', sans-serif; font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-cta {
+      border: 1px solid #fff; color: #fff;
+      padding: 7px 20px; font-family: 'Lato', sans-serif;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta:hover { background: #fff; color: var(--coral); }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    .hero {
+      margin-top: 60px;
+      background: var(--coral);
+      padding: 80px 48px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-family: 'Lato', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(255,255,255,0.75); margin-bottom: 16px;
+    }
+    .hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      font-weight: 800; line-height: 1.08;
+      color: #fff; margin-bottom: 14px;
+      text-transform: uppercase; letter-spacing: 0.02em;
+    }
+    .hero-sub {
+      font-size: 0.9rem; letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.75); text-transform: uppercase; margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: #fff; color: var(--coral);
+      padding: 12px 32px; border: 1px solid #fff; cursor: pointer;
+      font-family: 'Lato', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.2s, color 0.2s; display: inline-block;
+    }
+    .btn-primary:hover { background: transparent; color: #fff; }
+    .btn-outline {
+      background: transparent; color: #fff;
+      padding: 12px 32px; border: 1px solid rgba(255,255,255,0.6); cursor: pointer;
+      font-family: 'Lato', sans-serif; font-size: 0.75rem;
+      font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s; display: inline-block;
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── PAGE SECTIONS ──────────────────────────────────── */
+    section { padding: 80px 48px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* ── INTRO ──────────────────────────────────────────── */
+    .intro { background: var(--white); border-bottom: 1px solid var(--border); }
+    .intro-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .intro-text h2 {
+      font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; line-height: 1.1; color: var(--ink);
+      text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.02em;
+    }
+    .intro-text p { font-size: 0.95rem; color: var(--mid); line-height: 1.85; margin-bottom: 14px; }
+    .intro-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .pill {
+      padding: 5px 14px; border: 1px solid var(--border);
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid); font-family: 'Lato', sans-serif;
+    }
+    .intro-stat-box {
+      background: var(--coral); padding: 52px 44px; text-align: left;
+      position: relative;
+    }
+    .intro-stat-num {
+      font-family: 'Montserrat', sans-serif; font-size: 5.5rem;
+      font-weight: 800; color: rgba(255,255,255,0.2);
+      line-height: 1; margin-bottom: 16px; letter-spacing: -0.02em;
+    }
+    .intro-stat-label {
+      font-family: 'Lato', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.8);
+      margin-bottom: 8px;
+    }
+    .intro-stat-desc { font-size: 0.92rem; color: rgba(255,255,255,0.7); line-height: 1.75; }
+    .intro-stat-badge {
+      position: absolute; bottom: -18px; right: 32px;
+      background: var(--ink); padding: 14px 24px; text-align: center;
+    }
+    .intro-stat-badge-num {
+      font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 800;
+      color: #fff; line-height: 1;
+    }
+    .intro-stat-badge-label {
+      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.6);
+    }
+
+    /* ── APARTMENTS ─────────────────────────────────────── */
+    .apartments { background: var(--light); }
+    .section-eyebrow {
+      font-family: 'Lato', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800;
+      color: var(--ink); text-transform: uppercase;
+      letter-spacing: 0.02em; margin-bottom: 12px; line-height: 1.1;
+    }
+    .section-body { font-size: 0.95rem; color: var(--mid); max-width: 560px; line-height: 1.8; margin-bottom: 48px; }
+
+    .apt-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+      border: 1px solid var(--border);
+    }
+    .apt-card {
+      background: var(--white); padding: 40px 32px;
+      border-right: 1px solid var(--border);
+      position: relative; transition: box-shadow 0.25s;
+    }
+    .apt-card:last-child { border-right: none; }
+    .apt-card:hover { box-shadow: 0 6px 30px rgba(210,100,94,0.1); z-index: 1; }
+    .apt-card-top {
+      border-top: 3px solid var(--coral); padding-top: 28px; margin-bottom: 20px;
+    }
+    .apt-type {
+      font-family: 'Lato', sans-serif; font-size: 0.68rem;
+      letter-spacing: 0.24em; text-transform: uppercase; color: var(--coral); margin-bottom: 8px;
+    }
+    .apt-name {
+      font-family: 'Montserrat', sans-serif; font-size: 1.6rem;
+      font-weight: 800; color: var(--ink); line-height: 1.1;
+      text-transform: uppercase; letter-spacing: 0.02em;
+    }
+    .apt-divider { width: 32px; height: 2px; background: var(--border); margin: 18px 0; }
+    .apt-detail { font-size: 0.88rem; color: var(--mid); line-height: 1.75; margin-bottom: 24px; }
+    .apt-specs { display: flex; flex-direction: column; gap: 10px; }
+    .apt-spec {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.82rem; color: var(--mid);
+    }
+    .apt-spec-dot {
+      width: 6px; height: 6px; background: var(--coral); border-radius: 50%; flex-shrink: 0;
+    }
+    .apt-badge {
+      position: absolute; top: 0; right: 0;
+      background: var(--coral); color: #fff;
+      font-family: 'Lato', sans-serif; font-size: 0.6rem;
+      letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; font-weight: 700;
+    }
+
+    /* ── RENTAL MODELS ──────────────────────────────────── */
+    .models { background: var(--white); }
+    .models-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .model-card {
+      border: 1px solid var(--border); padding: 40px 32px;
+      transition: border-color 0.25s, box-shadow 0.25s; position: relative;
+    }
+    .model-card:hover { border-color: var(--coral); box-shadow: 0 4px 24px rgba(210,100,94,0.08); }
+    .model-card.featured { background: var(--coral); border-color: var(--coral); }
+    .model-num {
+      font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800;
+      color: rgba(26,26,26,0.06); line-height: 1; margin-bottom: 20px;
+    }
+    .model-card.featured .model-num { color: rgba(255,255,255,0.15); }
+    .model-icon { font-size: 1.5rem; margin-bottom: 14px; }
+    .model-title {
+      font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 800;
+      color: var(--ink); text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 10px;
+    }
+    .model-card.featured .model-title { color: #fff; }
+    .model-tag {
+      display: inline-block; background: rgba(210,100,94,0.1); color: var(--coral);
+      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 3px 10px; margin-bottom: 16px; font-family: 'Lato', sans-serif;
+    }
+    .model-card.featured .model-tag { background: rgba(255,255,255,0.2); color: #fff; }
+    .model-desc { font-size: 0.88rem; line-height: 1.78; color: var(--mid); margin-bottom: 24px; }
+    .model-card.featured .model-desc { color: rgba(255,255,255,0.8); }
+    .model-divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 20px; }
+    .model-card.featured .model-divider { background: rgba(255,255,255,0.2); }
+    .model-features { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .model-features li {
+      font-size: 0.82rem; color: var(--mid); display: flex; align-items: flex-start; gap: 10px;
+    }
+    .model-card.featured .model-features li { color: rgba(255,255,255,0.85); }
+    .model-features li::before { content: '+'; color: var(--coral); font-weight: 700; flex-shrink: 0; }
+    .model-card.featured .model-features li::before { color: rgba(255,255,255,0.7); }
+    .model-cta {
+      display: inline-block; margin-top: 28px; font-family: 'Lato', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--coral); text-decoration: none;
+      border-bottom: 1px solid rgba(210,100,94,0.4); padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+    .model-cta:hover { border-color: var(--coral); }
+    .model-card.featured .model-cta { color: #fff; border-color: rgba(255,255,255,0.5); }
+
+    /* ── FEATURES ACCORDION ─────────────────────────────── */
+    .features { background: var(--white); border-top: 1px solid var(--border); }
+    .features-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .features-img {
+      background: var(--light); aspect-ratio: 4/3; display: flex;
+      align-items: center; justify-content: center; overflow: hidden;
+    }
+    .features-img-placeholder {
+      font-family: 'Montserrat', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--border);
+    }
+    .accordion { display: flex; flex-direction: column; }
+    .accordion-item { border-bottom: 1px solid var(--border); }
+    .accordion-header {
+      display: flex; align-items: center; gap: 14px; padding: 22px 0;
+      cursor: pointer; user-select: none;
+      font-family: 'Montserrat', sans-serif; font-size: 1rem;
+      font-weight: 700; color: var(--ink); text-transform: uppercase;
+      letter-spacing: 0.06em; transition: color 0.2s;
+    }
+    .accordion-header:hover { color: var(--coral); }
+    .accordion-plus {
+      width: 22px; height: 22px; border: 1px solid var(--ink); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 300; color: var(--ink);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .accordion-item.open .accordion-plus { background: var(--coral); border-color: var(--coral); color: #fff; }
+    .accordion-body {
+      display: none; padding: 0 0 22px 36px;
+    }
+    .accordion-item.open .accordion-body { display: block; }
+    .accordion-body ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .accordion-body ul li {
+      font-size: 0.88rem; color: var(--mid); display: flex; gap: 10px; align-items: flex-start;
+    }
+    .accordion-body ul li::before { content: '—'; color: var(--coral); flex-shrink: 0; }
+
+    /* ── WHY ────────────────────────────────────────────── */
+    .why { background: var(--light); }
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 48px; border: 1px solid var(--border); }
+    .why-item {
+      background: var(--white); padding: 36px 28px; border-right: 1px solid var(--border);
+      transition: background 0.25s;
+    }
+    .why-item:last-child { border-right: none; }
+    .why-item:hover { background: var(--coral); }
+    .why-item:hover .why-value,
+    .why-item:hover .why-label,
+    .why-item:hover .why-text { color: #fff; }
+    .why-value {
+      font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 800;
+      color: var(--ink); line-height: 1; margin-bottom: 6px; transition: color 0.25s;
+    }
+    .why-label {
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 12px; transition: color 0.25s;
+      font-family: 'Lato', sans-serif;
+    }
+    .why-text { font-size: 0.82rem; color: var(--mid); line-height: 1.7; transition: color 0.25s; }
+
+    /* ── INQUIRY ────────────────────────────────────────── */
+    .inquiry { background: var(--light); border-top: 1px solid var(--border); }
+    .inquiry-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .inquiry-contact { margin-top: 32px; display: flex; flex-direction: column; gap: 20px; }
+    .inquiry-contact-item { display: flex; gap: 14px; align-items: flex-start; }
+    .inquiry-contact-icon {
+      width: 34px; height: 34px; background: var(--coral);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0; color: #fff;
+    }
+    .inquiry-contact-info { font-size: 0.88rem; }
+    .inquiry-contact-info strong {
+      display: block; font-size: 0.65rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--coral);
+      font-family: 'Lato', sans-serif; margin-bottom: 3px;
+    }
+    .inquiry-contact-info span { color: var(--mid); }
+    .form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--mid); font-family: 'Lato', sans-serif;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--white); border: 1px solid var(--border);
+      color: var(--ink); padding: 11px 14px;
+      font-family: 'Lato', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--coral); }
+    .form-group textarea { resize: vertical; min-height: 96px; }
+    .form-submit {
+      background: var(--coral); color: #fff; border: 1px solid var(--coral);
+      padding: 12px 36px; cursor: pointer; font-family: 'Lato', sans-serif;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      align-self: flex-start; transition: background 0.2s, color 0.2s;
+    }
+    .form-submit:hover { background: transparent; color: var(--coral); }
+
+    /* ── SOCIAL BAR ─────────────────────────────────────── */
+    .social-bar {
+      background: #f0f0f0; padding: 28px 48px;
+      display: flex; justify-content: center; align-items: center; gap: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .social-link {
+      color: var(--mid); font-size: 1.1rem; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .social-link:hover { color: var(--coral); }
+    .social-icon {
+      width: 20px; height: 20px; display: inline-block; vertical-align: middle;
+      fill: currentColor;
+    }
+
+    /* ── FOOTER — coral bg, white text ─────────────────── */
+    footer {
+      background: var(--coral); padding: 28px 48px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .footer-address {
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.85); text-align: center;
+    }
+    .footer-address a { color: rgba(255,255,255,0.85); text-decoration: none; }
+    .footer-address a:hover { color: #fff; }
+    .footer-payments {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
+    }
+    .footer-payments span {
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.6); padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3);
+    }
+    .footer-copy {
+      font-size: 0.68rem; color: rgba(255,255,255,0.5); letter-spacing: 0.1em;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .intro-inner    { grid-template-columns: 1fr; }
+      .apt-grid       { grid-template-columns: 1fr; }
+      .apt-card       { border-right: none; border-bottom: 1px solid var(--border); }
+      .models-grid    { grid-template-columns: 1fr; }
+      .features-inner { grid-template-columns: 1fr; }
+      .why-grid       { grid-template-columns: 1fr 1fr; }
+      .inquiry-inner  { grid-template-columns: 1fr; gap: 40px; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 60px 24px; }
+      .social-bar { padding: 24px; }
+      footer { padding: 24px; }
+    }
+    @media (max-width: 600px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero { padding: 60px 24px; }
+      .hero-title { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ────────────────────────────────────── -->
+<nav>
+  <a href="https://www.paralian.mv/" class="nav-logo">Paralian</a>
+  <ul class="nav-links">
+    <li><a href="https://www.paralian.mv/">Home</a></li>
+    <li><a href="https://www.paralian.mv/recreations">Things to Do</a></li>
+    <li><a href="https://www.paralian.mv/paralian-suite">Paralian Hulhumale</a></li>
+    <li><a href="#" class="active">Paralian Residence</a></li>
+    <li><a href="https://www.paralian.mv/dine">Paralian Café</a></li>
+    <li><a href="https://www.paralian.mv/about-1">About</a></li>
+  </ul>
+  <a href="#inquiry" class="nav-cta">Book Now</a>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────── -->
+<div class="hero">
+  <p class="hero-eyebrow">Paralian Residence &nbsp;·&nbsp; Malé, Maldives</p>
+  <h1 class="hero-title">Paralian<br>Residence</h1>
+  <p class="hero-sub">Studio · 1-Bedroom · 2-Bedroom — Malé City</p>
+  <div class="hero-actions">
+    <a href="#apartments" class="btn-primary">View Apartments</a>
+    <a href="#inquiry" class="btn-outline">Enquire Now</a>
+  </div>
+</div>
+
+<!-- ── INTRO ──────────────────────────────────────────── -->
+<section class="intro" id="about">
+  <div class="container">
+    <div class="intro-inner">
+      <div class="intro-text">
+        <p class="section-eyebrow">About the Project</p>
+        <h2>A New Home<br>in Malé</h2>
+        <p>Paralian Residence brings the calm and character of the Paralian brand into the heart of Malé. A thoughtfully designed multi-floor residential building offering fully furnished apartments for long-term residents, short-stay guests, and business travellers.</p>
+        <p>Every apartment is curated with the same attention to quality that defines our Hulhumalé property — refined finishes, smart layouts, and that unmistakable Paralian ease.</p>
+        <div class="intro-pills">
+          <span class="pill">Fully Furnished</span>
+          <span class="pill">High-Speed Wi-Fi</span>
+          <span class="pill">24 / 7 Support</span>
+          <span class="pill">Prime Malé Location</span>
+          <span class="pill">Flexible Stays</span>
+        </div>
+      </div>
+      <div style="position:relative; padding-bottom: 20px;">
+        <div class="intro-stat-box">
+          <div class="intro-stat-num">05</div>
+          <div class="intro-stat-label">Floors of residences</div>
+          <div class="intro-stat-desc">Purpose-built floors across three apartment categories, designed for comfort in the heart of Malé.</div>
+        </div>
+        <div class="intro-stat-badge">
+          <div class="intro-stat-badge-num">3</div>
+          <div class="intro-stat-badge-label">Apt. Types</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── APARTMENTS ─────────────────────────────────────── -->
+<section class="apartments" id="apartments">
+  <div class="container">
+    <p class="section-eyebrow">Our Apartments</p>
+    <h2 class="section-title">Find Your Space</h2>
+    <p class="section-body">Three configurations to suit every lifestyle — from solo professionals to families — each finished to the Paralian standard.</p>
+    <div class="apt-grid">
+
+      <!-- Studio -->
+      <div class="apt-card">
+        <div class="apt-card-top">
+          <div class="apt-type">Type 01</div>
+          <div class="apt-name">Studio<br>Apartment</div>
+        </div>
+        <div class="apt-divider"></div>
+        <p class="apt-detail">An intelligently designed open-plan studio ideal for solo professionals and short-term guests. Every inch purposefully used.</p>
+        <div class="apt-specs">
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Open-plan layout</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> King-size bed</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Kitchenette</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> En-suite bathroom</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> High-speed Wi-Fi</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Air conditioning</div>
+        </div>
+      </div>
+
+      <!-- 1-Bedroom -->
+      <div class="apt-card">
+        <div class="apt-badge">Most Popular</div>
+        <div class="apt-card-top">
+          <div class="apt-type">Type 02</div>
+          <div class="apt-name">1-Bedroom<br>Apartment</div>
+        </div>
+        <div class="apt-divider"></div>
+        <p class="apt-detail">A generous one-bedroom layout with clear separation between living and sleeping areas — perfect for couples or extended stays.</p>
+        <div class="apt-specs">
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Separate bedroom</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Full living room</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Equipped kitchen</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> En-suite bathroom</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> High-speed Wi-Fi</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Air conditioning</div>
+        </div>
+      </div>
+
+      <!-- 2-Bedroom -->
+      <div class="apt-card">
+        <div class="apt-card-top">
+          <div class="apt-type">Type 03</div>
+          <div class="apt-name">2-Bedroom<br>Apartment</div>
+        </div>
+        <div class="apt-divider"></div>
+        <p class="apt-detail">Spacious two-bedroom residences for families or colleagues. Generous communal areas with full amenities throughout.</p>
+        <div class="apt-specs">
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Two bedrooms</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Spacious living area</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Full kitchen</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Two bathrooms</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> High-speed Wi-Fi</div>
+          <div class="apt-spec"><span class="apt-spec-dot"></span> Air conditioning</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── RENTAL MODELS ───────────────────────────────────── -->
+<section class="models" id="models">
+  <div class="container">
+    <p class="section-eyebrow">Rental Options</p>
+    <h2 class="section-title">Choose Your Arrangement</h2>
+    <p class="section-body">Whether settling in long-term, listing on a platform, or needing a place for a night — we have a model that fits.</p>
+    <div class="models-grid">
+
+      <div class="model-card">
+        <div class="model-num">01</div>
+        <div class="model-icon">🏠</div>
+        <h3 class="model-title">Long-Term Lease</h3>
+        <span class="model-tag">6 – 12 Months</span>
+        <p class="model-desc">Stable, comfortable residency at a preferential monthly rate. Ideal for professionals, expats, and families relocating to Malé.</p>
+        <div class="model-divider"></div>
+        <ul class="model-features">
+          <li>Fixed monthly rate with advance discount</li>
+          <li>Dedicated maintenance support</li>
+          <li>Option to personalise the space</li>
+          <li>Utility packages available</li>
+        </ul>
+        <a href="#inquiry" class="model-cta">Enquire →</a>
+      </div>
+
+      <div class="model-card featured">
+        <div class="model-num">02</div>
+        <div class="model-icon">✈️</div>
+        <h3 class="model-title">Airbnb / Short-Stay</h3>
+        <span class="model-tag">Weekly &amp; Monthly</span>
+        <p class="model-desc">Listed on leading short-stay platforms — a premium alternative to hotels, fully managed and fully furnished.</p>
+        <div class="model-divider"></div>
+        <ul class="model-features">
+          <li>Listed on Airbnb and booking platforms</li>
+          <li>Professional photography &amp; listing management</li>
+          <li>Linen, cleaning &amp; guest services included</li>
+          <li>Dynamic pricing to maximise returns</li>
+        </ul>
+        <a href="#inquiry" class="model-cta">Enquire →</a>
+      </div>
+
+      <div class="model-card">
+        <div class="model-num">03</div>
+        <div class="model-icon">📅</div>
+        <h3 class="model-title">Daily Rental</h3>
+        <span class="model-tag">1 – 6 Nights</span>
+        <p class="model-desc">Book by the night — no commitment, full flexibility. Great for business travellers, transit guests, and island-hoppers.</p>
+        <div class="model-divider"></div>
+        <ul class="model-features">
+          <li>Instant booking via WhatsApp or web</li>
+          <li>Same-day check-in available</li>
+          <li>Concierge assistance on request</li>
+          <li>Airport transfer coordination</li>
+        </ul>
+        <a href="#inquiry" class="model-cta">Enquire →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── APARTMENT FEATURES ACCORDION ───────────────────── -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-inner">
+      <div>
+        <p class="section-eyebrow">Apartment Features</p>
+        <h2 class="section-title">What's Included</h2>
+        <p style="font-size:0.95rem; color:var(--mid); line-height:1.8; margin-bottom:32px;">
+          Experience our superior service and excellent accommodations — make yourselves at home in our nest of dwellers.
+        </p>
+        <div class="accordion">
+          <div class="accordion-item open">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span class="accordion-plus">+</span> Suite Features
+            </div>
+            <div class="accordion-body">
+              <ul>
+                <li>Fully furnished living &amp; bedroom areas</li>
+                <li>Premium bedding and linen</li>
+                <li>Smart TV with cable channels</li>
+                <li>In-room safe</li>
+                <li>Work desk and chair</li>
+                <li>Wardrobe / built-in storage</li>
+              </ul>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span class="accordion-plus">+</span> Bathroom
+            </div>
+            <div class="accordion-body">
+              <ul>
+                <li>Hot &amp; cold shower / bathtub</li>
+                <li>Premium toiletries provided</li>
+                <li>Hairdryer</li>
+                <li>Towels &amp; bath robes</li>
+              </ul>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span class="accordion-plus">+</span> Kitchen
+            </div>
+            <div class="accordion-body">
+              <ul>
+                <li>Refrigerator</li>
+                <li>Microwave / oven</li>
+                <li>Kettle and basic cookware</li>
+                <li>Crockery and utensils</li>
+              </ul>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span class="accordion-plus">+</span> Others
+            </div>
+            <div class="accordion-body">
+              <ul>
+                <li>High-speed Wi-Fi throughout</li>
+                <li>Air conditioning in all rooms</li>
+                <li>Weekly cleaning service</li>
+                <li>24/7 front desk &amp; WhatsApp support</li>
+                <li>Laundry service on request</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="features-img">
+          <span class="features-img-placeholder">Apartment Photo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY ────────────────────────────────────────────── -->
+<section class="why">
+  <div class="container">
+    <p class="section-eyebrow">Why Choose Us</p>
+    <h2 class="section-title">The Paralian Difference</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-value">100%</div>
+        <div class="why-label">Furnished</div>
+        <div class="why-text">Move in immediately — every apartment delivered fully furnished and equipped.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-value">3×</div>
+        <div class="why-label">Rental Models</div>
+        <div class="why-text">Long-term, short-stay, or nightly — one building, three flexible options.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-value">24/7</div>
+        <div class="why-label">Guest Support</div>
+        <div class="why-text">Round-the-clock assistance via WhatsApp, phone, or our on-site team.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-value">★ 4.9</div>
+        <div class="why-label">Brand Trust</div>
+        <div class="why-text">Built on the Paralian reputation — trusted by guests across the Maldives.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INQUIRY ────────────────────────────────────────── -->
+<section class="inquiry" id="inquiry">
+  <div class="container">
+    <div class="inquiry-inner">
+      <div>
+        <p class="section-eyebrow">Get in Touch</p>
+        <h2 class="section-title">Reserve Your Apartment</h2>
+        <p style="font-size:0.95rem; color:var(--mid); line-height:1.8; margin-bottom:8px;">
+          Interested in calling Paralian Residence home — even for a night? Our team will guide you to the right apartment and arrangement.
+        </p>
+        <div class="inquiry-contact">
+          <div class="inquiry-contact-item">
+            <div class="inquiry-contact-icon">📍</div>
+            <div class="inquiry-contact-info">
+              <strong>Address</strong>
+              <span>Paralian Residence, Malé, Maldives</span>
+            </div>
+          </div>
+          <div class="inquiry-contact-item">
+            <div class="inquiry-contact-icon">📞</div>
+            <div class="inquiry-contact-info">
+              <strong>Phone / WhatsApp</strong>
+              <span>(+960) 335-9912</span>
+            </div>
+          </div>
+          <div class="inquiry-contact-item">
+            <div class="inquiry-contact-icon">✉️</div>
+            <div class="inquiry-contact-info">
+              <strong>Email</strong>
+              <span>hulhumale@paralian.mv</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" placeholder="Your name"/>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="you@email.com"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Apartment Type</label>
+              <select>
+                <option value="">Select type</option>
+                <option>Studio Apartment</option>
+                <option>1-Bedroom Apartment</option>
+                <option>2-Bedroom Apartment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Rental Model</label>
+              <select>
+                <option value="">Select model</option>
+                <option>Long-Term Lease</option>
+                <option>Airbnb / Short-Stay</option>
+                <option>Daily Rental</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Check-in Date</label>
+            <input type="date"/>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea placeholder="Tell us about your stay or any questions…"></textarea>
+          </div>
+          <button class="form-submit" onclick="alert('Thank you! We\'ll be in touch shortly.')">Send Enquiry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOCIAL BAR ─────────────────────────────────────── -->
+<div class="social-bar">
+  <a href="https://www.facebook.com/Paralian.mv/" target="_blank" class="social-link" title="Facebook">
+    <svg class="social-icon" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+  </a>
+  <a href="mailto:hulhumale@paralian.mv" class="social-link" title="Email">
+    <svg class="social-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+  </a>
+  <a href="https://www.instagram.com/paralian.hulhumale/" target="_blank" class="social-link" title="Instagram">
+    <svg class="social-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+  </a>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <p class="footer-address">
+      Paralian Residence, Malé, Maldives &nbsp;·&nbsp;
+      <a href="tel:+9603359912">(+960) 335-9912</a> &nbsp;·&nbsp;
+      <a href="mailto:hulhumale@paralian.mv">hulhumale@paralian.mv</a>
+    </p>
+    <div class="footer-payments">
+      <span>BML Payment Gateway</span>
+      <span>Visa</span>
+      <span>Mastercard</span>
+      <span>Amex</span>
+    </div>
+    <p class="footer-copy">© 2025 Paralian. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  function toggleAccordion(header) {
+    const item = header.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+
+</body>
+</html>
