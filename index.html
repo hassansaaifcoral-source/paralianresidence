@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paralian Residence — Malé, Maldives</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --coral:       #D2645E;
+      --coral-dark:  #b8524c;
+      --coral-dim:   rgba(210,100,94,0.18);
+      --coral-glow:  rgba(210,100,94,0.08);
+      --ink:         #1a0e0d;
+      --deep:        #130808;
+      --rich:        #1e0d0c;
+      --warm:        #2c1110;
+      --mid-dark:    #3a1614;
+      --white:       #fdf5f4;
+      --off:         #f5eeec;
+      --grey-text:   #5a4040;
+      --border:      rgba(210,100,94,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       NAV — coral background, links right side (paralian.mv)
+    ══════════════════════════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 60px;
+      background: var(--coral);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 600;
+      color: #fff; letter-spacing: 0.18em;
+      text-decoration: none; text-transform: uppercase;
+    }
+    .nav-right { display: flex; align-items: center; gap: 32px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.82);
+      text-decoration: none; font-size: 0.68rem;
+      letter-spacing: 0.16em; text-transform: uppercase; font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-cta {
+      border: 1px solid #fff; color: #fff;
+      padding: 7px 20px; font-size: 0.68rem;
+      font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.2s, color 0.2s;
+      font-family: 'Jost', sans-serif;
+    }
+    .nav-cta:hover { background: #fff; color: var(--coral); }
+
+    /* ══════════════════════════════════════════════════════
+       HERO — full-screen dark with animated shimmer lines
+    ══════════════════════════════════════════════════════ */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; background: var(--deep);
+      padding-top: 60px;
+    }
+    /* layered radial gradients in coral tones */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 75% 55% at 62% 38%, rgba(210,100,94,0.28) 0%, transparent 68%),
+        radial-gradient(ellipse 45% 65% at 12% 78%, rgba(44,17,16,0.95) 0%, transparent 60%),
+        linear-gradient(155deg, #0d0403 0%, #130808 45%, #1e0d0c 100%);
+    }
+    /* moving diagonal lines — the v1 shimmer */
+    .hero-shimmer {
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent 0px, transparent 58px,
+        rgba(210,100,94,0.04) 58px, rgba(210,100,94,0.04) 60px
+      );
+      animation: shimmer 14s linear infinite;
+    }
+    @keyframes shimmer {
+      from { background-position: 0 0; }
+      to   { background-position: 120px 120px; }
+    }
+    /* subtle pulse vignette */
+    .hero-vignette {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(13,4,3,0.7) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2; text-align: center;
+      padding: 0 32px; animation: fadeUp 1.2s cubic-bezier(.22,.68,0,1.1) both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-eyebrow {
+      font-family: 'Jost', sans-serif; font-size: 0.7rem;
+      letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 22px;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.4rem, 9vw, 7.5rem);
+      font-weight: 300; line-height: 1.03;
+      color: var(--white); margin-bottom: 18px;
+    }
+    .hero-title em { font-style: italic; color: var(--coral); }
+    .hero-sub {
+      font-size: 0.82rem; letter-spacing: 0.2em;
+      color: rgba(253,245,244,0.45); text-transform: uppercase; margin-bottom: 48px;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--coral); color: #fff;
+      padding: 14px 38px; border: 1px solid var(--coral); cursor: pointer;
+      font-family: 'Jost', sans-serif; font-size: 0.75rem;
+      font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.25s, color 0.25s; display: inline-block;
+    }
+    .btn-primary:hover { background: transparent; color: var(--coral); }
+    .btn-ghost {
+      background: transparent; color: rgba(253,245,244,0.75);
+      padding: 13px 38px; border: 1px solid rgba(253,245,244,0.25); cursor: pointer;
+      font-family: 'Jost', sans-serif; font-size: 0.75rem;
+      font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase;
+      text-decoration: none; transition: border-color 0.25s, color 0.25s; display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--coral); color: var(--coral); }
+    /* scroll cue */
+    .hero-scroll {
+      position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: rgba(253,245,244,0.28); font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
+      animation: bob 2.8s ease-in-out infinite;
+    }
+    .hero-scroll::after {
+      content: ''; display: block; width: 1px; height: 42px;
+      background: linear-gradient(to bottom, var(--coral), transparent);
+    }
+    @keyframes bob {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(7px); }
+    }
+
+    /* ══════════════════════════════════════════════════════
+       SECTION BASE — white body
+    ══════════════════════════════════════════════════════ */
+    section { padding: 100px 48px; }
+    .container { max-width: 1140px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.66rem; letter-spacing: 0.34em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 14px; font-family: 'Jost', sans-serif;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 300; line-height: 1.08; color: var(--ink); margin-bottom: 20px;
+    }
+    .section-title em { font-style: italic; color: var(--coral); }
+    .section-body { font-size: 0.93rem; color: var(--grey-text); max-width: 580px; line-height: 1.88; }
+
+    /* ══════════════════════════════════════════════════════
+       ABOUT — white bg, two-column
+    ══════════════════════════════════════════════════════ */
+    .about { background: var(--white); border-bottom: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; align-items: center; }
+    .about-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+    .pill {
+      padding: 6px 16px; border: 1px solid rgba(210,100,94,0.3);
+      font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--coral); font-family: 'Jost', sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+    .pill:hover { background: var(--coral); color: #fff; }
+    /* stat card on right column */
+    .about-visual { position: relative; padding-bottom: 22px; }
+    .about-card {
+      background: var(--deep); padding: 52px 44px; position: relative; overflow: hidden;
+    }
+    .about-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--coral), transparent);
+    }
+    /* shimmer on card too */
+    .about-card::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        -45deg, transparent 0px, transparent 36px,
+        rgba(210,100,94,0.03) 36px, rgba(210,100,94,0.03) 37px
+      );
+      animation: shimmer 14s linear infinite;
+    }
+    .about-card-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 5.5rem; font-weight: 300;
+      color: rgba(210,100,94,0.15); line-height: 1; margin-bottom: 14px; position: relative; z-index: 1;
+    }
+    .about-card-label {
+      font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 8px; position: relative; z-index: 1;
+    }
+    .about-card-desc {
+      font-size: 0.9rem; color: rgba(253,245,244,0.55); line-height: 1.75; position: relative; z-index: 1;
+    }
+    .about-float {
+      position: absolute; bottom: 0; right: 0;
+      background: var(--coral); padding: 18px 26px; text-align: center;
+    }
+    .about-float-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 600;
+      color: #fff; line-height: 1;
+    }
+    .about-float-label {
+      font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.75);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       APARTMENTS — dark section
+    ══════════════════════════════════════════════════════ */
+    .apartments {
+      background: var(--deep); position: relative; overflow: hidden;
+    }
+    /* background shimmer in dark section */
+    .apartments::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        -45deg, transparent 0px, transparent 58px,
+        rgba(210,100,94,0.025) 58px, rgba(210,100,94,0.025) 60px
+      );
+      animation: shimmer 14s linear infinite;
+    }
+    .apartments .section-label { color: var(--coral); }
+    .apartments .section-title { color: var(--white); }
+    .apartments .section-body  { color: rgba(253,245,244,0.5); }
+    .apt-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; margin-top: 60px; position: relative; z-index: 1;
+    }
+    .apt-card {
+      background: var(--rich); padding: 46px 36px; position: relative;
+      transition: background 0.3s, transform 0.3s; overflow: hidden;
+    }
+    .apt-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--coral); transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .apt-card:hover { background: var(--warm); transform: translateY(-5px); }
+    .apt-card:hover::after { transform: scaleX(1); }
+    .apt-type {
+      font-size: 0.64rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 14px; font-family: 'Jost', sans-serif;
+    }
+    .apt-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300;
+      color: var(--white); margin-bottom: 22px; line-height: 1.12;
+    }
+    .apt-divider { width: 30px; height: 1px; background: rgba(210,100,94,0.35); margin-bottom: 22px; }
+    .apt-detail { font-size: 0.84rem; color: rgba(253,245,244,0.52); line-height: 1.78; margin-bottom: 28px; }
+    .apt-specs { display: flex; flex-direction: column; gap: 10px; }
+    .apt-spec {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.78rem; color: rgba(253,245,244,0.48); letter-spacing: 0.05em;
+    }
+    .apt-spec-icon {
+      width: 28px; height: 28px; border: 1px solid rgba(210,100,94,0.22);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.82rem;
+    }
+    .apt-badge {
+      position: absolute; top: 24px; right: 24px;
+      background: var(--coral); color: #fff;
+      font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 4px 10px; font-weight: 500; font-family: 'Jost', sans-serif;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       RENTAL MODELS — white bg
+    ══════════════════════════════════════════════════════ */
+    .models { background: var(--white); }
+    .models-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 60px; }
+    .model-card {
+      border: 1px solid var(--border); padding: 44px 34px; position: relative;
+      transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .model-card:hover { box-shadow: 0 10px 40px rgba(210,100,94,0.1); transform: translateY(-4px); border-color: rgba(210,100,94,0.4); }
+    .model-card.featured { background: var(--deep); border-color: transparent; }
+    .model-card.featured:hover { box-shadow: 0 10px 40px rgba(210,100,94,0.2); }
+    .model-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 3.8rem; font-weight: 300;
+      line-height: 1; margin-bottom: 18px; color: rgba(210,100,94,0.1);
+    }
+    .model-card.featured .model-num { color: rgba(210,100,94,0.2); }
+    .model-icon { font-size: 1.5rem; margin-bottom: 14px; }
+    .model-title {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.85rem; font-weight: 400;
+      color: var(--ink); margin-bottom: 12px; line-height: 1.2;
+    }
+    .model-card.featured .model-title { color: var(--white); }
+    .model-tag {
+      display: inline-block; background: rgba(210,100,94,0.08); color: var(--coral);
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 4px 12px; margin-bottom: 18px; font-family: 'Jost', sans-serif;
+    }
+    .model-card.featured .model-tag { background: rgba(210,100,94,0.25); }
+    .model-desc { font-size: 0.87rem; line-height: 1.82; color: var(--grey-text); margin-bottom: 26px; }
+    .model-card.featured .model-desc { color: rgba(253,245,244,0.6); }
+    .model-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .model-features li {
+      font-size: 0.82rem; color: var(--grey-text); display: flex; align-items: flex-start; gap: 10px;
+    }
+    .model-card.featured .model-features li { color: rgba(253,245,244,0.65); }
+    .model-features li::before { content: '—'; color: var(--coral); flex-shrink: 0; }
+    .model-cta {
+      display: inline-block; margin-top: 30px; font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--coral); text-decoration: none;
+      border-bottom: 1px solid rgba(210,100,94,0.35); padding-bottom: 2px;
+      transition: border-color 0.2s; font-family: 'Jost', sans-serif;
+    }
+    .model-cta:hover { border-color: var(--coral); }
+    .model-card.featured .model-cta { color: var(--coral); }
+
+    /* ══════════════════════════════════════════════════════
+       WHY — off-white bg
+    ══════════════════════════════════════════════════════ */
+    .why { background: var(--off); }
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 60px; }
+    .why-item { background: var(--white); padding: 42px 30px; transition: background 0.28s; }
+    .why-item:hover { background: var(--deep); }
+    .why-item:hover .why-value,
+    .why-item:hover .why-text  { color: rgba(253,245,244,0.75); }
+    .why-item:hover .why-label { color: rgba(253,245,244,0.75); }
+    .why-item:hover .why-value { color: var(--coral); }
+    .why-value {
+      font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300;
+      color: var(--ink); line-height: 1; margin-bottom: 8px; transition: color 0.28s;
+    }
+    .why-label {
+      font-size: 0.64rem; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 14px; font-family: 'Jost', sans-serif; transition: color 0.28s;
+    }
+    .why-text { font-size: 0.83rem; color: var(--grey-text); line-height: 1.72; transition: color 0.28s; }
+
+    /* ══════════════════════════════════════════════════════
+       INQUIRY — dark bg
+    ══════════════════════════════════════════════════════ */
+    .inquiry { background: var(--rich); position: relative; overflow: hidden; }
+    .inquiry::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        -45deg, transparent 0px, transparent 58px,
+        rgba(210,100,94,0.025) 58px, rgba(210,100,94,0.025) 60px
+      );
+      animation: shimmer 14s linear infinite;
+    }
+    .inquiry .section-title { color: var(--white); }
+    .inquiry .section-label { color: var(--coral); }
+    .inquiry .section-body  { color: rgba(253,245,244,0.5); margin-top: 18px; }
+    .inquiry-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; align-items: start; position: relative; z-index: 1; }
+    .inquiry-contact { margin-top: 36px; display: flex; flex-direction: column; gap: 18px; }
+    .inquiry-contact-item { display: flex; gap: 14px; align-items: flex-start; }
+    .inquiry-contact-icon {
+      width: 36px; height: 36px; border: 1px solid rgba(210,100,94,0.35);
+      display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;
+    }
+    .inquiry-contact-info { font-size: 0.85rem; }
+    .inquiry-contact-info strong {
+      display: block; font-size: 0.64rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--coral);
+      font-family: 'Jost', sans-serif; margin-bottom: 3px;
+    }
+    .inquiry-contact-info span { color: rgba(253,245,244,0.6); }
+    .form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-group label {
+      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(253,245,244,0.38); font-family: 'Jost', sans-serif;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white); padding: 12px 16px;
+      font-family: 'Jost', sans-serif; font-size: 0.88rem;
+      outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--coral); }
+    .form-group select option { background: var(--rich); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-submit {
+      background: var(--coral); color: #fff; border: 1px solid var(--coral);
+      padding: 13px 38px; cursor: pointer; font-family: 'Jost', sans-serif;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      align-self: flex-start; transition: background 0.25s, color 0.25s;
+    }
+    .form-submit:hover { background: transparent; color: var(--coral); }
+
+    /* ══════════════════════════════════════════════════════
+       SOCIAL BAR
+    ══════════════════════════════════════════════════════ */
+    .social-bar {
+      background: #ede8e7; padding: 26px 48px;
+      display: flex; justify-content: center; align-items: center; gap: 28px;
+      border-top: 1px solid var(--border);
+    }
+    .social-link { color: #8a6e6b; text-decoration: none; transition: color 0.2s; }
+    .social-link:hover { color: var(--coral); }
+    .social-icon { width: 18px; height: 18px; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ══════════════════════════════════════════════════════
+       FOOTER — coral bg like paralian.mv
+    ══════════════════════════════════════════════════════ */
+    footer { background: var(--coral); padding: 32px 48px; }
+    .footer-inner {
+      max-width: 1140px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400;
+      color: #fff; letter-spacing: 0.18em; text-transform: uppercase;
+    }
+    .footer-address {
+      font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.78); text-align: center;
+    }
+    .footer-address a { color: rgba(255,255,255,0.78); text-decoration: none; }
+    .footer-address a:hover { color: #fff; }
+    .footer-pay { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+    .footer-pay span {
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.25); padding: 3px 10px;
+    }
+    .footer-copy { font-size: 0.66rem; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; }
+
+    /* ══════════════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .about-grid    { grid-template-columns: 1fr; gap: 48px; }
+      .apt-grid      { grid-template-columns: 1fr; gap: 2px; }
+      .models-grid   { grid-template-columns: 1fr; }
+      .why-grid      { grid-template-columns: 1fr 1fr; }
+      .inquiry-inner { grid-template-columns: 1fr; gap: 48px; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 72px 24px; }
+    }
+    @media (max-width: 600px) {
+      .why-grid   { grid-template-columns: 1fr; }
+      .form-row   { grid-template-columns: 1fr; }
+      .hero-title { font-size: 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════ -->
+<nav>
+  <a href="https://www.paralian.mv/" class="nav-logo">Paralian</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="https://www.paralian.mv/">Home</a></li>
+      <li><a href="https://www.paralian.mv/recreations">Things to Do</a></li>
+      <li><a href="https://www.paralian.mv/paralian-suite">Paralian Hulhumale</a></li>
+      <li><a href="#" class="active">Paralian Residence</a></li>
+      <li><a href="https://www.paralian.mv/dine">Paralian Café</a></li>
+      <li><a href="https://www.paralian.mv/about-1">About</a></li>
+    </ul>
+    <a href="#inquiry" class="nav-cta">Book Now</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-shimmer"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Paralian Residence &nbsp;·&nbsp; Malé, Maldives</p>
+    <h1 class="hero-title">Urban Living,<br><em>Ocean Soul.</em></h1>
+    <p class="hero-sub">Studio · 1-Bedroom · 2-Bedroom &nbsp;—&nbsp; Malé City</p>
+    <div class="hero-actions">
+      <a href="#apartments" class="btn-primary">View Apartments</a>
+      <a href="#inquiry" class="btn-ghost">Request a Tour</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- ══ ABOUT ══════════════════════════════════════════════ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <p class="section-label">About the Project</p>
+        <h2 class="section-title">A New Chapter<br>in <em>Malé Living</em></h2>
+        <p class="section-body">
+          Paralian Residence brings the calm and character of the Paralian brand into the heart of Malé. A thoughtfully designed multi-floor residential building offering fully furnished apartments for long-term residents, short-stay guests, and business travellers.
+        </p>
+        <p class="section-body" style="margin-top:16px;">
+          Every apartment is curated with the same attention to quality that defines our Hulhumalé property — refined materials, smart layouts, and that unmistakable coastal ease.
+        </p>
+        <div class="about-pills">
+          <span class="pill">Fully Furnished</span>
+          <span class="pill">High-Speed Wi-Fi</span>
+          <span class="pill">24 / 7 Support</span>
+          <span class="pill">Prime Malé Location</span>
+          <span class="pill">Flexible Stays</span>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-card">
+          <div class="about-card-num">05</div>
+          <div class="about-card-label">Floors of Residences</div>
+          <div class="about-card-desc">Purpose-built floors across three apartment categories, designed for flexibility and comfort in the heart of Malé.</div>
+        </div>
+        <div class="about-float">
+          <div class="about-float-num">3</div>
+          <div class="about-float-label">Apartment Types</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ APARTMENTS ══════════════════════════════════════════ -->
+<section class="apartments" id="apartments">
+  <div class="container" style="position:relative;z-index:1;">
+    <p class="section-label">Our Apartments</p>
+    <h2 class="section-title">Find Your<br><em>Perfect Space</em></h2>
+    <p class="section-body">Three configurations to suit every lifestyle — each finished to the Paralian standard.</p>
+    <div class="apt-grid">
+
+      <div class="apt-card">
+        <div class="apt-type">Type 01</div>
+        <div class="apt-name">Studio<br>Apartment</div>
+        <div class="apt-divider"></div>
+        <p class="apt-detail">An intelligently designed open-plan studio ideal for solo professionals and short-term guests. Every inch purposefully used.</p>
+        <div class="apt-specs">
+          <div class="apt-spec"><span class="apt-spec-icon">⬜</span> Open-plan layout</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🛏</span> King-size bed</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🍳</span> Kitchenette</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🛁</span> En-suite bathroom</div>
+          <div class="apt-spec"><span class="apt-spec-icon">📶</span> High-speed Wi-Fi</div>
+        </div>
+      </div>
+
+      <div class="apt-card">
+        <div class="apt-badge">Popular</div>
+        <div class="apt-type">Type 02</div>
+        <div class="apt-name">1-Bedroom<br>Apartment</div>
+        <div class="apt-divider"></div>
+        <p class="apt-detail">A generous one-bedroom layout offering clear separation between living and sleeping areas — perfect for couples or extended stays.</p>
+        <div class="apt-specs">
+          <div class="apt-spec"><span class="apt-spec-icon">🛏</span> Separate bedroom</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🛋</span> Full living room</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🍳</span> Equipped kitchen</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🛁</span> En-suite bathroom</div>
+          <div class="apt-spec"><span class="apt-spec-icon">📶</span> High-speed Wi-Fi</div>
+        </div>
+      </div>
+
+      <div class="apt-card">
+        <div class="apt-type">Type 03</div>
+        <div class="apt-name">2-Bedroom<br>Apartment</div>
+        <div class="apt-divider"></div>
+        <p class="apt-detail">Spacious two-bedroom residences for families or colleagues travelling together. Generous communal areas with full amenities.</p>
+        <div class="apt-specs">
+          <div class="apt-spec"><span class="apt-spec-icon">🛏</span> Two bedrooms</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🛋</span> Spacious living area</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🍳</span> Full kitchen</div>
+          <div class="apt-spec"><span class="apt-spec-icon">🛁</span> Two bathrooms</div>
+          <div class="apt-spec"><span class="apt-spec-icon">📶</span> High-speed Wi-Fi</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ RENTAL MODELS ═══════════════════════════════════════ -->
+<section class="models" id="models">
+  <div class="container">
+    <p class="section-label">Rental Options</p>
+    <h2 class="section-title">Choose Your<br><em>Arrangement</em></h2>
+    <p class="section-body">Whether settling in long-term, listing on a platform, or booking for a single night — we have a model that fits.</p>
+    <div class="models-grid">
+
+      <div class="model-card">
+        <div class="model-num">01</div>
+        <div class="model-icon">🏠</div>
+        <h3 class="model-title">Long-Term Lease</h3>
+        <span class="model-tag">6 – 12 Months</span>
+        <p class="model-desc">Stable, comfortable residency at a preferential monthly rate. Ideal for professionals, expats, and families relocating to Malé.</p>
+        <ul class="model-features">
+          <li>Fixed monthly rate with advance discount</li>
+          <li>Dedicated maintenance support</li>
+          <li>Option to personalise the space</li>
+          <li>Utility packages available</li>
+        </ul>
+        <a href="#inquiry" class="model-cta">Enquire →</a>
+      </div>
+
+      <div class="model-card featured">
+        <div class="model-num">02</div>
+        <div class="model-icon">✈️</div>
+        <h3 class="model-title">Airbnb / Short-Stay</h3>
+        <span class="model-tag">Weekly &amp; Monthly</span>
+        <p class="model-desc">Listed on leading short-stay platforms — a premium alternative to hotels, fully managed and fully furnished.</p>
+        <ul class="model-features">
+          <li>Listed on Airbnb and booking platforms</li>
+          <li>Professional photography &amp; listing management</li>
+          <li>Linen, cleaning &amp; guest services included</li>
+          <li>Dynamic pricing to maximise returns</li>
+        </ul>
+        <a href="#inquiry" class="model-cta">Enquire →</a>
+      </div>
+
+      <div class="model-card">
+        <div class="model-num">03</div>
+        <div class="model-icon">📅</div>
+        <h3 class="model-title">Daily Rental</h3>
+        <span class="model-tag">1 – 6 Nights</span>
+        <p class="model-desc">Book by the night — no commitment, full flexibility. Great for business travellers, transit guests, and island-hoppers.</p>
+        <ul class="model-features">
+          <li>Instant booking via WhatsApp or web</li>
+          <li>Same-day check-in available</li>
+          <li>Concierge assistance on request</li>
+          <li>Airport transfer coordination</li>
+        </ul>
+        <a href="#inquiry" class="model-cta">Enquire →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHY ════════════════════════════════════════════════ -->
+<section class="why">
+  <div class="container">
+    <p class="section-label">Why Choose Us</p>
+    <h2 class="section-title">The <em>Paralian</em> Difference</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-value">100%</div>
+        <div class="why-label">Furnished</div>
+        <div class="why-text">Move in immediately — every apartment delivered fully furnished and equipped.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-value">3×</div>
+        <div class="why-label">Rental Models</div>
+        <div class="why-text">Long-term, short-stay, or nightly — one building, three flexible options.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-value">24/7</div>
+        <div class="why-label">Guest Support</div>
+        <div class="why-text">Round-the-clock assistance via WhatsApp, phone, or our on-site team.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-value">★ 4.9</div>
+        <div class="why-label">Brand Trust</div>
+        <div class="why-text">Built on the Paralian reputation — trusted by guests across the Maldives.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ INQUIRY ════════════════════════════════════════════ -->
+<section class="inquiry" id="inquiry">
+  <div class="container">
+    <div class="inquiry-inner">
+      <div>
+        <p class="section-label">Get in Touch</p>
+        <h2 class="section-title">Reserve Your<br><em>Apartment</em></h2>
+        <p class="section-body">Interested in calling Paralian Residence home — even for a night? Our team will guide you to the right apartment and arrangement.</p>
+        <div class="inquiry-contact">
+          <div class="inquiry-contact-item">
+            <div class="inquiry-contact-icon">📍</div>
+            <div class="inquiry-contact-info">
+              <strong>Address</strong>
+              <span>Paralian Residence, Malé, Maldives</span>
+            </div>
+          </div>
+          <div class="inquiry-contact-item">
+            <div class="inquiry-contact-icon">📞</div>
+            <div class="inquiry-contact-info">
+              <strong>Phone / WhatsApp</strong>
+              <span>(+960) 335-9912</span>
+            </div>
+          </div>
+          <div class="inquiry-contact-item">
+            <div class="inquiry-contact-icon">✉️</div>
+            <div class="inquiry-contact-info">
+              <strong>Email</strong>
+              <span>hulhumale@paralian.mv</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" placeholder="Your name"/>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="you@email.com"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Apartment Type</label>
+              <select>
+                <option value="">Select type</option>
+                <option>Studio Apartment</option>
+                <option>1-Bedroom Apartment</option>
+                <option>2-Bedroom Apartment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Rental Model</label>
+              <select>
+                <option value="">Select model</option>
+                <option>Long-Term Lease</option>
+                <option>Airbnb / Short-Stay</option>
+                <option>Daily Rental</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Check-in Date</label>
+            <input type="date"/>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea placeholder="Tell us about your stay or any questions…"></textarea>
+          </div>
+          <button class="form-submit" onclick="alert('Thank you! We\'ll be in touch shortly.')">Send Enquiry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOCIAL BAR ════════════════════════════════════════ -->
+<div class="social-bar">
+  <a href="https://www.facebook.com/Paralian.mv/" target="_blank" class="social-link" title="Facebook">
+    <svg class="social-icon" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+  </a>
+  <a href="mailto:hulhumale@paralian.mv" class="social-link" title="Email">
+    <svg class="social-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+  </a>
+  <a href="https://www.instagram.com/paralian.hulhumale/" target="_blank" class="social-link" title="Instagram">
+    <svg class="social-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+  </a>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Paralian</div>
+    <p class="footer-address">
+      Paralian Hulhumalé, Hirundhu Magu, Malé, Maldives &nbsp;·&nbsp;
+      <a href="tel:+9603359912">(+960) 335-9912</a> &nbsp;·&nbsp;
+      <a href="mailto:hulhumale@paralian.mv">hulhumale@paralian.mv</a>
+    </p>
+    <div class="footer-pay">
+      <span>BML Payment Gateway</span>
+      <span>American Express</span>
+      <span>Visa</span>
+      <span>Mastercard</span>
+    </div>
+    <p class="footer-copy">© 2025 Paralian. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
