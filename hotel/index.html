@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paralian Hulhumalé — Boutique Hotel, Maldives</title>
+  <meta name="description" content="Paralian Hulhumalé — boutique hotel on the shores of Hulhumalé, Maldives. Premium rooms, Paralian Café, and curated Maldivian experiences. 2 km from Velana Airport.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    /* ── Hero ──────────────────────────── */
+    #hero {
+      height: 100vh;
+      min-height: 600px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      transform: scale(1.03);
+      animation: heroZoom 14s ease-in-out infinite alternate;
+    }
+    @keyframes heroZoom {
+      from { transform: scale(1.03); }
+      to   { transform: scale(1.08); }
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(11,22,35,.75) 0%,
+        rgba(11,22,35,.45) 50%,
+        rgba(11,22,35,.15) 100%
+      );
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 6%;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .hero-content .section-label {
+      color: rgba(255,255,255,.7);
+      margin-bottom: 1rem;
+    }
+    .hero-content h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      color: var(--white);
+      font-weight: 500;
+      max-width: 14ch;
+      line-height: 1.1;
+      margin-bottom: 1.4rem;
+    }
+    .hero-content h1 em {
+      font-style: italic;
+      color: var(--coral-light);
+    }
+    .hero-content p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,.78);
+      max-width: 44ch;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      color: rgba(255,255,255,.5);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: var(--coral);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      to { top: 200%; }
+    }
+
+    /* ── Quick Booking ───────────────────── */
+    .quick-book {
+      background: var(--navy);
+      padding: 1.4rem 6%;
+    }
+    .qb-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .qb-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: rgba(255,255,255,.6);
+      flex-shrink: 0;
+      padding-bottom: .7rem;
+    }
+    .qb-fields {
+      display: flex;
+      gap: 1rem;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    /* ── Featured Rooms ──────────────────── */
+    .featured-rooms {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* ── Café Strip ──────────────────────── */
+    .cafe-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .cafe-img {
+      aspect-ratio: 1/1;
+      overflow: hidden;
+    }
+    .cafe-img img { height: 100%; transition: transform .6s ease; }
+    .cafe-strip:hover .cafe-img img { transform: scale(1.04); }
+    .cafe-content {
+      background: var(--navy);
+      padding: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .cafe-content .section-label { color: var(--coral-light); }
+    .cafe-content h2 { color: var(--white); margin-bottom: .75rem; }
+    .cafe-content p {
+      color: rgba(255,255,255,.65);
+      line-height: 1.75;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Activities Grid ─────────────────── */
+    .act-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    .act-item {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 3/4;
+    }
+    .act-item img {
+      height: 100%;
+      transition: transform .5s ease;
+    }
+    .act-item:hover img { transform: scale(1.06); }
+    .act-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(11,22,35,.75) 0%, transparent 55%);
+    }
+    .act-label {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 1.2rem;
+      z-index: 1;
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: var(--white);
+    }
+
+    /* ── Testimonials ────────────────────── */
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .testi-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .stars {
+      color: #F4B942;
+      font-size: 1rem;
+      letter-spacing: .1em;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .testi-text {
+      font-size: .93rem;
+      color: var(--text-mid);
+      line-height: 1.75;
+      font-style: italic;
+      margin-bottom: 1.4rem;
+    }
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+    }
+    .testi-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--ivory-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--coral);
+      flex-shrink: 0;
+    }
+    .testi-name {
+      font-weight: 600;
+      font-size: .88rem;
+      color: var(--text-dark);
+    }
+    .testi-from {
+      font-size: .78rem;
+      color: var(--text-light);
+    }
+
+    /* ── CTA Banner ──────────────────────── */
+    .cta-banner {
+      background: var(--coral);
+      padding: 4rem 6%;
+      text-align: center;
+    }
+    .cta-banner h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--white);
+      margin-bottom: .75rem;
+    }
+    .cta-banner p {
+      color: rgba(255,255,255,.82);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-white {
+      background: var(--white);
+      color: var(--coral);
+    }
+    .btn-white:hover {
+      background: var(--ivory);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 1024px) {
+      .featured-rooms { grid-template-columns: 1fr 1fr; }
+      .act-grid { grid-template-columns: repeat(2, 1fr); }
+      .testimonials { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .featured-rooms { grid-template-columns: 1fr; }
+      .cafe-strip { grid-template-columns: 1fr; }
+      .cafe-img { aspect-ratio: 16/9; }
+      .cafe-content { padding: 2.5rem; }
+      .act-grid { grid-template-columns: 1fr 1fr; }
+      .testimonials { grid-template-columns: 1fr; }
+      .qb-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">PARALIAN</span>
+      <span class="tagline">Hulhumalé, Maldives</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rooms.html">Rooms</a></li>
+      <li><a href="cafe.html">Café</a></li>
+      <li><a href="activities.html">Activities</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="rooms.html" class="nav-book">Book Now</a>
+    </div>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<nav class="nav-drawer">
+  <a href="index.html">Home</a>
+  <a href="rooms.html">Rooms</a>
+  <a href="cafe.html">Café</a>
+  <a href="activities.html">Activities</a>
+  <a href="about.html">About</a>
+  <a href="about.html#contact">Contact</a>
+  <a href="rooms.html" class="nav-book">Book Now</a>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────── -->
+<section id="hero">
+  <img
+    src="https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?auto=format&fit=crop&w=1920&q=80"
+    alt="Maldives aerial view — turquoise lagoon"
+    class="hero-bg"
+  >
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="section-label">Boutique Hotel · Hulhumalé</span>
+    <h1>Where the Ocean <em>Meets</em> Your Door</h1>
+    <p>Experience Maldivian hospitality reimagined — elegant rooms, ocean breezes, and the warmth of home, right in the heart of Hulhumalé, 2 km from Velana Airport.</p>
+    <div class="hero-btns">
+      <a href="rooms.html" class="btn btn-primary">Explore Rooms</a>
+      <a href="about.html#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ── Quick Booking Bar ───────────────────────── -->
+<div class="quick-book">
+  <div class="qb-inner">
+    <span class="qb-label">Quick Enquiry</span>
+    <form id="booking-form" class="booking-form qb-fields">
+      <div class="booking-field">
+        <label>Check-in</label>
+        <input type="date" name="checkin" required>
+      </div>
+      <div class="booking-field">
+        <label>Check-out</label>
+        <input type="date" name="checkout" required>
+      </div>
+      <div class="booking-field">
+        <label>Room Type</label>
+        <select name="room">
+          <option value="">Any Type</option>
+          <option value="studio">Studio</option>
+          <option value="classic">Classic Room</option>
+          <option value="sunrise">Sunrise Suite</option>
+          <option value="palms">Palms View Deluxe</option>
+          <option value="suite">Signature Suite</option>
+        </select>
+      </div>
+      <div class="booking-field">
+        <label>Guests</label>
+        <select name="guests">
+          <option>1 Guest</option>
+          <option selected>2 Guests</option>
+          <option>3 Guests</option>
+          <option>4 Guests</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Check Availability</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Featured Rooms ──────────────────────────── -->
+<section class="section bg-ivory">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Accommodations</span>
+      <h2 class="section-title">Handcrafted for Comfort</h2>
+      <p class="section-subtitle">Each room at Paralian is designed with locally-inspired details, premium linens, and every modern comfort you need.</p>
+      <div class="divider"></div>
+    </div>
+    <div class="featured-rooms">
+      <div class="room-card reveal">
+        <div class="room-card-img">
+          <img
+            src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158640755-5y45r6emqx2z6mxe4r83/1.jpg?format=2500w"
+            alt="Signature Suite"
+            loading="lazy"
+          >
+          <span class="room-badge">Most Popular</span>
+        </div>
+        <div class="room-card-body">
+          <div class="room-card-header">
+            <span class="room-name">Signature Suite</span>
+            <div class="room-price">
+              <span class="amount">$185</span>
+              <span class="per">per night</span>
+            </div>
+          </div>
+          <p class="room-desc">Our signature ocean-facing suite with panoramic views, king bed, and private bath with premium fixtures.</p>
+          <div class="room-features">
+            <span class="room-feature">Ocean View</span>
+            <span class="room-feature">King Bed</span>
+            <span class="room-feature">45 m²</span>
+            <span class="room-feature">Free WiFi</span>
+          </div>
+          <div class="room-actions">
+            <a href="rooms.html#suite" class="btn btn-outline-dark">Details</a>
+            <a href="rooms.html" class="btn btn-primary">Book Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="room-card reveal reveal-delay-1">
+        <div class="room-card-img">
+          <img
+            src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1754392439896-p8htzoxjm4n2y7f7qxqj/IMG_9927.jpg?format=2500w"
+            alt="Sunrise Suite"
+            loading="lazy"
+          >
+          <span class="room-badge">Sunrise Views</span>
+        </div>
+        <div class="room-card-body">
+          <div class="room-card-header">
+            <span class="room-name">Sunrise Suite</span>
+            <div class="room-price">
+              <span class="amount">$165</span>
+              <span class="per">per night</span>
+            </div>
+          </div>
+          <p class="room-desc">Greet each morning with breathtaking sunrise views from your private balcony and spa-like bathroom.</p>
+          <div class="room-features">
+            <span class="room-feature">Balcony</span>
+            <span class="room-feature">King Bed</span>
+            <span class="room-feature">38 m²</span>
+            <span class="room-feature">Bathtub</span>
+          </div>
+          <div class="room-actions">
+            <a href="rooms.html#sunrise" class="btn btn-outline-dark">Details</a>
+            <a href="rooms.html" class="btn btn-primary">Book Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="room-card reveal reveal-delay-2">
+        <div class="room-card-img">
+          <img
+            src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255376378-5bk0v8spez5ik4qfvsrs/1.jpg?format=2500w"
+            alt="Palms View Deluxe"
+            loading="lazy"
+          >
+        </div>
+        <div class="room-card-body">
+          <div class="room-card-header">
+            <span class="room-name">Palms View Deluxe</span>
+            <div class="room-price">
+              <span class="amount">$120</span>
+              <span class="per">per night</span>
+            </div>
+          </div>
+          <p class="room-desc">A beautifully appointed deluxe room overlooking lush palms with modern amenities and a relaxed tropical atmosphere.</p>
+          <div class="room-features">
+            <span class="room-feature">Garden View</span>
+            <span class="room-feature">Queen Bed</span>
+            <span class="room-feature">28 m²</span>
+            <span class="room-feature">Air-Con</span>
+          </div>
+          <div class="room-actions">
+            <a href="rooms.html#palms" class="btn btn-outline-dark">Details</a>
+            <a href="rooms.html" class="btn btn-primary">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:3rem;">
+      <a href="rooms.html" class="btn btn-outline-dark">View All Room Types</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats ───────────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="stats-row reveal">
+      <div class="stat-item">
+        <span class="stat-number">5+</span>
+        <span class="stat-label">Room Categories</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">50+</span>
+        <span class="stat-label">Guest Rooms</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">4.8★</span>
+        <span class="stat-label">Guest Rating</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">2km</span>
+        <span class="stat-label">From Airport</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Café ────────────────────────────────────── -->
+<section class="section" style="padding-top:0">
+  <div class="section-inner">
+    <div class="cafe-strip reveal">
+      <div class="cafe-img">
+        <img
+          src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1741174143680-6dg2i3x9s3xc3tzr4gaj/1.jpg?format=2500w"
+          alt="Paralian Café interior"
+          loading="lazy"
+        >
+      </div>
+      <div class="cafe-content">
+        <span class="section-label">Paralian Café</span>
+        <h2 class="section-title" style="color:var(--white)">Sip &amp; Savour<br>With a View</h2>
+        <p>Start your morning with freshly brewed island coffee, or wind down with Maldivian bites as the sun dips below the horizon. Our rooftop café is open to guests and visitors alike.</p>
+        <a href="cafe.html" class="btn btn-primary">See Menu &amp; Hours</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Activities ─────────────────────────────── -->
+<section class="section bg-ivory">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Island Life</span>
+      <h2 class="section-title">Explore &amp; Experience</h2>
+      <p class="section-subtitle">From the waters to the streets of Hulhumalé, adventures are just moments from your door.</p>
+      <div class="divider"></div>
+    </div>
+    <div class="act-grid">
+      <div class="act-item reveal">
+        <img
+          src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80"
+          alt="Snorkelling"
+          loading="lazy"
+        >
+        <span class="act-label">Snorkelling</span>
+      </div>
+      <div class="act-item reveal reveal-delay-1">
+        <img
+          src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=800&q=80"
+          alt="Sunset Cruise"
+          loading="lazy"
+        >
+        <span class="act-label">Sunset Cruises</span>
+      </div>
+      <div class="act-item reveal reveal-delay-2">
+        <img
+          src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80"
+          alt="Water Sports"
+          loading="lazy"
+        >
+        <span class="act-label">Water Sports</span>
+      </div>
+      <div class="act-item reveal reveal-delay-3">
+        <img
+          src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?auto=format&fit=crop&w=800&q=80"
+          alt="Island Tour"
+          loading="lazy"
+        >
+        <span class="act-label">Malé City Tour</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <a href="activities.html" class="btn btn-outline-dark">All Activities</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Testimonials ────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-head center">
+      <span class="section-label">Guest Stories</span>
+      <h2 class="section-title">What Our Guests Say</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="testimonials">
+      <div class="testi-card reveal">
+        <span class="stars">★★★★★</span>
+        <p class="testi-text">"Woke up to the most incredible view every morning. The staff went above and beyond — we felt like family, not guests. Will definitely be back."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div>
+            <div class="testi-name">Ahmed Al-Rashid</div>
+            <div class="testi-from">Dubai, UAE</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-1">
+        <span class="stars">★★★★★</span>
+        <p class="testi-text">"The Paralian Café alone is worth staying here for. The island-style breakfast with fresh coconut was unforgettable. Impeccable service throughout."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">S</div>
+          <div>
+            <div class="testi-name">Sofia Mendes</div>
+            <div class="testi-from">Lisbon, Portugal</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-2">
+        <span class="stars">★★★★★</span>
+        <p class="testi-text">"Stayed in the Sunrise Suite and couldn't believe how beautiful it was. Clean, modern, with real Maldivian character. The perfect gateway to the islands."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">L</div>
+          <div>
+            <div class="testi-name">Lena Hartmann</div>
+            <div class="testi-from">Munich, Germany</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Banner ──────────────────────────────── -->
+<section class="cta-banner">
+  <div style="max-width:1280px;margin:0 auto;">
+    <h2>Ready for Your Island Escape?</h2>
+    <p>Book direct for the best rates and personalised service.</p>
+    <div class="cta-btns">
+      <a href="rooms.html" class="btn btn-white">Reserve a Room</a>
+      <a href="about.html#contact" class="btn btn-outline">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ──────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="wordmark">PARALIAN</span>
+        <p>Boutique hotel on the shores of Hulhumalé, offering curated Maldivian hospitality with a personal touch. 2 km from Velana International Airport.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="TripAdvisor">✈</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Stay</h5>
+        <ul>
+          <li><a href="rooms.html#suite">Signature Suite</a></li>
+          <li><a href="rooms.html#sunrise">Sunrise Suite</a></li>
+          <li><a href="rooms.html#classic">Classic Room</a></li>
+          <li><a href="rooms.html#palms">Palms View Deluxe</a></li>
+          <li><a href="rooms.html#nest">Dwellers Nest</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Discover</h5>
+        <ul>
+          <li><a href="cafe.html">Paralian Café</a></li>
+          <li><a href="activities.html">Activities</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
+          <li><a href="../">← All Properties</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+9601234567">+960 123 4567</a></li>
+          <li><a href="mailto:hello@paralian.mv">hello@paralian.mv</a></li>
+          <li><a href="#">Hulhumalé, Maldives</a></li>
+          <li><a href="../admin/">Staff Portal</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Sheesha Smart Investments Pvt Ltd. All rights reserved.</p>
+      <div class="footer-payments">
+        <span class="payment-badge">BML</span>
+        <span class="payment-badge">VISA</span>
+        <span class="payment-badge">MC</span>
+        <span class="payment-badge">AMEX</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
