@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apartments — Paralian Residence, Malé</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --coral:  #C8594F;
+      --coral-d:#A8443A;
+      --navy:   #0B1623;
+      --navy-2: #112033;
+      --white:  #FFFFFF;
+      --ivory:  #F9F5F0;
+      --muted:  rgba(255,255,255,0.55);
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .exp-header {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: rgba(11,22,35,0.75);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .exp-wordmark {
+      display: flex; flex-direction: column; gap: 1px;
+      text-decoration: none;
+    }
+    .exp-wordmark strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--white);
+    }
+    .exp-wordmark em { color: var(--coral); font-style: normal; }
+    .exp-wordmark small {
+      font-size: 9.5px; letter-spacing: .5px;
+      color: rgba(255,255,255,0.38); text-transform: uppercase;
+    }
+
+    .exp-nav-links {
+      display: flex; align-items: center; gap: 28px;
+    }
+    .exp-nav-links a {
+      font-size: 12px; font-weight: 500; letter-spacing: .4px;
+      color: rgba(255,255,255,0.45); text-decoration: none;
+      transition: color .2s;
+    }
+    .exp-nav-links a:hover { color: var(--white); }
+    .exp-nav-links a.active { color: var(--coral); }
+
+    .exp-back {
+      font-size: 11.5px; font-weight: 500; letter-spacing: .5px;
+      color: rgba(255,255,255,0.4); text-decoration: none;
+      transition: color .2s;
+    }
+    .exp-back:hover { color: rgba(255,255,255,0.75); }
+
+    /* ── Hero ── */
+    .exp-hero {
+      position: relative; overflow: hidden;
+      height: 400px;
+      display: flex; align-items: flex-end;
+      padding: 0 40px 52px;
+    }
+    .exp-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1800&auto=format&fit=crop&q=80');
+      background-size: cover; background-position: center 40%;
+    }
+    .exp-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top,
+        rgba(11,22,35,0.95) 0%,
+        rgba(11,22,35,0.6) 45%,
+        rgba(11,22,35,0.2) 100%);
+    }
+    .exp-hero-content {
+      position: relative; z-index: 10;
+    }
+    .exp-hero-tag {
+      display: inline-block;
+      font-size: 10px; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--coral);
+      border: 1px solid rgba(200,89,79,0.4);
+      padding: 5px 14px; border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .exp-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(34px, 5vw, 60px); font-weight: 700;
+      line-height: 1.05; color: white; margin-bottom: 14px;
+    }
+    .exp-hero p {
+      font-size: 15px; color: rgba(255,255,255,0.62);
+      max-width: 520px; line-height: 1.7;
+    }
+
+    /* ── Unit type nav ── */
+    .unit-nav {
+      background: var(--navy-2);
+      border-bottom: 1px solid var(--border);
+      display: flex; gap: 0;
+      overflow-x: auto;
+    }
+    .unit-nav-btn {
+      flex-shrink: 0;
+      padding: 16px 36px;
+      font-size: 12.5px; font-weight: 600; letter-spacing: .5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.45);
+      cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent;
+      transition: all .25s; white-space: nowrap;
+    }
+    .unit-nav-btn:hover { color: rgba(255,255,255,0.8); }
+    .unit-nav-btn.active {
+      color: var(--coral);
+      border-bottom-color: var(--coral);
+    }
+
+    /* ── Section wrapper ── */
+    .apt-section {
+      max-width: 1140px; margin: 0 auto;
+      padding: 64px 40px;
+    }
+    .apt-section-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 40px; gap: 20px; flex-wrap: wrap;
+    }
+    .apt-section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 700; line-height: 1.1;
+    }
+    .apt-section-header h2 em {
+      display: block; font-size: 13px; font-weight: 400; font-style: normal;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--coral); margin-bottom: 8px;
+    }
+    .apt-price-block {
+      text-align: right;
+    }
+    .apt-price-main {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700; color: white;
+    }
+    .apt-price-mvr {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      margin-top: 3px;
+    }
+    .apt-price-note {
+      font-size: 10.5px; color: rgba(255,255,255,0.3);
+      margin-top: 2px; letter-spacing: .3px;
+    }
+
+    /* ── Photo gallery ── */
+    .apt-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 300px 200px;
+      gap: 8px;
+      border-radius: 12px; overflow: hidden;
+      margin-bottom: 48px;
+    }
+    .apt-gallery img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform .5s ease;
+    }
+    .apt-gallery img:hover { transform: scale(1.04); }
+    .apt-gallery .img-main {
+      grid-row: 1 / 3;
+    }
+    .apt-gallery .img-a,
+    .apt-gallery .img-b { }
+
+    /* ── Detail grid ── */
+    .apt-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* Floor plan */
+    .apt-floorplan {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+    .apt-floorplan h4 {
+      font-size: 10px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--coral);
+      margin-bottom: 20px;
+    }
+    .apt-floorplan svg {
+      width: 100%; height: auto; display: block;
+    }
+    .fp-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 8px; fill: rgba(255,255,255,0.55);
+      font-weight: 500; letter-spacing: .3px;
+    }
+    .fp-dim {
+      font-family: 'Inter', sans-serif;
+      font-size: 7px; fill: rgba(255,255,255,0.35);
+    }
+    .fp-room { fill: rgba(255,255,255,0.05); stroke: rgba(255,255,255,0.2); stroke-width: 1; }
+    .fp-wall { fill: rgba(255,255,255,0.15); }
+    .fp-door { fill: none; stroke: rgba(200,89,79,0.7); stroke-width: 1; }
+    .fp-bed { fill: rgba(200,89,79,0.15); stroke: rgba(200,89,79,0.4); stroke-width: .8; }
+    .fp-bath { fill: rgba(100,160,200,0.1); stroke: rgba(100,160,200,0.3); stroke-width: .8; }
+    .fp-kitchen { fill: rgba(180,160,100,0.1); stroke: rgba(180,160,100,0.3); stroke-width: .8; }
+
+    /* Specs */
+    .apt-specs { display: flex; flex-direction: column; gap: 24px; }
+    .apt-specs h4 {
+      font-size: 10px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--coral);
+      margin-bottom: 4px;
+    }
+
+    .spec-table { display: flex; flex-direction: column; gap: 0; }
+    .spec-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13.5px;
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-row .spec-key { color: rgba(255,255,255,0.5); }
+    .spec-row .spec-val { font-weight: 500; color: white; }
+
+    .apt-amenities {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 4px;
+    }
+    .amenity-chip {
+      font-size: 11px; font-weight: 500; letter-spacing: .3px;
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 5px 12px; border-radius: 20px;
+    }
+
+    /* ── Divider ── */
+    .apt-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 40px;
+    }
+
+    /* ── Inquiry CTA ── */
+    .exp-cta-section {
+      background: var(--navy-2);
+      text-align: center;
+      padding: 80px 40px;
+      border-top: 1px solid var(--border);
+    }
+    .exp-cta-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 3vw, 42px);
+      font-weight: 700; margin-bottom: 16px;
+    }
+    .exp-cta-section p {
+      font-size: 15px; color: rgba(255,255,255,0.55);
+      max-width: 480px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-buttons {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--coral); color: white;
+      font-size: 13px; font-weight: 600; letter-spacing: .5px;
+      text-transform: uppercase; text-decoration: none;
+      padding: 14px 32px; border-radius: 4px;
+      transition: background .25s, transform .2s;
+    }
+    .btn-primary:hover { background: var(--coral-d); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: white;
+      font-size: 13px; font-weight: 600; letter-spacing: .5px;
+      text-transform: uppercase; text-decoration: none;
+      padding: 14px 32px; border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: border-color .25s, background .25s;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.04); }
+
+    /* ── Footer ── */
+    .exp-footer {
+      text-align: center; padding: 24px;
+      font-size: 11px; color: rgba(255,255,255,0.25);
+      border-top: 1px solid var(--border);
+    }
+    .exp-footer a {
+      color: rgba(255,255,255,0.35); text-decoration: none;
+      transition: color .2s;
+    }
+    .exp-footer a:hover { color: rgba(255,255,255,0.65); }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .exp-header { padding: 0 20px; }
+      .exp-hero { padding: 0 20px 40px; }
+      .apt-section { padding: 44px 20px; }
+      .apt-detail-grid { grid-template-columns: 1fr; }
+      .apt-gallery {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 220px 150px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .apt-gallery {
+        grid-template-columns: 1fr;
+        grid-template-rows: 220px 160px 160px;
+      }
+      .apt-gallery .img-main { grid-row: auto; }
+      .apt-section-header { flex-direction: column; align-items: flex-start; }
+      .apt-price-block { text-align: left; }
+      .exp-hero { height: 320px; }
+      .exp-nav-links { display: none; }
+    }
+
+    /* ── JS-driven unit visibility ── */
+    .unit-block { display: none; }
+    .unit-block.visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="exp-header">
+    <a class="exp-wordmark" href="./">
+      <strong>Para<em>l</em>ian Residence</strong>
+      <small>Malé, Maldives</small>
+    </a>
+    <nav class="exp-nav-links">
+      <a href="#studio">Studio</a>
+      <a href="#onebedroom">1-Bedroom</a>
+      <a href="#twobedroom">2-Bedroom</a>
+    </nav>
+    <a class="exp-back" href="./">← Residence</a>
+  </header>
+
+  <!-- Hero -->
+  <section class="exp-hero">
+    <div class="exp-hero-content">
+      <div class="exp-hero-tag">Paralian Residence · Malé</div>
+      <h1>Find Your<br/>Perfect Unit</h1>
+      <p>Premium serviced apartments in the heart of Malé. Fully furnished, managed services, and city views across three thoughtfully designed unit types.</p>
+    </div>
+  </section>
+
+  <!-- Unit Type Navigation -->
+  <div class="unit-nav" id="unitNav">
+    <button class="unit-nav-btn active" onclick="showUnit('studio', this)">Studio</button>
+    <button class="unit-nav-btn" onclick="showUnit('onebedroom', this)">1-Bedroom</button>
+    <button class="unit-nav-btn" onclick="showUnit('twobedroom', this)">2-Bedroom</button>
+  </div>
+
+  <!-- ────────────────── STUDIO ────────────────── -->
+  <div class="unit-block visible" id="unit-studio">
+    <section class="apt-section" id="studio">
+      <div class="apt-section-header">
+        <h2>
+          <em>Studio Apartment</em>
+          Compact City Living
+        </h2>
+        <div class="apt-price-block">
+          <div class="apt-price-main">USD 900 <span style="font-size:16px;font-weight:400;color:rgba(255,255,255,0.5)">/mo</span></div>
+          <div class="apt-price-mvr">MVR 13,878 / month</div>
+          <div class="apt-price-note">Rate: 1 USD = 15.42 MVR · Utilities incl.</div>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div class="apt-gallery">
+        <div class="img-main" style="overflow:hidden">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&auto=format&fit=crop&q=80" alt="Studio living area" />
+        </div>
+        <div style="overflow:hidden">
+          <img class="img-a" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&auto=format&fit=crop&q=80" alt="Studio kitchen" />
+        </div>
+        <div style="overflow:hidden">
+          <img class="img-b" src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=700&auto=format&fit=crop&q=80" alt="Studio bathroom" />
+        </div>
+      </div>
+
+      <!-- Detail: floor plan + specs -->
+      <div class="apt-detail-grid">
+
+        <!-- Floor Plan -->
+        <div class="apt-floorplan">
+          <h4>Floor Plan · ~35 m²</h4>
+          <!-- SVG Floor Plan for Studio -->
+          <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer walls -->
+            <rect x="10" y="10" width="260" height="200" rx="2" class="fp-wall" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+
+            <!-- Main living/sleeping area (left ~60%) -->
+            <rect x="14" y="14" width="155" height="192" class="fp-room"/>
+            <!-- Bed -->
+            <rect x="24" y="24" width="65" height="45" rx="3" class="fp-bed"/>
+            <text x="56" y="50" text-anchor="middle" class="fp-label">Bed</text>
+            <!-- Pillow marks -->
+            <rect x="26" y="26" width="18" height="12" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <rect x="50" y="26" width="18" height="12" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <!-- Wardrobe -->
+            <rect x="24" y="74" width="28" height="45" rx="2" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width=".8"/>
+            <text x="38" y="100" text-anchor="middle" class="fp-label">WRB</text>
+            <!-- Sofa / lounge area -->
+            <rect x="60" y="145" width="95" height="30" rx="4" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <text x="107" y="164" text-anchor="middle" class="fp-label">Lounge</text>
+            <!-- Coffee table -->
+            <rect x="80" y="120" width="50" height="22" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width=".8"/>
+
+            <!-- Kitchenette (bottom right strip) -->
+            <rect x="169" y="100" width="97" height="106" rx="1" class="fp-kitchen"/>
+            <text x="217" y="158" text-anchor="middle" class="fp-label">Kitchen</text>
+            <!-- Counter -->
+            <rect x="172" y="102" width="20" height="100" rx="1" fill="rgba(180,160,100,0.2)" stroke="rgba(180,160,100,0.4)" stroke-width=".8"/>
+            <!-- Stove -->
+            <rect x="174" y="108" width="16" height="20" rx="1" fill="rgba(180,160,100,0.3)"/>
+            <circle cx="177" cy="112" r="3" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width=".8"/>
+            <circle cx="187" cy="112" r="3" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width=".8"/>
+            <!-- Sink -->
+            <rect x="174" y="136" width="16" height="14" rx="2" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+
+            <!-- Bathroom (top right) -->
+            <rect x="169" y="14" width="97" height="82" rx="1" class="fp-bath"/>
+            <text x="217" y="62" text-anchor="middle" class="fp-label">Bathroom</text>
+            <!-- Toilet -->
+            <ellipse cx="191" cy="82" rx="12" ry="8" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <!-- Shower -->
+            <rect x="224" y="20" width="38" height="38" rx="3" fill="rgba(100,160,200,0.12)" stroke="rgba(100,160,200,0.3)" stroke-width=".8"/>
+            <text x="243" y="42" text-anchor="middle" class="fp-dim">SHOWER</text>
+            <!-- Sink/vanity -->
+            <rect x="172" y="20" width="24" height="18" rx="2" fill="rgba(100,160,200,0.15)" stroke="rgba(100,160,200,0.3)" stroke-width=".8"/>
+
+            <!-- Wall between bath and kitchen -->
+            <rect x="168" y="96" width="3" height="8" fill="rgba(255,255,255,0.25)"/>
+
+            <!-- Door markings -->
+            <path d="M 168 96 Q 168 82 154 82" class="fp-door" stroke-dasharray="2,2"/>
+            <path d="M 14 200 Q 14 186 28 186" class="fp-door" stroke-dasharray="2,2"/>
+
+            <!-- Dimension annotations -->
+            <text x="91" y="208" text-anchor="middle" class="fp-dim">6.0 m</text>
+            <line x1="14" y1="204" x2="168" y2="204" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+            <text x="3" y="115" text-anchor="middle" class="fp-dim" transform="rotate(-90,3,115)">5.8 m</text>
+            <line x1="6" y1="14" x2="6" y2="205" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+            <text x="217" y="208" text-anchor="middle" class="fp-dim">3.3 m</text>
+            <text x="271" y="55" text-anchor="middle" class="fp-dim" transform="rotate(90,271,55)">3.2 m</text>
+
+            <!-- Compass / North indicator -->
+            <text x="253" y="196" class="fp-dim" text-anchor="middle">N ↑</text>
+          </svg>
+        </div>
+
+        <!-- Specs -->
+        <div class="apt-specs">
+          <div>
+            <h4>Room Dimensions</h4>
+            <div class="spec-table">
+              <div class="spec-row">
+                <span class="spec-key">Total Area</span>
+                <span class="spec-val">35 m² (377 sq ft)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Living / Sleeping</span>
+                <span class="spec-val">6.0 m × 5.8 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Kitchenette</span>
+                <span class="spec-val">3.3 m × 3.5 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Bathroom</span>
+                <span class="spec-val">3.3 m × 2.7 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Ceiling Height</span>
+                <span class="spec-val">2.7 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Floor</span>
+                <span class="spec-val">2nd – 3rd</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4>Included Amenities</h4>
+            <div class="apt-amenities">
+              <span class="amenity-chip">Queen Bed</span>
+              <span class="amenity-chip">Built-in Wardrobe</span>
+              <span class="amenity-chip">Kitchenette</span>
+              <span class="amenity-chip">Induction Hob</span>
+              <span class="amenity-chip">Refrigerator</span>
+              <span class="amenity-chip">Air Conditioning</span>
+              <span class="amenity-chip">High-Speed Wi-Fi</span>
+              <span class="amenity-chip">Smart TV</span>
+              <span class="amenity-chip">Rain Shower</span>
+              <span class="amenity-chip">Weekly Housekeeping</span>
+              <span class="amenity-chip">Utilities Included</span>
+            </div>
+          </div>
+          <div>
+            <h4>Availability</h4>
+            <div class="spec-table">
+              <div class="spec-row">
+                <span class="spec-key">Units</span>
+                <span class="spec-val">2 (APT-101, APT-102)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Min. Stay</span>
+                <span class="spec-val">3 months</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Status</span>
+                <span class="spec-val" style="color:#6ee77a">Available</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+  <!-- /studio -->
+
+  <hr class="apt-divider" />
+
+  <!-- ────────────────── 1-BEDROOM ────────────────── -->
+  <div class="unit-block" id="unit-onebedroom">
+    <section class="apt-section" id="onebedroom">
+      <div class="apt-section-header">
+        <h2>
+          <em>One-Bedroom Apartment</em>
+          Space to Breathe
+        </h2>
+        <div class="apt-price-block">
+          <div class="apt-price-main">USD 1,400 <span style="font-size:16px;font-weight:400;color:rgba(255,255,255,0.5)">/mo</span></div>
+          <div class="apt-price-mvr">MVR 21,588 / month</div>
+          <div class="apt-price-note">Rate: 1 USD = 15.42 MVR · Utilities incl.</div>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div class="apt-gallery">
+        <div class="img-main" style="overflow:hidden">
+          <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=900&auto=format&fit=crop&q=80" alt="One-bedroom living room" />
+        </div>
+        <div style="overflow:hidden">
+          <img class="img-a" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=700&auto=format&fit=crop&q=80" alt="One-bedroom bedroom" />
+        </div>
+        <div style="overflow:hidden">
+          <img class="img-b" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&auto=format&fit=crop&q=80" alt="One-bedroom kitchen" />
+        </div>
+      </div>
+
+      <!-- Detail grid -->
+      <div class="apt-detail-grid">
+
+        <!-- Floor Plan -->
+        <div class="apt-floorplan">
+          <h4>Floor Plan · ~55 m²</h4>
+          <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer walls -->
+            <rect x="10" y="10" width="300" height="220" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+
+            <!-- Bedroom (left) -->
+            <rect x="14" y="14" width="130" height="130" class="fp-room"/>
+            <text x="79" y="45" text-anchor="middle" class="fp-label">Bedroom</text>
+            <!-- King bed -->
+            <rect x="24" y="24" width="80" height="55" rx="3" class="fp-bed"/>
+            <text x="64" y="55" text-anchor="middle" class="fp-label">King Bed</text>
+            <rect x="26" y="26" width="22" height="14" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <rect x="54" y="26" width="22" height="14" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <rect x="82" y="26" width="18" height="14" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <!-- Wardrobe -->
+            <rect x="14" y="100" width="130" height="20" rx="2" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <text x="79" y="114" text-anchor="middle" class="fp-label">Built-in Wardrobe</text>
+
+            <!-- Bathroom (top right) -->
+            <rect x="148" y="14" width="100" height="90" class="fp-bath"/>
+            <text x="198" y="65" text-anchor="middle" class="fp-label">Bathroom</text>
+            <!-- Bathtub -->
+            <rect x="218" y="18" width="26" height="50" rx="4" fill="rgba(100,160,200,0.18)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <text x="231" y="46" text-anchor="middle" class="fp-dim">BATH</text>
+            <!-- Toilet -->
+            <ellipse cx="162" cy="90" rx="10" ry="7" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <!-- Vanity/sink -->
+            <rect x="152" y="20" width="20" height="16" rx="2" fill="rgba(100,160,200,0.15)" stroke="rgba(100,160,200,0.3)" stroke-width=".8"/>
+            <!-- Shower -->
+            <rect x="252" y="18" width="54" height="50" rx="3" fill="rgba(100,160,200,0.1)" stroke="rgba(100,160,200,0.25)" stroke-width=".8"/>
+            <text x="279" y="46" text-anchor="middle" class="fp-dim">SHOWER</text>
+
+            <!-- Living room (bottom right large area) -->
+            <rect x="148" y="108" width="158" height="118" class="fp-room"/>
+            <text x="227" y="175" text-anchor="middle" class="fp-label">Living Room</text>
+            <!-- Sofa L-shape -->
+            <rect x="158" y="118" width="70" height="25" rx="4" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <rect x="158" y="118" width="25" height="50" rx="4" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <!-- Coffee table -->
+            <rect x="192" y="148" width="40" height="24" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/>
+            <!-- TV unit -->
+            <rect x="246" y="158" width="56" height="10" rx="2" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+
+            <!-- Kitchen strip (bottom, full width) -->
+            <rect x="14" y="148" width="130" height="78" class="fp-kitchen"/>
+            <text x="79" y="195" text-anchor="middle" class="fp-label">Kitchen</text>
+            <!-- Counter L-shape -->
+            <rect x="14" y="148" width="22" height="78" fill="rgba(180,160,100,0.18)" stroke="rgba(180,160,100,0.35)" stroke-width=".8"/>
+            <rect x="14" y="148" width="130" height="22" fill="rgba(180,160,100,0.18)" stroke="rgba(180,160,100,0.35)" stroke-width=".8"/>
+            <!-- Stove burners -->
+            <circle cx="32" cy="180" r="5" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width=".8"/>
+            <circle cx="32" cy="195" r="5" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width=".8"/>
+            <!-- Sink -->
+            <rect x="56" y="150" width="18" height="12" rx="2" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <!-- Refrigerator -->
+            <rect x="100" y="152" width="24" height="16" rx="2" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)" stroke-width=".8"/>
+            <text x="112" y="163" text-anchor="middle" class="fp-dim">FRDG</text>
+
+            <!-- Dimension annotations -->
+            <text x="79" y="236" text-anchor="middle" class="fp-dim">6.8 m</text>
+            <line x1="14" y1="232" x2="144" y2="232" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+            <text x="227" y="236" text-anchor="middle" class="fp-dim">8.0 m</text>
+            <line x1="148" y1="232" x2="306" y2="232" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+            <text x="3" y="115" text-anchor="middle" class="fp-dim" transform="rotate(-90,3,115)">6.8 m</text>
+            <line x1="6" y1="14" x2="6" y2="228" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+
+            <!-- Doors -->
+            <path d="M 144 148 Q 144 134 130 134" class="fp-door" stroke-dasharray="2,2"/>
+            <path d="M 148 108 Q 148 96 160 96" class="fp-door" stroke-dasharray="2,2"/>
+
+            <!-- North -->
+            <text x="295" y="228" class="fp-dim" text-anchor="middle">N ↑</text>
+          </svg>
+        </div>
+
+        <!-- Specs -->
+        <div class="apt-specs">
+          <div>
+            <h4>Room Dimensions</h4>
+            <div class="spec-table">
+              <div class="spec-row">
+                <span class="spec-key">Total Area</span>
+                <span class="spec-val">55 m² (592 sq ft)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Bedroom</span>
+                <span class="spec-val">4.3 m × 4.3 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Living Room</span>
+                <span class="spec-val">5.3 m × 3.9 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Kitchen</span>
+                <span class="spec-val">4.3 m × 2.6 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Bathroom</span>
+                <span class="spec-val">3.3 m × 3.0 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Ceiling Height</span>
+                <span class="spec-val">2.7 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Floor</span>
+                <span class="spec-val">3rd – 4th</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4>Included Amenities</h4>
+            <div class="apt-amenities">
+              <span class="amenity-chip">King Bed</span>
+              <span class="amenity-chip">Built-in Wardrobe</span>
+              <span class="amenity-chip">Separate Living Area</span>
+              <span class="amenity-chip">Full Kitchen</span>
+              <span class="amenity-chip">Dining Table</span>
+              <span class="amenity-chip">Bathtub + Shower</span>
+              <span class="amenity-chip">Air Conditioning</span>
+              <span class="amenity-chip">High-Speed Wi-Fi</span>
+              <span class="amenity-chip">Smart TV (55")</span>
+              <span class="amenity-chip">Washing Machine</span>
+              <span class="amenity-chip">Weekly Housekeeping</span>
+              <span class="amenity-chip">Utilities Included</span>
+            </div>
+          </div>
+          <div>
+            <h4>Availability</h4>
+            <div class="spec-table">
+              <div class="spec-row">
+                <span class="spec-key">Units</span>
+                <span class="spec-val">3 (APT-201, 301, 401)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Min. Stay</span>
+                <span class="spec-val">3 months</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Status</span>
+                <span class="spec-val" style="color:#6ee77a">2 Available</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+  <!-- /onebedroom -->
+
+  <hr class="apt-divider" />
+
+  <!-- ────────────────── 2-BEDROOM ────────────────── -->
+  <div class="unit-block" id="unit-twobedroom">
+    <section class="apt-section" id="twobedroom">
+      <div class="apt-section-header">
+        <h2>
+          <em>Two-Bedroom Apartment</em>
+          Premium Family Living
+        </h2>
+        <div class="apt-price-block">
+          <div class="apt-price-main">USD 2,100 <span style="font-size:16px;font-weight:400;color:rgba(255,255,255,0.5)">/mo</span></div>
+          <div class="apt-price-mvr">MVR 32,382 / month</div>
+          <div class="apt-price-note">Rate: 1 USD = 15.42 MVR · Utilities incl.</div>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div class="apt-gallery">
+        <div class="img-main" style="overflow:hidden">
+          <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=900&auto=format&fit=crop&q=80" alt="Two-bedroom living space" />
+        </div>
+        <div style="overflow:hidden">
+          <img class="img-a" src="https://images.unsplash.com/photo-1505693314120-0d443867891c?w=700&auto=format&fit=crop&q=80" alt="Master bedroom" />
+        </div>
+        <div style="overflow:hidden">
+          <img class="img-b" src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=700&auto=format&fit=crop&q=80" alt="Second bedroom / dining" />
+        </div>
+      </div>
+
+      <!-- Detail grid -->
+      <div class="apt-detail-grid">
+
+        <!-- Floor Plan -->
+        <div class="apt-floorplan">
+          <h4>Floor Plan · ~80 m²</h4>
+          <svg viewBox="0 0 360 270" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer walls -->
+            <rect x="10" y="10" width="340" height="250" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+
+            <!-- Master Bedroom (top left) -->
+            <rect x="14" y="14" width="145" height="120" class="fp-room"/>
+            <text x="86" y="38" text-anchor="middle" class="fp-label">Master Bedroom</text>
+            <!-- King bed -->
+            <rect x="24" y="45" width="90" height="60" rx="3" class="fp-bed"/>
+            <text x="69" y="78" text-anchor="middle" class="fp-label">King Bed</text>
+            <rect x="26" y="47" width="25" height="15" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <rect x="56" y="47" width="25" height="15" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <rect x="86" y="47" width="24" height="15" rx="2" fill="rgba(200,89,79,0.25)"/>
+            <!-- Wardrobe -->
+            <rect x="14" y="108" width="145" height="22" rx="2" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <text x="86" y="122" text-anchor="middle" class="fp-label">Built-in Wardrobe</text>
+
+            <!-- Master Bathroom (top middle) -->
+            <rect x="163" y="14" width="100" height="90" class="fp-bath"/>
+            <text x="213" y="60" text-anchor="middle" class="fp-label">En-suite</text>
+            <!-- Bathtub -->
+            <rect x="228" y="18" width="30" height="55" rx="4" fill="rgba(100,160,200,0.18)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <text x="243" y="48" text-anchor="middle" class="fp-dim">BATH</text>
+            <!-- Toilet -->
+            <ellipse cx="175" cy="86" rx="10" ry="7" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <!-- Sink -->
+            <rect x="166" y="20" width="22" height="18" rx="2" fill="rgba(100,160,200,0.15)" stroke="rgba(100,160,200,0.3)" stroke-width=".8"/>
+            <!-- Shower -->
+            <rect x="268" y="18" width="56" height="55" rx="3" fill="rgba(100,160,200,0.1)" stroke="rgba(100,160,200,0.25)" stroke-width=".8"/>
+            <text x="296" y="48" text-anchor="middle" class="fp-dim">SHOWER</text>
+
+            <!-- Second Bedroom (top right) -->
+            <rect x="267" y="14" width="79" height="120" class="fp-room"/>
+            <text x="306" y="38" text-anchor="middle" class="fp-label">Bedroom 2</text>
+            <!-- Twin/double bed -->
+            <rect x="272" y="48" width="70" height="50" rx="3" class="fp-bed"/>
+            <text x="307" y="75" text-anchor="middle" class="fp-label">Bed</text>
+            <rect x="274" y="50" width="20" height="12" rx="2" fill="rgba(200,89,79,0.2)"/>
+            <rect x="318" y="50" width="20" height="12" rx="2" fill="rgba(200,89,79,0.2)"/>
+
+            <!-- Second Bathroom (right middle) -->
+            <rect x="267" y="138" width="79" height="90" class="fp-bath"/>
+            <text x="306" y="188" text-anchor="middle" class="fp-label">Bath 2</text>
+            <!-- Shower -->
+            <rect x="272" y="145" width="35" height="40" rx="3" fill="rgba(100,160,200,0.12)" stroke="rgba(100,160,200,0.3)" stroke-width=".8"/>
+            <text x="289" y="167" text-anchor="middle" class="fp-dim">SHOWER</text>
+            <!-- Toilet -->
+            <ellipse cx="310" cy="215" rx="10" ry="7" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <!-- Vanity -->
+            <rect x="295" y="142" width="22" height="16" rx="2" fill="rgba(100,160,200,0.15)" stroke="rgba(100,160,200,0.3)" stroke-width=".8"/>
+
+            <!-- Open Living/Dining (bottom left + centre) -->
+            <rect x="14" y="138" width="249" height="118" class="fp-room"/>
+            <!-- Sofa group -->
+            <rect x="24" y="165" width="90" height="30" rx="4" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <rect x="24" y="165" width="28" height="60" rx="4" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <!-- Coffee table -->
+            <rect x="62" y="200" width="45" height="26" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/>
+            <!-- TV wall -->
+            <rect x="24" y="143" width="100" height="8" rx="2" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width=".8"/>
+            <text x="74" y="150" text-anchor="middle" class="fp-dim">TV UNIT</text>
+            <!-- Dining area -->
+            <!-- Table -->
+            <rect x="150" y="165" width="64" height="38" rx="3" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width=".8"/>
+            <text x="182" y="187" text-anchor="middle" class="fp-label">Dining</text>
+            <!-- Chairs -->
+            <rect x="148" y="170" width="7" height="12" rx="1" fill="rgba(255,255,255,0.08)"/>
+            <rect x="148" y="186" width="7" height="12" rx="1" fill="rgba(255,255,255,0.08)"/>
+            <rect x="209" y="170" width="7" height="12" rx="1" fill="rgba(255,255,255,0.08)"/>
+            <rect x="209" y="186" width="7" height="12" rx="1" fill="rgba(255,255,255,0.08)"/>
+
+            <!-- Kitchen (bottom right area) -->
+            <text x="100" y="225" text-anchor="middle" class="fp-label">Living Room</text>
+            <rect x="14" y="218" width="249" height="26" class="fp-kitchen"/>
+            <text x="136" y="234" text-anchor="middle" class="fp-label">Kitchen</text>
+            <!-- Counter -->
+            <rect x="14" y="218" width="249" height="14" fill="rgba(180,160,100,0.18)" stroke="rgba(180,160,100,0.35)" stroke-width=".8"/>
+            <!-- Stove -->
+            <circle cx="60" cy="222" r="5" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width=".8"/>
+            <circle cx="78" cy="222" r="5" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width=".8"/>
+            <!-- Sink -->
+            <rect x="120" y="219" width="20" height="10" rx="2" fill="rgba(100,160,200,0.2)" stroke="rgba(100,160,200,0.4)" stroke-width=".8"/>
+            <!-- Fridge -->
+            <rect x="215" y="219" width="28" height="12" rx="2" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)" stroke-width=".8"/>
+
+            <!-- Wall separating bath 2 / living -->
+            <rect x="263" y="138" width="4" height="90" fill="rgba(255,255,255,0.2)"/>
+
+            <!-- Doors -->
+            <path d="M 159 130 Q 159 118 145 118" class="fp-door" stroke-dasharray="2,2"/>
+            <path d="M 163 104 Q 163 92 175 92" class="fp-door" stroke-dasharray="2,2"/>
+            <path d="M 263 195 Q 263 183 251 183" class="fp-door" stroke-dasharray="2,2"/>
+
+            <!-- Dimension annotations -->
+            <text x="185" y="266" text-anchor="middle" class="fp-dim">12.0 m</text>
+            <line x1="14" y1="262" x2="346" y2="262" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+            <text x="3" y="140" text-anchor="middle" class="fp-dim" transform="rotate(-90,3,140)">6.6 m</text>
+            <line x1="6" y1="14" x2="6" y2="258" stroke="rgba(255,255,255,0.2)" stroke-width=".5"/>
+
+            <!-- North -->
+            <text x="335" y="262" class="fp-dim" text-anchor="middle">N ↑</text>
+          </svg>
+        </div>
+
+        <!-- Specs -->
+        <div class="apt-specs">
+          <div>
+            <h4>Room Dimensions</h4>
+            <div class="spec-table">
+              <div class="spec-row">
+                <span class="spec-key">Total Area</span>
+                <span class="spec-val">80 m² (861 sq ft)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Master Bedroom</span>
+                <span class="spec-val">4.8 m × 4.0 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Bedroom 2</span>
+                <span class="spec-val">2.6 m × 4.0 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Living / Dining</span>
+                <span class="spec-val">8.3 m × 3.9 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Kitchen</span>
+                <span class="spec-val">8.3 m × 0.9 m (open)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">En-suite</span>
+                <span class="spec-val">3.3 m × 3.0 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Bathroom 2</span>
+                <span class="spec-val">2.6 m × 3.0 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Ceiling Height</span>
+                <span class="spec-val">2.7 m</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Floor</span>
+                <span class="spec-val">4th – 5th (Penthouse)</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4>Included Amenities</h4>
+            <div class="apt-amenities">
+              <span class="amenity-chip">King Bed (Master)</span>
+              <span class="amenity-chip">Double Bed (Rm 2)</span>
+              <span class="amenity-chip">2 Bathrooms</span>
+              <span class="amenity-chip">En-suite + Bathtub</span>
+              <span class="amenity-chip">Open Kitchen</span>
+              <span class="amenity-chip">Dining Area</span>
+              <span class="amenity-chip">Dual A/C Zones</span>
+              <span class="amenity-chip">High-Speed Wi-Fi</span>
+              <span class="amenity-chip">2× Smart TVs</span>
+              <span class="amenity-chip">Washing Machine</span>
+              <span class="amenity-chip">Dishwasher</span>
+              <span class="amenity-chip">City Views</span>
+              <span class="amenity-chip">Twice-Weekly Housekeeping</span>
+              <span class="amenity-chip">Utilities Included</span>
+            </div>
+          </div>
+          <div>
+            <h4>Availability</h4>
+            <div class="spec-table">
+              <div class="spec-row">
+                <span class="spec-key">Units</span>
+                <span class="spec-val">3 (APT-202, 302, 501)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Min. Stay</span>
+                <span class="spec-val">3 months</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Status</span>
+                <span class="spec-val" style="color:#f0c040">1 Available</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+  <!-- /twobedroom -->
+
+  <!-- ── CTA ── -->
+  <section class="exp-cta-section">
+    <h2>Ready to Make Malé Home?</h2>
+    <p>Contact us to arrange a viewing, ask about availability, or discuss lease terms. Our team responds within 24 hours.</p>
+    <div class="cta-buttons">
+      <a class="btn-primary" href="mailto:residence@paralian.mv">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Us
+      </a>
+      <a class="btn-secondary" href="tenant.html">Existing Tenant? Log In →</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="exp-footer">
+    © 2026 Sheesha Smart Investments Pvt Ltd &nbsp;·&nbsp;
+    <a href="./">Paralian Residence</a> &nbsp;·&nbsp;
+    <a href="../">All Properties</a> &nbsp;·&nbsp;
+    <a href="mailto:residence@paralian.mv">residence@paralian.mv</a>
+  </footer>
+
+  <script>
+    // Unit switcher
+    function showUnit(id, btn) {
+      // Update buttons
+      document.querySelectorAll('.unit-nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Show all sections (we use anchor-based filtering via CSS)
+      // Actually just show all but scroll to anchor
+      document.querySelectorAll('.unit-block').forEach(b => {
+        b.classList.remove('visible');
+      });
+      const block = document.getElementById('unit-' + id);
+      if (block) block.classList.add('visible');
+      // Smooth scroll
+      const section = document.getElementById(id);
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // On load, show studio and activate first button
+    document.addEventListener('DOMContentLoaded', () => {
+      const studioBlock = document.getElementById('unit-studio');
+      if (studioBlock) studioBlock.classList.add('visible');
+    });
+  </script>
+
+</body>
+</html>
