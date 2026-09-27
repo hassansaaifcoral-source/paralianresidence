@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paralian Café — Rooftop Dining, Hulhumalé</title>
+  <meta name="description" content="Paralian Café offers rooftop dining with island views. Fresh Maldivian cuisine, artisan coffee, and sunset cocktails — open to guests and visitors.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Menu Sections ───────────────────── */
+    .menu-tabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .menu-tabs::-webkit-scrollbar { display: none; }
+    .menu-tab {
+      padding: .75rem 1.5rem;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: var(--transition);
+    }
+    .menu-tab.active {
+      color: var(--coral);
+      border-bottom-color: var(--coral);
+    }
+    .menu-panel { display: none; }
+    .menu-panel.active { display: block; }
+
+    .menu-category {
+      margin-bottom: 2rem;
+    }
+    .menu-cat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+      padding-bottom: .5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .menu-items {
+      display: grid;
+      gap: .75rem;
+    }
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: .75rem 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item-info { flex: 1; }
+    .menu-item-name {
+      font-weight: 600;
+      font-size: .95rem;
+      color: var(--text-dark);
+      margin-bottom: .2rem;
+    }
+    .menu-item-desc {
+      font-size: .82rem;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+    .menu-item-price {
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--coral);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .menu-item-tags {
+      display: flex;
+      gap: .3rem;
+      margin-top: .3rem;
+      flex-wrap: wrap;
+    }
+    .mi-tag {
+      font-size: .62rem;
+      padding: .15rem .45rem;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: .05em;
+    }
+    .mi-tag.veg  { background: #E8F5E9; color: #2E7D32; }
+    .mi-tag.chef { background: rgba(200,89,79,.1); color: var(--coral); }
+    .mi-tag.new  { background: rgba(11,22,35,.08); color: var(--navy); }
+
+    /* ── Gallery Row ─────────────────────── */
+    .cafe-gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .5rem;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .cafe-gallery .g-item { aspect-ratio: 1/1; overflow: hidden; cursor: zoom-in; }
+    .cafe-gallery .g-item img { height: 100%; transition: transform .4s ease; }
+    .cafe-gallery .g-item:hover img { transform: scale(1.07); }
+    .cafe-gallery .g-item:first-child { grid-column: span 2; aspect-ratio: 2/1; }
+
+    /* ── Hours Card ──────────────────────── */
+    .hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .hours-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+    .hours-card h4 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      padding: .55rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .9rem;
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row .day { color: var(--text-mid); }
+    .hours-row .time { font-weight: 600; color: var(--text-dark); }
+    .hours-row .time.closed { color: var(--text-light); font-weight: 400; font-style: italic; }
+
+    /* ── Menu image strip ───────────────── */
+    .menu-image-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .menu-page-img {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: zoom-in;
+      box-shadow: var(--shadow-md);
+    }
+    .menu-page-img img { height: 100%; transition: transform .4s ease; }
+    .menu-page-img:hover img { transform: scale(1.03); }
+
+    @media (max-width: 768px) {
+      .cafe-gallery { grid-template-columns: 1fr 1fr; }
+      .cafe-gallery .g-item:first-child { grid-column: span 2; }
+      .hours-grid { grid-template-columns: 1fr; }
+      .menu-image-strip { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .menu-image-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav id="nav" class="light scrolled">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">PARALIAN</span>
+      <span class="tagline">Hulhumalé, Maldives</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rooms.html">Rooms</a></li>
+      <li><a href="cafe.html" class="active">Café</a></li>
+      <li><a href="activities.html">Activities</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="rooms.html" class="nav-book">Book Now</a>
+    </div>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<nav class="nav-drawer">
+  <a href="index.html">Home</a>
+  <a href="rooms.html">Rooms</a>
+  <a href="cafe.html" class="active">Café</a>
+  <a href="activities.html">Activities</a>
+  <a href="about.html">About</a>
+  <a href="about.html#contact">Contact</a>
+  <a href="rooms.html" class="nav-book">Book Now</a>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────── -->
+<div class="page-hero">
+  <img
+    src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1741174143680-6dg2i3x9s3xc3tzr4gaj/1.jpg?format=2500w"
+    alt="Paralian Café rooftop interior"
+    class="hero-bg"
+  >
+  <div class="page-hero-content">
+    <span class="section-label">Rooftop Dining</span>
+    <h1>Paralian Café</h1>
+  </div>
+</div>
+
+<!-- ── Intro ───────────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="two-col">
+      <div class="reveal">
+        <span class="section-label">About the Café</span>
+        <h2 class="section-title">Island Flavours,<br>Rooftop Views</h2>
+        <div class="divider"></div>
+        <p style="color:var(--text-mid);line-height:1.8;margin-bottom:1.2rem;">
+          Perched atop Paralian, our café is the perfect vantage point for Hulhumalé's horizon. Whether you're starting your morning with freshly brewed coffee and eggs, sharing an afternoon bite, or watching the sunset with a cold drink in hand — the Paralian Café is your island retreat.
+        </p>
+        <p style="color:var(--text-mid);line-height:1.8;margin-bottom:2rem;">
+          Our menu features local Maldivian dishes alongside international favourites, crafted with fresh, sustainably sourced ingredients. Open to hotel guests and drop-in visitors alike.
+        </p>
+        <a href="#menu" class="btn btn-primary">See the Menu</a>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="cafe-gallery">
+          <div class="g-item" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1741174143680-6dg2i3x9s3xc3tzr4gaj/1.jpg?format=2500w">
+            <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1741174143680-6dg2i3x9s3xc3tzr4gaj/1.jpg?format=2500w" alt="Café interior">
+          </div>
+          <div class="g-item" data-lightbox="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80">
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80" alt="Coffee">
+          </div>
+          <div class="g-item" data-lightbox="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80" alt="Food">
+          </div>
+          <div class="g-item" data-lightbox="https://images.unsplash.com/photo-1559329007-40df8a9345d8?auto=format&fit=crop&w=800&q=80">
+            <img src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?auto=format&fit=crop&w=800&q=80" alt="Breakfast">
+          </div>
+          <div class="g-item" data-lightbox="https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=800&q=80">
+            <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=800&q=80" alt="Maldivian dish">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Hours ────────────────────────────────────── -->
+<section class="section bg-ivory">
+  <div class="section-inner">
+    <div class="section-head center">
+      <span class="section-label">Opening Hours</span>
+      <h2 class="section-title">We're Open Daily</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="hours-grid reveal">
+      <div class="hours-card">
+        <h4>☕ Breakfast &amp; Brunch</h4>
+        <div class="hours-row"><span class="day">Monday – Sunday</span><span class="time">7:00 AM – 11:30 AM</span></div>
+      </div>
+      <div class="hours-card">
+        <h4>🍽 Lunch &amp; Snacks</h4>
+        <div class="hours-row"><span class="day">Monday – Sunday</span><span class="time">12:00 PM – 3:30 PM</span></div>
+      </div>
+      <div class="hours-card">
+        <h4>☕ Afternoon Coffee</h4>
+        <div class="hours-row"><span class="day">Monday – Sunday</span><span class="time">3:30 PM – 5:30 PM</span></div>
+      </div>
+      <div class="hours-card">
+        <h4>🌅 Sunset &amp; Dinner</h4>
+        <div class="hours-row"><span class="day">Monday – Sunday</span><span class="time">6:00 PM – 10:30 PM</span></div>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--text-light);font-size:.88rem;margin-top:1.5rem;">
+      The café is open to hotel guests and walk-in visitors. Reservations recommended for dinner on weekends.
+    </p>
+  </div>
+</section>
+
+<!-- ── Menu ─────────────────────────────────────── -->
+<section class="section" id="menu">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Menu</span>
+      <h2 class="section-title">What We Serve</h2>
+      <div class="divider"></div>
+    </div>
+
+    <!-- Actual menu pages from Squarespace -->
+    <div class="menu-image-strip reveal">
+      <div class="menu-page-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1765269761366-hm5w2y3x8n7p4z0q2r5s/Menu+file_page-0003.jpg?format=2500w">
+        <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1765269761366-hm5w2y3x8n7p4z0q2r5s/Menu+file_page-0003.jpg?format=2500w" alt="Menu page 1">
+      </div>
+      <div class="menu-page-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1765269761366-hm5w2y3x8n7p4z0q2r5s/Menu+file_page-0004.jpg?format=2500w">
+        <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1765269761366-hm5w2y3x8n7p4z0q2r5s/Menu+file_page-0004.jpg?format=2500w" alt="Menu page 2">
+      </div>
+      <div class="menu-page-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1765269761366-hm5w2y3x8n7p4z0q2r5s/Menu+file_page-0005.jpg?format=2500w">
+        <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1765269761366-hm5w2y3x8n7p4z0q2r5s/Menu+file_page-0005.jpg?format=2500w" alt="Menu page 3">
+      </div>
+    </div>
+
+    <!-- Digital menu (expanded) -->
+    <div class="menu-tabs">
+      <button class="menu-tab active" data-menu="breakfast">Breakfast</button>
+      <button class="menu-tab" data-menu="lunch">Lunch</button>
+      <button class="menu-tab" data-menu="maldivian">Maldivian</button>
+      <button class="menu-tab" data-menu="beverages">Beverages</button>
+      <button class="menu-tab" data-menu="desserts">Desserts</button>
+    </div>
+
+    <!-- Breakfast -->
+    <div class="menu-panel active" id="panel-breakfast">
+      <div class="menu-category">
+        <h3 class="menu-cat-title">Morning Starters</h3>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Eggs Your Way</div>
+              <div class="menu-item-desc">Served with toast, grilled tomato, and your choice of sides</div>
+              <div class="menu-item-tags"><span class="mi-tag veg">Vegetarian</span></div>
+            </div>
+            <span class="menu-item-price">MVR 180</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Paralian Full Breakfast</div>
+              <div class="menu-item-desc">Scrambled eggs, turkey bacon, sausage, mushrooms, grilled tomato, baked beans &amp; toast</div>
+              <div class="menu-item-tags"><span class="mi-tag chef">Chef's Pick</span></div>
+            </div>
+            <span class="menu-item-price">MVR 280</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Açaí &amp; Granola Bowl</div>
+              <div class="menu-item-desc">Frozen açaí with seasonal fruits, house granola, chia seeds, and honey drizzle</div>
+              <div class="menu-item-tags"><span class="mi-tag veg">Vegetarian</span></div>
+            </div>
+            <span class="menu-item-price">MVR 220</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Avocado on Sourdough</div>
+              <div class="menu-item-desc">Smashed avocado, poached eggs, cherry tomatoes, chili flakes, microgreens</div>
+              <div class="menu-item-tags"><span class="mi-tag veg">Vegetarian</span><span class="mi-tag new">New</span></div>
+            </div>
+            <span class="menu-item-price">MVR 240</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lunch -->
+    <div class="menu-panel" id="panel-lunch">
+      <div class="menu-category">
+        <h3 class="menu-cat-title">Midday Plates</h3>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Grilled Chicken Sandwich</div>
+              <div class="menu-item-desc">Marinated grilled chicken, romaine, tomato, pickles, garlic aioli in a toasted brioche bun</div>
+            </div>
+            <span class="menu-item-price">MVR 260</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Caesar Salad</div>
+              <div class="menu-item-desc">Crisp romaine, parmesan, house-made croutons, classic Caesar dressing</div>
+              <div class="menu-item-tags"><span class="mi-tag veg">Vegetarian</span></div>
+            </div>
+            <span class="menu-item-price">MVR 210</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Island Fish &amp; Chips</div>
+              <div class="menu-item-desc">Locally sourced reef fish in light batter, hand-cut fries, tartar sauce, lemon</div>
+              <div class="menu-item-tags"><span class="mi-tag chef">Chef's Pick</span></div>
+            </div>
+            <span class="menu-item-price">MVR 310</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Club Sandwich</div>
+              <div class="menu-item-desc">Triple-decker with turkey, cheese, bacon, lettuce, tomato, mayo</div>
+            </div>
+            <span class="menu-item-price">MVR 290</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maldivian -->
+    <div class="menu-panel" id="panel-maldivian">
+      <div class="menu-category">
+        <h3 class="menu-cat-title">Local Specialties</h3>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Mas Riha</div>
+              <div class="menu-item-desc">Traditional tuna fish curry with coconut milk, served with roshi flatbread</div>
+              <div class="menu-item-tags"><span class="mi-tag chef">Chef's Pick</span></div>
+            </div>
+            <span class="menu-item-price">MVR 290</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Garudhiya Breakfast</div>
+              <div class="menu-item-desc">Clear tuna broth served with rice, lime, onion, and chili — the island's morning staple</div>
+            </div>
+            <span class="menu-item-price">MVR 180</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Bis Keemiya</div>
+              <div class="menu-item-desc">Maldivian short-eat — pastry filled with tuna, egg, cabbage, and onion</div>
+            </div>
+            <span class="menu-item-price">MVR 45 ea.</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Kulhi Boakibaa</div>
+              <div class="menu-item-desc">Spiced tuna cake — a Maldivian festival favourite, crispy outside, tender inside</div>
+            </div>
+            <span class="menu-item-price">MVR 55 ea.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beverages -->
+    <div class="menu-panel" id="panel-beverages">
+      <div class="menu-category">
+        <h3 class="menu-cat-title">Hot Beverages</h3>
+        <div class="menu-items">
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Espresso</div></div><span class="menu-item-price">MVR 65</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Cappuccino / Latte / Flat White</div></div><span class="menu-item-price">MVR 95</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Chai Latte</div><div class="menu-item-desc">Spiced Indian chai with steamed milk</div></div><span class="menu-item-price">MVR 90</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Fresh Mint Tea</div></div><span class="menu-item-price">MVR 75</span></div>
+        </div>
+      </div>
+      <div class="menu-category">
+        <h3 class="menu-cat-title">Cold Drinks</h3>
+        <div class="menu-items">
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Fresh Coconut Water</div></div><span class="menu-item-price">MVR 95</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Mango Lassi</div></div><span class="menu-item-price">MVR 110</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Fresh Juices</div><div class="menu-item-desc">Watermelon, Pineapple, Orange, or Mixed Tropical</div></div><span class="menu-item-price">MVR 90</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Cold Brew Coffee</div></div><span class="menu-item-price">MVR 115</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desserts -->
+    <div class="menu-panel" id="panel-desserts">
+      <div class="menu-category">
+        <h3 class="menu-cat-title">Sweet Endings</h3>
+        <div class="menu-items">
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Warm Chocolate Lava Cake</div><div class="menu-item-desc">Served with vanilla ice cream and berry coulis</div><div class="menu-item-tags"><span class="mi-tag chef">Chef's Pick</span></div></div><span class="menu-item-price">MVR 195</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Coconut Panna Cotta</div><div class="menu-item-desc">Set coconut cream, mango compote, toasted coconut flakes</div><div class="menu-item-tags"><span class="mi-tag veg">Vegetarian</span></div></div><span class="menu-item-price">MVR 175</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Kulhi Boakibaa Ice Cream</div><div class="menu-item-desc">Our take on a Maldivian classic — smoked tuna cake with salted caramel gelato</div></div><span class="menu-item-price">MVR 155</span></div>
+          <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Fruit Platter</div><div class="menu-item-desc">Seasonal fresh fruits with mint and lime drizzle</div><div class="menu-item-tags"><span class="mi-tag veg">Vegetarian</span></div></div><span class="menu-item-price">MVR 140</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="color:var(--text-light);font-size:.82rem;margin-top:2rem;">
+      * Prices are in Maldivian Rufiyaa (MVR). A 10% service charge and 16% GST will be added to your bill.
+    </p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="wordmark">PARALIAN</span>
+        <p>Boutique hotel and serviced residences on the shores of Hulhumalé, offering modern Maldivian hospitality with a personal touch.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="TripAdvisor">✈</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Café</h5>
+        <ul>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#panel-breakfast">Breakfast</a></li>
+          <li><a href="#panel-maldivian">Maldivian</a></li>
+          <li><a href="#panel-beverages">Beverages</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Discover</h5>
+        <ul>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="activities.html">Activities</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+9601234567">+960 123 4567</a></li>
+          <li><a href="mailto:hello@paralian.mv">hello@paralian.mv</a></li>
+          <li><a href="#">Hulhumalé, Maldives</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Paralian Pvt Ltd. All rights reserved.</p>
+      <div class="footer-payments">
+        <span class="payment-badge">BML</span>
+        <span class="payment-badge">VISA</span>
+        <span class="payment-badge">MC</span>
+        <span class="payment-badge">AMEX</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="lightbox" class="lightbox">
+  <span class="lightbox-close">×</span>
+  <span class="lightbox-prev">‹</span>
+  <img class="lb-img" src="" alt="">
+  <span class="lightbox-next">›</span>
+</div>
+<div id="toast" class="toast"></div>
+<script src="assets/js/main.js"></script>
+<script>
+  document.getElementById('nav').classList.add('light');
+
+  // Menu tabs
+  const menuTabs = document.querySelectorAll('.menu-tab');
+  const menuPanels = document.querySelectorAll('.menu-panel');
+  menuTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      menuTabs.forEach(t => t.classList.remove('active'));
+      menuPanels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel = document.getElementById('panel-' + tab.dataset.menu);
+      if (panel) panel.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Paralian — Boutique Hotel, Hulhumalé Maldives</title>
+  <meta name="description" content="Learn about Paralian hotel and residences in Hulhumalé, Maldives — our story, our team, and how to reach us.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Story Section ───────────────────── */
+    .story-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .story-images {
+      position: relative;
+    }
+    .story-img-main {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+    .story-img-main img { height: 100%; }
+    .story-img-accent {
+      position: absolute;
+      bottom: -2rem;
+      right: -1.5rem;
+      width: 55%;
+      aspect-ratio: 1/1;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 4px solid var(--white);
+      box-shadow: var(--shadow-lg);
+    }
+    .story-img-accent img { height: 100%; }
+
+    /* ── Team ────────────────────────────── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .team-card {
+      text-align: center;
+    }
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto 1rem;
+      border: 3px solid var(--border);
+    }
+    .team-avatar img { height: 100%; }
+    .team-name { font-size: 1rem; color: var(--navy); margin-bottom: .2rem; }
+    .team-role { font-size: .82rem; color: var(--coral); font-weight: 500; }
+    .team-bio { font-size: .85rem; color: var(--text-mid); line-height: 1.6; margin-top: .5rem; }
+
+    /* ── Location ────────────────────────── */
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .location-details h3 { font-size: 1.3rem; color: var(--navy); margin-bottom: 1.5rem; }
+    .location-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+      align-items: flex-start;
+    }
+    .location-item-icon {
+      width: 42px;
+      height: 42px;
+      background: var(--ivory);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .location-item-text strong {
+      display: block;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: .25rem;
+    }
+    .location-item-text p { font-size: .9rem; color: var(--text-dark); line-height: 1.5; }
+    .map-embed {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--ivory-dark);
+      position: relative;
+    }
+    .map-embed img { height: 100%; }
+    .map-embed-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: .75rem;
+      color: var(--text-mid);
+    }
+    .map-embed-placeholder .map-pin { font-size: 2.5rem; }
+    .map-embed-placeholder p { font-size: .9rem; }
+    .map-embed-placeholder a {
+      color: var(--coral);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* ── Contact ─────────────────────────── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+    .contact-info h3 { font-size: 1.3rem; color: var(--navy); margin-bottom: 1.5rem; }
+    .contact-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .contact-card {
+      display: flex;
+      gap: 1rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.2rem;
+      align-items: center;
+    }
+    .contact-card-icon {
+      width: 46px;
+      height: 46px;
+      background: rgba(200,89,79,.1);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .contact-card-text strong { display: block; font-size: .8rem; color: var(--text-light); margin-bottom: .15rem; letter-spacing: .06em; text-transform: uppercase; }
+    .contact-card-text a, .contact-card-text p { font-size: .95rem; color: var(--text-dark); font-weight: 500; }
+
+    @media (max-width: 900px) {
+      .story-block { grid-template-columns: 1fr; gap: 2.5rem; }
+      .story-images { padding-bottom: 3rem; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .location-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .team-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav id="nav" class="light scrolled">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">PARALIAN</span>
+      <span class="tagline">Hulhumalé, Maldives</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rooms.html">Rooms</a></li>
+      <li><a href="cafe.html">Café</a></li>
+      <li><a href="activities.html">Activities</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="rooms.html" class="nav-book">Book Now</a>
+    </div>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<nav class="nav-drawer">
+  <a href="index.html">Home</a>
+  <a href="rooms.html">Rooms</a>
+  <a href="cafe.html">Café</a>
+  <a href="activities.html">Activities</a>
+  <a href="about.html" class="active">About</a>
+  <a href="#contact">Contact</a>
+  <a href="rooms.html" class="nav-book">Book Now</a>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────── -->
+<div class="page-hero">
+  <img
+    src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1531423066280-1yk2lts4x6v4l6gqfyvr/photo_2018-07-13_00-06-49.jpg?format=2500w"
+    alt="Paralian building exterior, Hulhumalé"
+    class="hero-bg"
+  >
+  <div class="page-hero-content">
+    <span class="section-label">Our Story</span>
+    <h1>About Paralian</h1>
+  </div>
+</div>
+
+<!-- ── Story ───────────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="story-block">
+      <div class="story-images reveal">
+        <div class="story-img-main">
+          <img
+            src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1531423066280-1yk2lts4x6v4l6gqfyvr/photo_2018-07-13_00-06-49.jpg?format=2500w"
+            alt="Paralian exterior"
+            loading="lazy"
+          >
+        </div>
+        <div class="story-img-accent">
+          <img
+            src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1741174143680-6dg2i3x9s3xc3tzr4gaj/1.jpg?format=2500w"
+            alt="Paralian Café"
+            loading="lazy"
+          >
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <span class="section-label">Who We Are</span>
+        <h2 class="section-title">A Place to Feel at Home</h2>
+        <div class="divider"></div>
+        <p style="color:var(--text-mid);line-height:1.85;margin-bottom:1.2rem;">
+          Paralian was born from a simple belief: that a great stay should feel effortless. Nestled in the growing city of Hulhumalé — just minutes from Velana International Airport — we offer boutique hotel rooms and fully serviced residences to travellers and long-term guests alike.
+        </p>
+        <p style="color:var(--text-mid);line-height:1.85;margin-bottom:1.2rem;">
+          Our name, <em>Paralian</em>, refers to a person who lives by the sea — and that spirit runs through everything we do. The ocean isn't just a backdrop here; it's part of the experience. Every room, every dish at the café, every curated activity is designed with the Maldivian sea and sky in mind.
+        </p>
+        <p style="color:var(--text-mid);line-height:1.85;">
+          We are a Maldivian property, proudly run by a local team that brings genuine warmth, island knowledge, and meticulous care to every guest's stay.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats ───────────────────────────────────── -->
+<section class="section bg-ivory" style="padding-top:0;padding-bottom:0">
+  <div class="section-inner">
+    <div class="stats-row reveal">
+      <div class="stat-item">
+        <span class="stat-number">2018</span>
+        <span class="stat-label">Year Founded</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">50+</span>
+        <span class="stat-label">Guest Rooms</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Maldivian Owned</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">4.8★</span>
+        <span class="stat-label">Average Rating</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Values ──────────────────────────────────── -->
+<section class="section bg-ivory">
+  <div class="section-inner">
+    <div class="section-head center">
+      <span class="section-label">Our Values</span>
+      <h2 class="section-title">What Drives Us</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="rooms-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+      <div class="card reveal">
+        <div style="padding:2rem;padding-bottom:0;font-size:2.5rem;">🌊</div>
+        <div class="card-body">
+          <h3 class="card-title">Ocean-First Thinking</h3>
+          <p class="card-desc">Every design choice, every policy, and every supplier is chosen with care for our ocean environment.</p>
+        </div>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div style="padding:2rem;padding-bottom:0;font-size:2.5rem;">🤝</div>
+        <div class="card-body">
+          <h3 class="card-title">Genuine Hospitality</h3>
+          <p class="card-desc">We treat every guest as an island guest — with warmth, attentiveness, and the natural Maldivian spirit of welcome.</p>
+        </div>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div style="padding:2rem;padding-bottom:0;font-size:2.5rem;">🌿</div>
+        <div class="card-body">
+          <h3 class="card-title">Local &amp; Sustainable</h3>
+          <p class="card-desc">We partner with local suppliers, hire locally, and work continuously to reduce our environmental footprint.</p>
+        </div>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <div style="padding:2rem;padding-bottom:0;font-size:2.5rem;">✨</div>
+        <div class="card-body">
+          <h3 class="card-title">Details Matter</h3>
+          <p class="card-desc">From the thread count of your sheets to the temperature of your welcome drink — we sweat the small stuff so you don't have to.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Location ────────────────────────────────── -->
+<section class="section" id="location">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Getting Here</span>
+      <h2 class="section-title">Find Us</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="location-grid">
+      <div class="location-details reveal">
+        <h3>Paralian, Hulhumalé</h3>
+        <div class="location-item">
+          <div class="location-item-icon">📍</div>
+          <div class="location-item-text">
+            <strong>Address</strong>
+            <p>Paralian Hotel &amp; Residences<br>Hulhumalé, North Malé Atoll<br>Republic of Maldives</p>
+          </div>
+        </div>
+        <div class="location-item">
+          <div class="location-item-icon">✈️</div>
+          <div class="location-item-text">
+            <strong>From the Airport</strong>
+            <p>We are 2km from Velana International Airport (MLE). A taxi or bus from the airport to Hulhumalé takes 15–20 minutes via the Sinamalé Bridge. We offer arranged transfers on request.</p>
+          </div>
+        </div>
+        <div class="location-item">
+          <div class="location-item-icon">⛴️</div>
+          <div class="location-item-text">
+            <strong>From Malé City</strong>
+            <p>Regular public ferry service connects Malé to Hulhumalé ferry terminal. Journey time: approx. 15 minutes, fare: MVR 10.</p>
+          </div>
+        </div>
+        <div class="location-item">
+          <div class="location-item-icon">🚌</div>
+          <div class="location-item-text">
+            <strong>Local Transport</strong>
+            <p>Taxis and ride-sharing apps operate on the island. The hotel can arrange on-island transport for guests.</p>
+          </div>
+        </div>
+      </div>
+      <div class="map-embed reveal reveal-delay-1">
+        <div class="map-embed-placeholder">
+          <div class="map-pin">📍</div>
+          <p><strong>Paralian, Hulhumalé</strong></p>
+          <p style="font-size:.82rem;color:var(--text-light)">North Malé Atoll, Maldives</p>
+          <a href="https://maps.google.com/?q=Hulhulé+Maldives" target="_blank" rel="noopener">Open in Google Maps →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact ─────────────────────────────────── -->
+<section class="section bg-ivory" id="contact">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Get in Touch</span>
+      <h2 class="section-title">Contact Us</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-card-icon">📞</div>
+            <div class="contact-card-text">
+              <strong>Phone</strong>
+              <a href="tel:+9601234567">+960 123 4567</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">📧</div>
+            <div class="contact-card-text">
+              <strong>Email</strong>
+              <a href="mailto:hello@paralian.mv">hello@paralian.mv</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">💬</div>
+            <div class="contact-card-text">
+              <strong>WhatsApp</strong>
+              <a href="https://wa.me/9601234567" target="_blank" rel="noopener">+960 123 4567</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">🕐</div>
+            <div class="contact-card-text">
+              <strong>Front Desk Hours</strong>
+              <p>24 hours, 7 days a week</p>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">📘</div>
+            <div class="contact-card-text">
+              <strong>Social Media</strong>
+              <a href="#" target="_blank" rel="noopener">@paralianmv on Instagram &amp; Facebook</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <h3 style="font-size:1.2rem;color:var(--navy);margin-bottom:1.5rem;">Send us a Message</h3>
+        <form id="contact-form" class="contact-form">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" name="first_name" required placeholder="Ahmed">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="last_name" required placeholder="Hassan">
+          </div>
+          <div class="form-group full">
+            <label>Email Address</label>
+            <input type="email" name="email" required placeholder="you@example.com">
+          </div>
+          <div class="form-group full">
+            <label>Subject</label>
+            <select name="subject">
+              <option value="">Select a topic</option>
+              <option>Room Booking</option>
+              <option>Activity Enquiry</option>
+              <option>Café Reservation</option>
+              <option>Long-Stay / Residence</option>
+              <option>General Enquiry</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Message</label>
+            <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
+          </div>
+          <div class="full">
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="wordmark">PARALIAN</span>
+        <p>Boutique hotel and serviced residences on the shores of Hulhumalé, offering modern Maldivian hospitality with a personal touch.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="TripAdvisor">✈</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Stay</h5>
+        <ul>
+          <li><a href="rooms.html#suite">Signature Suite</a></li>
+          <li><a href="rooms.html#sunrise">Sunrise Suite</a></li>
+          <li><a href="rooms.html#classic">Classic Room</a></li>
+          <li><a href="rooms.html#palms">Palms View Deluxe</a></li>
+          <li><a href="rooms.html#nest">Dwellers Nest</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Discover</h5>
+        <ul>
+          <li><a href="cafe.html">Paralian Café</a></li>
+          <li><a href="activities.html">Activities</a></li>
+          <li><a href="#location">Getting Here</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+9601234567">+960 123 4567</a></li>
+          <li><a href="mailto:hello@paralian.mv">hello@paralian.mv</a></li>
+          <li><a href="#">Hulhumalé, Maldives</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Paralian Pvt Ltd. All rights reserved.</p>
+      <div class="footer-payments">
+        <span class="payment-badge">BML</span>
+        <span class="payment-badge">VISA</span>
+        <span class="payment-badge">MC</span>
+        <span class="payment-badge">AMEX</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="assets/js/main.js"></script>
+<script>
+  document.getElementById('nav').classList.add('light');
+</script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities &amp; Experiences — Paralian Hulhumalé</title>
+  <meta name="description" content="Explore water sports, island tours, snorkelling, sunset cruises and more at Paralian, Hulhumalé, Maldives.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Activity Detail Cards ───────────── */
+    .activity-card {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 0;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .activity-card.reverse { direction: rtl; }
+    .activity-card.reverse > * { direction: ltr; }
+    .activity-img-wrap {
+      overflow: hidden;
+      min-height: 300px;
+    }
+    .activity-img-wrap img {
+      height: 100%;
+      min-height: 300px;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .activity-card:hover .activity-img-wrap img { transform: scale(1.04); }
+    .activity-body {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .activity-meta {
+      display: flex;
+      gap: 1.2rem;
+      margin: 1rem 0;
+    }
+    .act-meta-item {
+      font-size: .82rem;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .act-meta-item::before {
+      content: attr(data-icon);
+      font-size: 1rem;
+    }
+    .activity-includes {
+      background: var(--ivory);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+    }
+    .activity-includes h5 {
+      font-family: 'Inter', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      margin-bottom: .5rem;
+    }
+    .activity-includes ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+    .activity-includes li {
+      font-size: .82rem;
+      color: var(--text-mid);
+      padding-left: 1rem;
+      position: relative;
+    }
+    .activity-includes li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--coral);
+    }
+    .activity-price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+    .act-price-label { font-size: .8rem; color: var(--text-light); display: block; }
+    .act-price-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--coral);
+    }
+
+    /* ── Hulhumalé Highlights ────────────── */
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .highlight-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .highlight-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .highlight-card-img { aspect-ratio: 4/3; overflow: hidden; }
+    .highlight-card-img img { height: 100%; transition: transform .4s ease; }
+    .highlight-card:hover .highlight-card-img img { transform: scale(1.06); }
+    .highlight-card-body { padding: 1.2rem; }
+    .highlight-card-body h4 { font-size: 1rem; color: var(--navy); margin-bottom: .3rem; }
+    .highlight-card-body p { font-size: .83rem; color: var(--text-mid); line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      .activity-card { grid-template-columns: 1fr; direction: ltr !important; }
+      .activity-img-wrap { min-height: 220px; }
+      .highlights-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .activity-body { padding: 1.5rem; }
+      .highlights-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav id="nav" class="light scrolled">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">PARALIAN</span>
+      <span class="tagline">Hulhumalé, Maldives</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rooms.html">Rooms</a></li>
+      <li><a href="cafe.html">Café</a></li>
+      <li><a href="activities.html" class="active">Activities</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="rooms.html" class="nav-book">Book Now</a>
+    </div>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<nav class="nav-drawer">
+  <a href="index.html">Home</a>
+  <a href="rooms.html">Rooms</a>
+  <a href="cafe.html">Café</a>
+  <a href="activities.html" class="active">Activities</a>
+  <a href="about.html">About</a>
+  <a href="about.html#contact">Contact</a>
+  <a href="rooms.html" class="nav-book">Book Now</a>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────── -->
+<div class="page-hero">
+  <img
+    src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1920&q=80"
+    alt="Snorkelling in the Maldives"
+    class="hero-bg"
+  >
+  <div class="page-hero-content">
+    <span class="section-label">Explore &amp; Experience</span>
+    <h1>Activities</h1>
+  </div>
+</div>
+
+<!-- ── Intro ───────────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Island Life</span>
+      <h2 class="section-title">Adventures Around Every Corner</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">Hulhumalé sits just 2km from Velana International Airport, and is your gateway to the best of the Maldives. Our concierge team handles all bookings — just tell us what excites you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Activities ──────────────────────────────── -->
+<section class="section" style="padding-top:0">
+  <div class="section-inner">
+
+    <!-- Snorkelling -->
+    <div class="activity-card reveal" id="snorkelling">
+      <div class="activity-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=900&q=80"
+          alt="Snorkelling reef trip"
+          loading="lazy"
+        >
+      </div>
+      <div class="activity-body">
+        <span class="section-label">Water Activity</span>
+        <h2 style="font-size:1.5rem;color:var(--navy);margin-bottom:.5rem;">Reef Snorkelling</h2>
+        <p style="font-size:.9rem;color:var(--text-mid);line-height:1.75;">
+          Discover the vibrant underwater world of the Maldives just minutes from Paralian. Our guided reef trips take you to protected coral gardens teeming with tropical fish, sea turtles, and rays.
+        </p>
+        <div class="activity-meta">
+          <span class="act-meta-item" data-icon="⏱">2–3 hours</span>
+          <span class="act-meta-item" data-icon="👥">Min. 2 pax</span>
+          <span class="act-meta-item" data-icon="🌊">All skill levels</span>
+        </div>
+        <div class="activity-includes">
+          <h5>Included</h5>
+          <ul>
+            <li>Snorkel equipment</li>
+            <li>Life jacket</li>
+            <li>Guide &amp; instructor</li>
+            <li>Boat transfer</li>
+            <li>Refreshments</li>
+          </ul>
+        </div>
+        <div class="activity-price-row">
+          <div>
+            <span class="act-price-label">From</span>
+            <span class="act-price-amount">$45<small style="font-size:.7em;color:var(--text-light)"> per person</small></span>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sunset Cruise -->
+    <div class="activity-card reverse reveal" id="cruise">
+      <div class="activity-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=900&q=80"
+          alt="Sunset cruise Maldives"
+          loading="lazy"
+        >
+      </div>
+      <div class="activity-body">
+        <span class="section-label">Boat Experience</span>
+        <h2 style="font-size:1.5rem;color:var(--navy);margin-bottom:.5rem;">Sunset Cruise</h2>
+        <p style="font-size:.9rem;color:var(--text-mid);line-height:1.75;">
+          Drift through the golden hour on a traditional Maldivian dhoni. Watch the sky transform as the sun sets over the Indian Ocean — the perfect romantic experience or evening with friends.
+        </p>
+        <div class="activity-meta">
+          <span class="act-meta-item" data-icon="⏱">2 hours</span>
+          <span class="act-meta-item" data-icon="👥">2–10 pax</span>
+          <span class="act-meta-item" data-icon="🌅">Daily at 5PM</span>
+        </div>
+        <div class="activity-includes">
+          <h5>Included</h5>
+          <ul>
+            <li>Traditional dhoni boat</li>
+            <li>Sunset canapes</li>
+            <li>Soft drinks</li>
+            <li>Photography stop</li>
+          </ul>
+        </div>
+        <div class="activity-price-row">
+          <div>
+            <span class="act-price-label">From</span>
+            <span class="act-price-amount">$60<small style="font-size:.7em;color:var(--text-light)"> per person</small></span>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Water Sports -->
+    <div class="activity-card reveal" id="watersports">
+      <div class="activity-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=80"
+          alt="Water sports Maldives"
+          loading="lazy"
+        >
+      </div>
+      <div class="activity-body">
+        <span class="section-label">Water Sports</span>
+        <h2 style="font-size:1.5rem;color:var(--navy);margin-bottom:.5rem;">Kayaking &amp; Water Sports</h2>
+        <p style="font-size:.9rem;color:var(--text-mid);line-height:1.75;">
+          Paddle through Hulhumalé's lagoon or ride the waves. We arrange kayaking, stand-up paddleboarding, jet skiing, and more through our trusted activity partners — all just minutes from the hotel.
+        </p>
+        <div class="activity-meta">
+          <span class="act-meta-item" data-icon="⏱">1–3 hours</span>
+          <span class="act-meta-item" data-icon="👥">1 pax+</span>
+          <span class="act-meta-item" data-icon="🏄">Various levels</span>
+        </div>
+        <div class="activity-includes">
+          <h5>Available Equipment</h5>
+          <ul>
+            <li>Kayak (single/double)</li>
+            <li>Stand-up paddle board</li>
+            <li>Jet ski</li>
+            <li>Windsurfer</li>
+            <li>Safety gear</li>
+          </ul>
+        </div>
+        <div class="activity-price-row">
+          <div>
+            <span class="act-price-label">Kayak from</span>
+            <span class="act-price-amount">$25<small style="font-size:.7em;color:var(--text-light)"> per hour</small></span>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Malé City Tour -->
+    <div class="activity-card reverse reveal" id="male-tour">
+      <div class="activity-img-wrap">
+        <img
+          src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1531429277129-c3y1z6z7x1q8t5b3w4e2/Male_Overview.jpg?format=2500w"
+          alt="Malé city aerial view"
+          loading="lazy"
+        >
+      </div>
+      <div class="activity-body">
+        <span class="section-label">Island Tour</span>
+        <h2 style="font-size:1.5rem;color:var(--navy);margin-bottom:.5rem;">Malé City Tour</h2>
+        <p style="font-size:.9rem;color:var(--text-mid);line-height:1.75;">
+          Just a short ferry ride away, the vibrant capital city of Malé is unlike any capital in the world — a dense island city packed with culture, history, local markets, and coral mosque architecture.
+        </p>
+        <div class="activity-meta">
+          <span class="act-meta-item" data-icon="⏱">3–4 hours</span>
+          <span class="act-meta-item" data-icon="👥">Min. 2 pax</span>
+          <span class="act-meta-item" data-icon="🗺">Guided tour</span>
+        </div>
+        <div class="activity-includes">
+          <h5>Included</h5>
+          <ul>
+            <li>Return ferry tickets</li>
+            <li>Local guide</li>
+            <li>Fish market visit</li>
+            <li>Sultan's Park</li>
+            <li>Islamic Centre</li>
+          </ul>
+        </div>
+        <div class="activity-price-row">
+          <div>
+            <span class="act-price-label">From</span>
+            <span class="act-price-amount">$35<small style="font-size:.7em;color:var(--text-light)"> per person</small></span>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diving -->
+    <div class="activity-card reveal" id="diving">
+      <div class="activity-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1559827291-72ee739d0d9a?auto=format&fit=crop&w=900&q=80"
+          alt="Scuba diving Maldives"
+          loading="lazy"
+        >
+      </div>
+      <div class="activity-body">
+        <span class="section-label">Dive Experience</span>
+        <h2 style="font-size:1.5rem;color:var(--navy);margin-bottom:.5rem;">Scuba Diving</h2>
+        <p style="font-size:.9rem;color:var(--text-mid);line-height:1.75;">
+          The Maldives is a world-renowned dive destination, and North Malé Atoll offers some of the most spectacular dive sites on earth. From whale shark encounters to manta ray cleaning stations, the ocean here never disappoints.
+        </p>
+        <div class="activity-meta">
+          <span class="act-meta-item" data-icon="⏱">Half or full day</span>
+          <span class="act-meta-item" data-icon="👥">Min. 2 divers</span>
+          <span class="act-meta-item" data-icon="🤿">Certified only</span>
+        </div>
+        <div class="activity-includes">
+          <h5>Included</h5>
+          <ul>
+            <li>All dive equipment</li>
+            <li>PADI certified guide</li>
+            <li>Boat transfer</li>
+            <li>Up to 2 dives</li>
+            <li>Lunch (full day)</li>
+          </ul>
+        </div>
+        <div class="activity-price-row">
+          <div>
+            <span class="act-price-label">From</span>
+            <span class="act-price-amount">$95<small style="font-size:.7em;color:var(--text-light)"> per person</small></span>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Hulhumalé Highlights ─────────────────────── -->
+<section class="section bg-ivory">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-label">Around Hulhumalé</span>
+      <h2 class="section-title">Explore the Island</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="highlights-grid">
+      <div class="highlight-card reveal">
+        <div class="highlight-card-img">
+          <img src="https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?auto=format&fit=crop&w=800&q=80" alt="Hulhumalé Beach" loading="lazy">
+        </div>
+        <div class="highlight-card-body">
+          <h4>Hulhumalé Beach</h4>
+          <p>A pristine public beach minutes from the hotel, perfect for a morning swim or leisurely evening walk along the shore.</p>
+        </div>
+      </div>
+      <div class="highlight-card reveal reveal-delay-1">
+        <div class="highlight-card-img">
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80" alt="Fitness & Park" loading="lazy">
+        </div>
+        <div class="highlight-card-body">
+          <h4>Sports &amp; Recreation Park</h4>
+          <p>The island's sprawling recreation park includes jogging tracks, football pitches, cycling paths, and outdoor gyms.</p>
+        </div>
+      </div>
+      <div class="highlight-card reveal reveal-delay-2">
+        <div class="highlight-card-img">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80" alt="Local Dining" loading="lazy">
+        </div>
+        <div class="highlight-card-body">
+          <h4>Local Dining Scene</h4>
+          <p>Hulhumalé's food streets offer some of the best local short-eats, tea houses, and casual restaurants in the Maldives.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ──────────────────────────────────────── -->
+<section class="cta-banner">
+  <div style="max-width:1280px;margin:0 auto;">
+    <h2>Ready to Plan Your Experience?</h2>
+    <p>Our concierge team is here to curate the perfect island itinerary for you.</p>
+    <div class="cta-btns">
+      <a href="about.html#contact" class="btn btn-white">Contact Concierge</a>
+      <a href="rooms.html" class="btn btn-outline">Book a Room</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="wordmark">PARALIAN</span>
+        <p>Boutique hotel and serviced residences on the shores of Hulhumalé, offering modern Maldivian hospitality with a personal touch.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="TripAdvisor">✈</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Activities</h5>
+        <ul>
+          <li><a href="#snorkelling">Snorkelling</a></li>
+          <li><a href="#cruise">Sunset Cruise</a></li>
+          <li><a href="#watersports">Water Sports</a></li>
+          <li><a href="#male-tour">Malé City Tour</a></li>
+          <li><a href="#diving">Diving</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Discover</h5>
+        <ul>
+          <li><a href="rooms.html">Rooms &amp; Suites</a></li>
+          <li><a href="cafe.html">Paralian Café</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+9601234567">+960 123 4567</a></li>
+          <li><a href="mailto:hello@paralian.mv">hello@paralian.mv</a></li>
+          <li><a href="#">Hulhumalé, Maldives</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Paralian Pvt Ltd. All rights reserved.</p>
+      <div class="footer-payments">
+        <span class="payment-badge">BML</span>
+        <span class="payment-badge">VISA</span>
+        <span class="payment-badge">MC</span>
+        <span class="payment-badge">AMEX</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="assets/js/main.js"></script>
+<script>
+  document.getElementById('nav').classList.add('light');
+</script>
+</body>
+</html>

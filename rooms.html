@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rooms &amp; Suites — Paralian Hulhumalé</title>
+  <meta name="description" content="Browse all room types at Paralian Hulhumalé. From cosy studios to panoramic suites — each space designed with Maldivian elegance.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Filter Tabs ─────────────────────── */
+    .filter-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 6%;
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 100;
+    }
+    .filter-bar-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      gap: .5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-bar-inner::-webkit-scrollbar { display: none; }
+    .filter-tab {
+      padding: .5rem 1.2rem;
+      border-radius: 20px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      background: var(--ivory);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1.5px solid transparent;
+    }
+    .filter-tab:hover { color: var(--navy); border-color: var(--border); }
+    .filter-tab.active {
+      background: var(--coral);
+      color: var(--white);
+      border-color: var(--coral);
+    }
+
+    /* ── Room Detail Cards ───────────────── */
+    .room-detail-card {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 0;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .room-detail-card.reverse { direction: rtl; }
+    .room-detail-card.reverse > * { direction: ltr; }
+    .room-gallery {
+      position: relative;
+      overflow: hidden;
+    }
+    .room-gallery .main-img {
+      height: 420px;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .room-gallery .main-img img {
+      height: 100%;
+      transition: transform .5s ease;
+    }
+    .room-gallery .main-img:hover img { transform: scale(1.04); }
+    .room-thumbs {
+      display: flex;
+      gap: 4px;
+      height: 80px;
+    }
+    .room-thumbs .thumb {
+      flex: 1;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: .7;
+      transition: opacity .2s;
+    }
+    .room-thumbs .thumb:hover, .room-thumbs .thumb.active { opacity: 1; }
+    .room-thumbs .thumb img { height: 100%; }
+    .room-detail-body {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .room-meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .room-meta-item {
+      text-align: center;
+      padding: .75rem 1rem;
+      background: var(--ivory);
+      border-radius: var(--radius-md);
+      flex: 1;
+    }
+    .room-meta-item .value {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .room-meta-item .key {
+      font-size: .72rem;
+      color: var(--text-light);
+      letter-spacing: .05em;
+    }
+    .room-includes {
+      margin: 1.2rem 0;
+    }
+    .room-includes h4 {
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      margin-bottom: .75rem;
+    }
+    .room-includes ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .4rem;
+    }
+    .room-includes li {
+      font-size: .88rem;
+      color: var(--text-mid);
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .room-includes li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--coral);
+      font-weight: 700;
+    }
+    .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .price-from {
+      font-size: .8rem;
+      color: var(--text-light);
+      display: block;
+    }
+    .price-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--coral);
+    }
+    .price-per {
+      font-size: .82rem;
+      color: var(--text-light);
+    }
+
+    /* ── Amenities section ───────────────── */
+    .amenities-section {
+      background: var(--ivory);
+    }
+
+    /* ── Policy section ──────────────────── */
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .policy-item {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 1.8rem;
+      border: 1px solid var(--border);
+    }
+    .policy-icon {
+      font-size: 1.6rem;
+      margin-bottom: .75rem;
+    }
+    .policy-item h4 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: .4rem;
+    }
+    .policy-item p {
+      font-size: .88rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+
+    @media (max-width: 900px) {
+      .room-detail-card {
+        grid-template-columns: 1fr;
+        direction: ltr !important;
+      }
+      .room-detail-card.reverse > * { direction: ltr; }
+      .room-gallery .main-img { height: 280px; }
+      .policy-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .room-detail-body { padding: 1.5rem; }
+      .room-meta { gap: .75rem; }
+      .policy-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav id="nav" class="light scrolled">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">PARALIAN</span>
+      <span class="tagline">Hulhumalé, Maldives</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rooms.html" class="active">Rooms</a></li>
+      <li><a href="cafe.html">Café</a></li>
+      <li><a href="activities.html">Activities</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="rooms.html" class="nav-book">Book Now</a>
+    </div>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<nav class="nav-drawer">
+  <a href="index.html">Home</a>
+  <a href="rooms.html" class="active">Rooms</a>
+  <a href="cafe.html">Café</a>
+  <a href="activities.html">Activities</a>
+  <a href="about.html">About</a>
+  <a href="about.html#contact">Contact</a>
+  <a href="rooms.html" class="nav-book">Book Now</a>
+</nav>
+
+<!-- ── Page Hero ──────────────────────────────── -->
+<div class="page-hero">
+  <img
+    src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158640755-5y45r6emqx2z6mxe4r83/1.jpg?format=2500w"
+    alt="Paralian Suite"
+    class="hero-bg"
+  >
+  <div class="page-hero-content">
+    <span class="section-label">Accommodations</span>
+    <h1>Rooms &amp; Suites</h1>
+  </div>
+</div>
+
+<!-- ── Filter Bar ─────────────────────────────── -->
+<div class="filter-bar">
+  <div class="filter-bar-inner">
+    <button class="filter-tab active" data-filter="all">All Rooms</button>
+    <button class="filter-tab" data-filter="suite">Suites</button>
+    <button class="filter-tab" data-filter="classic">Classic</button>
+    <button class="filter-tab" data-filter="deluxe">Deluxe</button>
+    <button class="filter-tab" data-filter="studio">Studio</button>
+  </div>
+</div>
+
+<!-- ── Room Listings ───────────────────────────── -->
+<section class="section" id="rooms-list">
+  <div class="section-inner">
+
+    <!-- ── Signature Suite ── -->
+    <div class="room-detail-card reveal" id="suite" data-type="suite">
+      <div class="room-gallery">
+        <div class="room-gallery-wrap">
+          <div class="main-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158640755-5y45r6emqx2z6mxe4r83/1.jpg?format=2500w">
+            <img
+              id="suite-main"
+              src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158640755-5y45r6emqx2z6mxe4r83/1.jpg?format=2500w"
+              alt="Signature Suite"
+            >
+          </div>
+          <div class="room-thumbs">
+            <div class="thumb active" onclick="swapImg('suite-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158640755-5y45r6emqx2z6mxe4r83/1.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158640755-5y45r6emqx2z6mxe4r83/1.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('suite-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158893447-kt2d5j9vhz1z2b1oqfaw/4.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158893447-kt2d5j9vhz1z2b1oqfaw/4.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('suite-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158995541-gz9v6vxkj5m1d8m5wnf3/10.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1738158995541-gz9v6vxkj5m1d8m5wnf3/10.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('suite-main',this,'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-detail-body">
+        <span class="section-label">Suite</span>
+        <h2 style="font-size:1.7rem;color:var(--navy);margin-bottom:.5rem;">Signature Suite</h2>
+        <p style="font-size:.93rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.2rem;">
+          Our most sought-after accommodation. The Signature Suite commands sweeping ocean vistas from its private balcony, featuring a luxurious king-sized bed, rainfall shower, and hand-selected local art pieces throughout.
+        </p>
+        <div class="room-meta">
+          <div class="room-meta-item">
+            <span class="value">45 m²</span>
+            <span class="key">Area</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">King</span>
+            <span class="key">Bed</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">2 + 1</span>
+            <span class="key">Guests</span>
+          </div>
+        </div>
+        <div class="room-includes">
+          <h4>What's Included</h4>
+          <ul>
+            <li>Ocean-facing balcony</li>
+            <li>King bed &amp; premium linens</li>
+            <li>Rainfall walk-in shower</li>
+            <li>55" Smart TV</li>
+            <li>Complimentary breakfast</li>
+            <li>Air-conditioning</li>
+            <li>High-speed WiFi</li>
+            <li>Mini bar &amp; safe</li>
+          </ul>
+        </div>
+        <div class="price-row">
+          <div>
+            <span class="price-from">Starting from</span>
+            <div>
+              <span class="price-amount">$185</span>
+              <span class="price-per"> / night</span>
+            </div>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Book Suite</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Sunrise Suite ── -->
+    <div class="room-detail-card reverse reveal" id="sunrise" data-type="suite">
+      <div class="room-gallery">
+        <div class="room-gallery-wrap">
+          <div class="main-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1754392439896-p8htzoxjm4n2y7f7qxqj/IMG_9927.jpg?format=2500w">
+            <img
+              id="sunrise-main"
+              src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1754392439896-p8htzoxjm4n2y7f7qxqj/IMG_9927.jpg?format=2500w"
+              alt="Sunrise Suite"
+            >
+          </div>
+          <div class="room-thumbs">
+            <div class="thumb active" onclick="swapImg('sunrise-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1754392439896-p8htzoxjm4n2y7f7qxqj/IMG_9927.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1754392439896-p8htzoxjm4n2y7f7qxqj/IMG_9927.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('sunrise-main',this,'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('sunrise-main',this,'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('sunrise-main',this,'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-detail-body">
+        <span class="section-label">Suite</span>
+        <h2 style="font-size:1.7rem;color:var(--navy);margin-bottom:.5rem;">Sunrise Suite</h2>
+        <p style="font-size:.93rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.2rem;">
+          Perfectly orientated to catch the first light of day. The Sunrise Suite features a private balcony with unobstructed eastern views, a freestanding soaking tub, and warm, earthy interiors inspired by the Maldivian reef.
+        </p>
+        <div class="room-meta">
+          <div class="room-meta-item">
+            <span class="value">38 m²</span>
+            <span class="key">Area</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">King</span>
+            <span class="key">Bed</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">2</span>
+            <span class="key">Guests</span>
+          </div>
+        </div>
+        <div class="room-includes">
+          <h4>What's Included</h4>
+          <ul>
+            <li>Sunrise-facing balcony</li>
+            <li>Freestanding bathtub</li>
+            <li>King bed &amp; cotton linens</li>
+            <li>50" Smart TV</li>
+            <li>Complimentary breakfast</li>
+            <li>Air-conditioning</li>
+            <li>High-speed WiFi</li>
+            <li>Nespresso machine</li>
+          </ul>
+        </div>
+        <div class="price-row">
+          <div>
+            <span class="price-from">Starting from</span>
+            <div>
+              <span class="price-amount">$165</span>
+              <span class="price-per"> / night</span>
+            </div>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Book Suite</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Classic Room ── -->
+    <div class="room-detail-card reveal" id="classic" data-type="classic">
+      <div class="room-gallery">
+        <div class="room-gallery-wrap">
+          <div class="main-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1758452221150-iyuhp1pniqvw5z6b0pum/IMG_1802.jpg?format=2500w">
+            <img
+              id="classic-main"
+              src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1758452221150-iyuhp1pniqvw5z6b0pum/IMG_1802.jpg?format=2500w"
+              alt="Classic Room"
+            >
+          </div>
+          <div class="room-thumbs">
+            <div class="thumb active" onclick="swapImg('classic-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1758452221150-iyuhp1pniqvw5z6b0pum/IMG_1802.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1758452221150-iyuhp1pniqvw5z6b0pum/IMG_1802.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('classic-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1758452250710-qgam4y0m5b5p8wkm3s2e/IMG_1810.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1758452250710-qgam4y0m5b5p8wkm3s2e/IMG_1810.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('classic-main',this,'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('classic-main',this,'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-detail-body">
+        <span class="section-label">Classic</span>
+        <h2 style="font-size:1.7rem;color:var(--navy);margin-bottom:.5rem;">Classic Room</h2>
+        <p style="font-size:.93rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.2rem;">
+          Elegant simplicity at its finest. The Classic Room offers a refined retreat with quality furnishings, a comfortable queen-sized bed, and a crisp en-suite bathroom — everything you need, nothing superfluous.
+        </p>
+        <div class="room-meta">
+          <div class="room-meta-item">
+            <span class="value">24 m²</span>
+            <span class="key">Area</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">Queen</span>
+            <span class="key">Bed</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">2</span>
+            <span class="key">Guests</span>
+          </div>
+        </div>
+        <div class="room-includes">
+          <h4>What's Included</h4>
+          <ul>
+            <li>En-suite bathroom</li>
+            <li>Queen bed</li>
+            <li>43" Smart TV</li>
+            <li>Work desk &amp; chair</li>
+            <li>Air-conditioning</li>
+            <li>High-speed WiFi</li>
+            <li>Wardrobe &amp; safe</li>
+            <li>Daily housekeeping</li>
+          </ul>
+        </div>
+        <div class="price-row">
+          <div>
+            <span class="price-from">Starting from</span>
+            <div>
+              <span class="price-amount">$95</span>
+              <span class="price-per"> / night</span>
+            </div>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Book Room</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Palms View Deluxe ── -->
+    <div class="room-detail-card reverse reveal" id="palms" data-type="deluxe">
+      <div class="room-gallery">
+        <div class="room-gallery-wrap">
+          <div class="main-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255376378-5bk0v8spez5ik4qfvsrs/1.jpg?format=2500w">
+            <img
+              id="palms-main"
+              src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255376378-5bk0v8spez5ik4qfvsrs/1.jpg?format=2500w"
+              alt="Palms View Deluxe"
+            >
+          </div>
+          <div class="room-thumbs">
+            <div class="thumb active" onclick="swapImg('palms-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255376378-5bk0v8spez5ik4qfvsrs/1.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255376378-5bk0v8spez5ik4qfvsrs/1.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('palms-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255404694-lq4a5bv0p8m2y0s9tgfb/3.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255404694-lq4a5bv0p8m2y0s9tgfb/3.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('palms-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255432027-d2f7e2d5n8b0s2q7y3r5/5.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1537255432027-d2f7e2d5n8b0s2q7y3r5/5.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('palms-main',this,'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-detail-body">
+        <span class="section-label">Deluxe</span>
+        <h2 style="font-size:1.7rem;color:var(--navy);margin-bottom:.5rem;">Palms View Deluxe</h2>
+        <p style="font-size:.93rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.2rem;">
+          A mid-floor retreat with tropical palm views and a generous layout. Warm tones and natural textures create a calm, inviting atmosphere for couples and solo travellers seeking a touch of luxury.
+        </p>
+        <div class="room-meta">
+          <div class="room-meta-item">
+            <span class="value">28 m²</span>
+            <span class="key">Area</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">Queen</span>
+            <span class="key">Bed</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">2</span>
+            <span class="key">Guests</span>
+          </div>
+        </div>
+        <div class="room-includes">
+          <h4>What's Included</h4>
+          <ul>
+            <li>Palm garden view</li>
+            <li>Premium queen bed</li>
+            <li>Walk-in shower</li>
+            <li>50" Smart TV</li>
+            <li>Air-conditioning</li>
+            <li>High-speed WiFi</li>
+            <li>Mini bar</li>
+            <li>Daily housekeeping</li>
+          </ul>
+        </div>
+        <div class="price-row">
+          <div>
+            <span class="price-from">Starting from</span>
+            <div>
+              <span class="price-amount">$120</span>
+              <span class="price-per"> / night</span>
+            </div>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Book Room</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Dwellers Nest ── -->
+    <div class="room-detail-card reveal" id="nest" data-type="studio">
+      <div class="room-gallery">
+        <div class="room-gallery-wrap">
+          <div class="main-img" data-lightbox="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1763628551269-4e8m6z7d0p2x0b2c3e8f/IMG_3066.jpg?format=2500w">
+            <img
+              id="nest-main"
+              src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1763628551269-4e8m6z7d0p2x0b2c3e8f/IMG_3066.jpg?format=2500w"
+              alt="Dwellers Nest"
+            >
+          </div>
+          <div class="room-thumbs">
+            <div class="thumb active" onclick="swapImg('nest-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1763628551269-4e8m6z7d0p2x0b2c3e8f/IMG_3066.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1763628551269-4e8m6z7d0p2x0b2c3e8f/IMG_3066.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('nest-main',this,'https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1763628570184-5b8m2j8e3q8z0c3d4f5g/IMG_3070.jpg?format=2500w')">
+              <img src="https://images.squarespace-cdn.com/content/v1/5b3d296eee1759d6d893c3a1/1763628570184-5b8m2j8e3q8z0c3d4f5g/IMG_3070.jpg?format=2500w" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('nest-main',this,'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+            <div class="thumb" onclick="swapImg('nest-main',this,'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=800&q=80')">
+              <img src="https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=800&q=80" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-detail-body">
+        <span class="section-label">Studio</span>
+        <h2 style="font-size:1.7rem;color:var(--navy);margin-bottom:.5rem;">Dwellers Nest</h2>
+        <p style="font-size:.93rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.2rem;">
+          Our newest category — a smart, studio-style retreat designed for the modern solo traveller or couple. Compact, cleverly arranged, and full of character. Ideal for short stays or digital nomads.
+        </p>
+        <div class="room-meta">
+          <div class="room-meta-item">
+            <span class="value">20 m²</span>
+            <span class="key">Area</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">Double</span>
+            <span class="key">Bed</span>
+          </div>
+          <div class="room-meta-item">
+            <span class="value">1–2</span>
+            <span class="key">Guests</span>
+          </div>
+        </div>
+        <div class="room-includes">
+          <h4>What's Included</h4>
+          <ul>
+            <li>Compact kitchenette</li>
+            <li>Double bed</li>
+            <li>Smart work desk</li>
+            <li>43" Smart TV</li>
+            <li>Air-conditioning</li>
+            <li>Ultra-fast WiFi</li>
+            <li>En-suite bathroom</li>
+            <li>Daily housekeeping</li>
+          </ul>
+        </div>
+        <div class="price-row">
+          <div>
+            <span class="price-from">Starting from</span>
+            <div>
+              <span class="price-amount">$79</span>
+              <span class="price-per"> / night</span>
+            </div>
+          </div>
+          <a href="about.html#contact" class="btn btn-primary">Book Room</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Hotel Amenities ─────────────────────────── -->
+<section class="section amenities-section">
+  <div class="section-inner">
+    <div class="section-head center">
+      <span class="section-label">Included for All Guests</span>
+      <h2 class="section-title">Hotel Amenities</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="amenities-grid reveal">
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6l10 5 10-5M1 6v12l10 5M21 6v12l-10 5"/></svg>
+        Free High-Speed WiFi
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        24/7 Front Desk
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Daily Housekeeping
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Concierge Service
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Paralian Rooftop Café
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Airport Transfers
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Activity Bookings
+      </div>
+      <div class="amenity-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+        Beach Access
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Policies ────────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-head center">
+      <span class="section-label">Policies</span>
+      <h2 class="section-title">Good to Know</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="policy-grid reveal">
+      <div class="policy-item">
+        <div class="policy-icon">🕐</div>
+        <h4>Check-in / Check-out</h4>
+        <p>Check-in from 2:00 PM. Check-out by 12:00 PM. Early check-in and late check-out available upon request, subject to availability.</p>
+      </div>
+      <div class="policy-item">
+        <div class="policy-icon">🚫</div>
+        <h4>Cancellation Policy</h4>
+        <p>Free cancellation up to 48 hours before arrival. Cancellations within 48 hours will incur a one-night charge.</p>
+      </div>
+      <div class="policy-item">
+        <div class="policy-icon">💳</div>
+        <h4>Payment</h4>
+        <p>We accept BML, Visa, Mastercard, and American Express. Full payment is required at check-in. Bank transfers accepted for advance bookings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="wordmark">PARALIAN</span>
+        <p>Boutique hotel and serviced residences on the shores of Hulhumalé, offering modern Maldivian hospitality with a personal touch.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="TripAdvisor">✈</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Stay</h5>
+        <ul>
+          <li><a href="#suite">Signature Suite</a></li>
+          <li><a href="#sunrise">Sunrise Suite</a></li>
+          <li><a href="#classic">Classic Room</a></li>
+          <li><a href="#palms">Palms View Deluxe</a></li>
+          <li><a href="#nest">Dwellers Nest</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Discover</h5>
+        <ul>
+          <li><a href="cafe.html">Paralian Café</a></li>
+          <li><a href="activities.html">Activities</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="about.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+9601234567">+960 123 4567</a></li>
+          <li><a href="mailto:hello@paralian.mv">hello@paralian.mv</a></li>
+          <li><a href="#">Hulhumalé, Maldives</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Paralian Pvt Ltd. All rights reserved.</p>
+      <div class="footer-payments">
+        <span class="payment-badge">BML</span>
+        <span class="payment-badge">VISA</span>
+        <span class="payment-badge">MC</span>
+        <span class="payment-badge">AMEX</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="lightbox" class="lightbox">
+  <span class="lightbox-close">×</span>
+  <span class="lightbox-prev">‹</span>
+  <img class="lb-img" src="" alt="">
+  <span class="lightbox-next">›</span>
+</div>
+<div id="toast" class="toast"></div>
+
+<script src="assets/js/main.js"></script>
+<script>
+  // Thumbnail switcher
+  function swapImg(mainId, thumbEl, src) {
+    const main = document.getElementById(mainId);
+    if (main) main.src = src;
+    const siblings = thumbEl.parentElement.querySelectorAll('.thumb');
+    siblings.forEach(s => s.classList.remove('active'));
+    thumbEl.classList.add('active');
+  }
+
+  // Filter tabs
+  const tabs = document.querySelectorAll('.filter-tab');
+  const cards = document.querySelectorAll('.room-detail-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const f = tab.dataset.filter;
+      cards.forEach(c => {
+        c.style.display = (f === 'all' || c.dataset.type === f) ? '' : 'none';
+      });
+    });
+  });
+
+  // Keep nav dark on light page
+  document.getElementById('nav').classList.add('light');
+</script>
+</body>
+</html>
