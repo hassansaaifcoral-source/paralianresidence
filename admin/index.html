@@ -617,7 +617,7 @@
                 <p>Guest reported warm room since morning. High priority.</p>
                 <div class="request-meta">Reported 9:14 AM · Assigned: Maintenance</div>
               </div>
-              <button class="btn-sm primary" onclick="alert('Marked resolved')">Resolve</button>
+              <button class="btn-sm primary" onclick="resolveRequest(this,'Room 302 — AC')">Resolve</button>
             </div>
             <div class="request-item">
               <div class="request-dot medium"></div>
@@ -626,7 +626,7 @@
                 <p>Guest requested 4 additional bath towels.</p>
                 <div class="request-meta">Reported 11:02 AM · Assigned: Housekeeping</div>
               </div>
-              <button class="btn-sm ghost" onclick="alert('Marked resolved')">Done</button>
+              <button class="btn-sm ghost" onclick="resolveRequest(this,'Room 104 — Towels')">Done</button>
             </div>
           </div>
         </div>
@@ -658,13 +658,13 @@
           <table>
             <thead><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="bookings-body">
-              <tr><td>PRL-001</td><td>Ahmed Al-Rashid</td><td>Signature 401</td><td>Sep 27</td><td>Oct 1</td><td>2</td><td>Direct</td><td><span class="badge badge-green">Active</span></td><td><button class="btn-sm ghost">View</button></td></tr>
-              <tr><td>PRL-002</td><td>Sofia Mendes</td><td>Classic 202</td><td>Sep 27</td><td>Sep 30</td><td>1</td><td>Direct</td><td><span class="badge badge-green">Active</span></td><td><button class="btn-sm ghost">View</button></td></tr>
-              <tr><td>PRL-003</td><td>Lena Hartmann</td><td>Sunrise 301</td><td>Sep 27</td><td>Oct 4</td><td>2</td><td>Booking.com</td><td><span class="badge badge-amber">Arriving</span></td><td><button class="btn-sm ghost">View</button></td></tr>
-              <tr><td>PRL-004</td><td>Yuki Tanaka</td><td>Nest 105</td><td>Sep 27</td><td>Sep 29</td><td>1</td><td>Direct</td><td><span class="badge badge-amber">Arriving</span></td><td><button class="btn-sm ghost">View</button></td></tr>
-              <tr><td>PRL-005</td><td>Carlos Rivera</td><td>Palms 205</td><td>Sep 28</td><td>Oct 2</td><td>2</td><td>Expedia</td><td><span class="badge badge-blue">Upcoming</span></td><td><button class="btn-sm ghost">View</button></td></tr>
-              <tr><td>PRL-006</td><td>Wang Fang</td><td>Classic 103</td><td>Sep 23</td><td>Sep 27</td><td>1</td><td>Direct</td><td><span class="badge badge-gray">Checked Out</span></td><td><button class="btn-sm ghost">View</button></td></tr>
-              <tr><td>PRL-007</td><td>Priya Nair</td><td>Sunrise 302</td><td>Sep 25</td><td>Sep 27</td><td>2</td><td>Direct</td><td><span class="badge badge-red">Pending Pay</span></td><td><button class="btn-sm primary">Settle</button></td></tr>
+              <tr><td>PRL-001</td><td>Ahmed Al-Rashid</td><td>Signature 401</td><td>Sep 27</td><td>Oct 1</td><td>2</td><td>Direct</td><td><span class="badge badge-green">Active</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-001')">View</button></td></tr>
+              <tr><td>PRL-002</td><td>Sofia Mendes</td><td>Classic 202</td><td>Sep 27</td><td>Sep 30</td><td>1</td><td>Direct</td><td><span class="badge badge-green">Active</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-002')">View</button></td></tr>
+              <tr><td>PRL-003</td><td>Lena Hartmann</td><td>Sunrise 301</td><td>Sep 27</td><td>Oct 4</td><td>2</td><td>Booking.com</td><td><span class="badge badge-amber">Arriving</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-003')">View</button></td></tr>
+              <tr><td>PRL-004</td><td>Yuki Tanaka</td><td>Nest 105</td><td>Sep 27</td><td>Sep 29</td><td>1</td><td>Direct</td><td><span class="badge badge-amber">Arriving</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-004')">View</button></td></tr>
+              <tr><td>PRL-005</td><td>Carlos Rivera</td><td>Palms 205</td><td>Sep 28</td><td>Oct 2</td><td>2</td><td>Expedia</td><td><span class="badge badge-blue">Upcoming</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-005')">View</button></td></tr>
+              <tr><td>PRL-006</td><td>Wang Fang</td><td>Classic 103</td><td>Sep 23</td><td>Sep 27</td><td>1</td><td>Direct</td><td><span class="badge badge-gray">Checked Out</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-006')">View</button></td></tr>
+              <tr><td>PRL-007</td><td>Priya Nair</td><td>Sunrise 302</td><td>Sep 25</td><td>Sep 27</td><td>2</td><td>Direct</td><td><span class="badge badge-red">Pending Pay</span></td><td><button class="btn-sm primary" onclick="settleBooking('PRL-007')">Settle</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -675,7 +675,7 @@
         <div class="section-header">
           <h2>Room Availability — Today</h2>
           <div style="display:flex;gap:.5rem">
-            <button class="btn-sm outline" onclick="alert('Refreshed')">↻ Refresh</button>
+            <button class="btn-sm outline" onclick="initRoomGrid();showToast('Room status refreshed','success')">↻ Refresh</button>
           </div>
         </div>
         <div class="legend">
@@ -913,6 +913,35 @@
   </main>
 </div><!-- /dashboard -->
 
+<!-- ── Booking Detail Modal ─────────────── -->
+<div id="booking-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center" onclick="if(event.target===this)closeBookingModal()">
+  <div style="background:white;border-radius:16px;padding:2rem;width:100%;max-width:480px;margin:1rem;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem">
+      <div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Booking Reference</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:600;color:var(--navy)" id="bm-ref"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <span class="badge" id="bm-status"></span>
+        <button onclick="closeBookingModal()" style="background:none;border:none;cursor:pointer;font-size:1rem;color:#bbb;padding:.25rem;line-height:1">✕</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.5rem">
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Guest</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-guest"></div></div>
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Room</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-room"></div></div>
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Check-in</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-checkin"></div></div>
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Check-out</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-checkout"></div></div>
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Duration</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-nights"></div></div>
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Guests</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-guests"></div></div>
+      <div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Source</div><div style="font-size:.92rem;color:#1A1410;font-weight:500" id="bm-source"></div></div>
+      <div id="bm-balance-row"><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Balance Due</div><div style="font-size:.92rem;color:var(--coral);font-weight:700" id="bm-balance"></div></div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:.75rem;justify-content:flex-end;border-top:1px solid #f0f0f0;padding-top:1.2rem">
+      <button class="btn-sm ghost" onclick="closeBookingModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
   /* ── Auth ──────────────────────────────── */
   const ADMINS = { admin: 'paralian2025', manager: 'paralian2025', front: 'desk2025' };
@@ -1003,7 +1032,7 @@
     const grid = document.getElementById('room-grid');
     if (!grid) return;
     grid.innerHTML = ROOMS.map(r => `
-      <div class="room-tile ${r.status}" onclick="alert('Room ${r.num} — ${r.type}\\nStatus: ${r.status.charAt(0).toUpperCase()+r.status.slice(1)}')">
+      <div class="room-tile ${r.status}" onclick="showRoomInfo('${r.num}','${r.type}','${r.status}')">
         <div class="room-num">${r.num}</div>
         <div class="room-type">${r.type}</div>
         <div class="room-status">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</div>
@@ -1064,6 +1093,71 @@
     t.style.opacity = '1'; t.style.transform = 'translateY(0)';
     clearTimeout(t._t);
     t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; }, 3000);
+  }
+
+  /* ── Room Info ─────────────────────────── */
+  function showRoomInfo(num, type, status) {
+    const colors = {occupied:'var(--coral)', available:'#4CAF50', maintenance:'#FF9800'};
+    const label = status.charAt(0).toUpperCase() + status.slice(1);
+    let t = document.getElementById('admin-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'admin-toast';
+      t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:var(--navy);color:white;padding:1rem 1.5rem;border-radius:10px;font-size:.88rem;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:3000;transition:all .3s;transform:translateY(8px);opacity:0;font-family:Inter,sans-serif;';
+      document.body.appendChild(t);
+    }
+    t.textContent = `Room ${num}  ·  ${type}  ·  ${label}`;
+    t.style.borderLeft = `3px solid ${colors[status] || '#2196F3'}`;
+    t.style.opacity = '1'; t.style.transform = 'translateY(0)';
+    clearTimeout(t._t);
+    t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; }, 2500);
+  }
+
+  /* ── Booking Detail ────────────────────── */
+  const BOOKING_DATA = {
+    'PRL-001': {guest:'Ahmed Al-Rashid', room:'Signature 401', checkin:'Sep 27', checkout:'Oct 1', nights:4, guests:2, source:'Direct', status:'Active', cls:'badge-green'},
+    'PRL-002': {guest:'Sofia Mendes', room:'Classic 202', checkin:'Sep 27', checkout:'Sep 30', nights:3, guests:1, source:'Direct', status:'Active', cls:'badge-green'},
+    'PRL-003': {guest:'Lena Hartmann', room:'Sunrise 301', checkin:'Sep 27', checkout:'Oct 4', nights:7, guests:2, source:'Booking.com', status:'Arriving', cls:'badge-amber'},
+    'PRL-004': {guest:'Yuki Tanaka', room:'Nest 105', checkin:'Sep 27', checkout:'Sep 29', nights:2, guests:1, source:'Direct', status:'Arriving', cls:'badge-amber'},
+    'PRL-005': {guest:'Carlos Rivera', room:'Palms 205', checkin:'Sep 28', checkout:'Oct 2', nights:4, guests:2, source:'Expedia', status:'Upcoming', cls:'badge-blue'},
+    'PRL-006': {guest:'Wang Fang', room:'Classic 103', checkin:'Sep 23', checkout:'Sep 27', nights:4, guests:1, source:'Direct', status:'Checked Out', cls:'badge-gray'},
+    'PRL-007': {guest:'Priya Nair', room:'Sunrise 302', checkin:'Sep 25', checkout:'Sep 27', nights:2, guests:2, source:'Direct', status:'Pending Payment', cls:'badge-red', balance:'$240'},
+  };
+
+  function viewBooking(ref) {
+    const b = BOOKING_DATA[ref]; if (!b) return;
+    document.getElementById('bm-ref').textContent = ref;
+    document.getElementById('bm-guest').textContent = b.guest;
+    document.getElementById('bm-room').textContent = b.room;
+    document.getElementById('bm-checkin').textContent = b.checkin;
+    document.getElementById('bm-checkout').textContent = b.checkout;
+    document.getElementById('bm-nights').textContent = b.nights + ' night' + (b.nights === 1 ? '' : 's');
+    document.getElementById('bm-guests').textContent = b.guests + ' guest' + (b.guests === 1 ? '' : 's');
+    document.getElementById('bm-source').textContent = b.source;
+    const badge = document.getElementById('bm-status');
+    badge.textContent = b.status; badge.className = 'badge ' + b.cls;
+    const balRow = document.getElementById('bm-balance-row');
+    if (b.balance) { document.getElementById('bm-balance').textContent = b.balance; balRow.style.display = ''; }
+    else { balRow.style.display = 'none'; }
+    document.getElementById('booking-modal').style.display = 'flex';
+  }
+
+  function closeBookingModal() {
+    document.getElementById('booking-modal').style.display = 'none';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBookingModal(); });
+
+  function settleBooking(ref) {
+    const b = BOOKING_DATA[ref]; if (!b) return;
+    b.balance = null; b.status = 'Paid'; b.cls = 'badge-green';
+    showToast(`✓ Payment settled for ${b.guest}`, 'success');
+    document.querySelectorAll('#bookings-body tr').forEach(row => {
+      if (row.cells[0].textContent === ref) {
+        row.cells[7].innerHTML = '<span class="badge badge-green">Paid</span>';
+        row.cells[8].innerHTML = `<button class="btn-sm ghost" onclick="viewBooking('${ref}')">View</button>`;
+      }
+    });
   }
 </script>
 </body>
