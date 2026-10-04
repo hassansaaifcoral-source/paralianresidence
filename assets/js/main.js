@@ -111,24 +111,48 @@ function showToast(msg, type = 'success', duration = 3500) {
 (function () {
   const form = document.getElementById('booking-form');
   if (!form) return;
-  form.addEventListener('submit', function (e) {
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
     const data = new FormData(form);
-    const checkIn = new Date(data.get('checkin'));
-    const checkOut = new Date(data.get('checkout'));
+    const checkin = data.get('checkin');
+    const checkout = data.get('checkout');
 
-    if (isNaN(checkIn) || isNaN(checkOut)) {
+    if (!checkin || !checkout) {
       showToast('Please select check-in and check-out dates.', 'error');
       return;
     }
-    if (checkOut <= checkIn) {
+    if (checkout <= checkin) {
       showToast('Check-out must be after check-in.', 'error');
       return;
     }
 
-    // Simulate booking submission
-    showToast('✓ Enquiry sent! We\'ll confirm your booking shortly.', 'success', 5000);
-    form.reset();
+    const btn = form.querySelector('[type="submit"]');
+    btn.disabled = true;
+    try {
+      const res = await window.ParalianAPI.request('POST', '/enquiries', {
+        body: {
+          checkin,
+          checkout,
+          room: data.get('room') || undefined,
+          guests: parseInt(data.get('guests'), 10) || 1,
+        },
+      });
+      const options = res.availability.filter(a => a.rooms_available > 0 && a.fits_party);
+      if (options.length) {
+        const best = options[options.length - 1];
+        const msg = options.length === 1
+          ? `✓ ${best.name} is available — from $${best.price_usd}/night. We'll confirm your booking shortly.`
+          : `✓ ${options.length} room types available from $${best.price_usd}/night. We'll confirm your booking shortly.`;
+        showToast(msg, 'success', 6000);
+        form.reset();
+      } else {
+        showToast('Sorry, nothing matching is available for those dates. Try other dates or contact us.', 'error', 6000);
+      }
+    } catch (err) {
+      showToast(err.message, 'error', 5000);
+    } finally {
+      btn.disabled = false;
+    }
   });
 })();
 
@@ -136,10 +160,20 @@ function showToast(msg, type = 'success', duration = 3500) {
 (function () {
   const form = document.getElementById('contact-form');
   if (!form) return;
-  form.addEventListener('submit', function (e) {
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    showToast('✓ Message received! We\'ll get back to you within 24 hours.', 'success', 5000);
-    form.reset();
+    const data = Object.fromEntries(new FormData(form));
+    const btn = form.querySelector('[type="submit"]');
+    if (btn) btn.disabled = true;
+    try {
+      await window.ParalianAPI.request('POST', '/contact', { body: data });
+      showToast('✓ Message received! We\'ll get back to you within 24 hours.', 'success', 5000);
+      form.reset();
+    } catch (err) {
+      showToast(err.message, 'error', 5000);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   });
 })();
 
