@@ -553,19 +553,32 @@ module.exports = function adminRoutes(db) {
 
   /* ── Website inbox ────────────────────────────────── */
 
+  const getEnquiry = id => db.prepare(`
+    SELECT e.*, t.name AS type_name FROM enquiries e LEFT JOIN room_types t ON t.code = e.type_code
+    WHERE e.id = ?`).get(id);
+
   r.get('/enquiries', route((_req, res) => {
-    res.json(db.prepare('SELECT * FROM enquiries ORDER BY created_at DESC').all());
+    res.json(db.prepare(`
+      SELECT e.*, t.name AS type_name FROM enquiries e LEFT JOIN room_types t ON t.code = e.type_code
+      ORDER BY e.status != 'new', e.created_at DESC`).all());
   }));
 
   r.patch('/enquiries/:id', route((req, res) => {
-    const body = validate(req.body, { status: { type: 'enum', values: ['new', 'contacted', 'closed'], required: true } });
-    const info = db.prepare('UPDATE enquiries SET status = ? WHERE id = ?').run(body.status, req.params.id);
-    if (!info.changes) throw new HttpError(404, 'Enquiry not found');
-    res.json(db.prepare('SELECT * FROM enquiries WHERE id = ?').get(req.params.id));
+    const body = validate(req.body, {
+      status: { type: 'enum', values: ['new', 'contacted', 'booked', 'closed'], required: true },
+      booking_ref: { type: 'string', max: 20 },
+    });
+    if (!getEnquiry(req.params.id)) throw new HttpError(404, 'Enquiry not found');
+    if (body.booking_ref && !db.prepare('SELECT 1 FROM bookings WHERE ref = ?').get(body.booking_ref.toUpperCase())) {
+      throw new HttpError(400, 'Validation failed', { booking_ref: 'does not match a booking' });
+    }
+    db.prepare('UPDATE enquiries SET status = ?, booking_ref = COALESCE(?, booking_ref) WHERE id = ?')
+      .run(body.status, body.booking_ref ? body.booking_ref.toUpperCase() : null, req.params.id);
+    res.json(getEnquiry(req.params.id));
   }));
 
   r.get('/messages', route((_req, res) => {
-    res.json(db.prepare('SELECT * FROM contact_messages ORDER BY created_at DESC').all());
+    res.json(db.prepare("SELECT * FROM contact_messages ORDER BY status != 'new', created_at DESC").all());
   }));
 
   r.patch('/messages/:id', route((req, res) => {

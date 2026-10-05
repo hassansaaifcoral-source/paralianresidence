@@ -139,6 +139,9 @@
       flex: 1;
       flex-wrap: wrap;
     }
+    .qb-contact { flex: 1 1 180px; }
+    .qb-fields .booking-field input,
+    .qb-fields .booking-field select { height: 42px; box-sizing: border-box; }
 
     /* ── Featured Rooms ──────────────────── */
     .featured-rooms {
@@ -403,6 +406,18 @@
           <option>3 Guests</option>
           <option>4 Guests</option>
         </select>
+      </div>
+      <div class="booking-field qb-contact">
+        <label for="qb-name">Your Name</label>
+        <input type="text" id="qb-name" name="name" required maxlength="120" autocomplete="name" placeholder="Full name">
+      </div>
+      <div class="booking-field qb-contact">
+        <label for="qb-email">Email</label>
+        <input type="email" id="qb-email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="booking-field qb-contact">
+        <label for="qb-phone">Phone / WhatsApp <span style="text-transform:none;letter-spacing:0;opacity:.7">(optional)</span></label>
+        <input type="tel" id="qb-phone" name="phone" maxlength="40" autocomplete="tel" placeholder="+960 …">
       </div>
       <button type="submit" class="btn btn-primary">Check Availability</button>
     </form>

@@ -76,7 +76,8 @@ async function call(method, path, body) {
 const pageTitles = {
   overview: 'Dashboard', bookings: 'Bookings', rooms: 'Room Status',
   guests: 'Current Guests', maintenance: 'Maintenance', housekeeping: 'Housekeeping',
-  'cafe-orders': 'Café Orders', tenants: 'Tenants', 'new-booking': 'New Booking'
+  'cafe-orders': 'Café Orders', tenants: 'Tenants', 'new-booking': 'New Booking',
+  inbox: 'Website Inbox', cleaning: 'Cleaning Requests'
 };
 
 const loaders = {
@@ -89,6 +90,8 @@ const loaders = {
   'cafe-orders': () => loadCafe(),
   tenants: () => loadTenants(),
   'new-booking': () => resetBookingForm(),
+  inbox: () => loadInbox(),
+  cleaning: () => loadCleaning(),
 };
 
 function showPage(id, navEl) {
@@ -134,7 +137,12 @@ function updateNavBadges(counts) {
   const set = (id, n) => { const el = $(id); el.textContent = n; el.style.display = n ? '' : 'none'; };
   set('badge-bookings', counts.upcoming_bookings);
   set('badge-maintenance', counts.open_maintenance);
+  set('badge-inbox', counts.new_enquiries + counts.new_messages);
+  set('badge-cleaning', counts.pending_cleaning);
 }
+
+/** Re-reads the overview counts so the sidebar badges stay current after an action. */
+const refreshBadges = () => call('GET', '/overview').then(o => updateNavBadges(o.counts)).catch(() => {});
 
 function requestItem(m, { compact = false } = {}) {
   const resolved = m.status === 'resolved';
@@ -263,10 +271,13 @@ function cancelBooking(ref) {
 }
 
 /* ── New booking ───────────────────────── */
+let bookingFromEnquiry = null;
+
 function resetBookingForm() {
   const today = hotelToday();
   $('nb-checkin').min = today;
   $('nb-checkout').min = today;
+  if (!bookingFromEnquiry) $('nb-from-enquiry').style.display = 'none';
   return Promise.resolve();
 }
 
@@ -292,11 +303,25 @@ async function saveBooking() {
   if (!body.checkin || !body.checkout) { showToast('Please choose check-in and check-out dates', 'error'); return; }
   try {
     const b = await call('POST', '/bookings', body);
+    if (bookingFromEnquiry) {
+      await call('PATCH', '/enquiries/' + bookingFromEnquiry, { status: 'booked', booking_ref: b.ref }).catch(() => {});
+      bookingFromEnquiry = null;
+    }
     showToast(`✓ Booking ${b.ref} created — room ${b.room_number}`, 'success');
-    ['nb-first', 'nb-last', 'nb-email', 'nb-phone', 'nb-checkin', 'nb-checkout', 'nb-notes'].forEach(id => { $(id).value = ''; });
+    clearBookingForm();
     setTimeout(() => navTo('bookings'), 1200);
   } catch { /* toast already shown */ }
 }
+
+function clearBookingForm() {
+  ['nb-first', 'nb-last', 'nb-email', 'nb-phone', 'nb-checkin', 'nb-checkout', 'nb-notes'].forEach(id => { $(id).value = ''; });
+  $('nb-from-enquiry').style.display = 'none';
+}
+
+$('page-new-booking').querySelector('button.ghost').addEventListener('click', () => {
+  bookingFromEnquiry = null;
+  clearBookingForm();
+});
 
 /* ── Room Grid ─────────────────────────── */
 let roomCache = [];
@@ -440,6 +465,144 @@ async function loadTenants() {
     <tr><td>${esc(t.apt_id)}</td><td>${esc(t.name)}</td><td>${esc(t.unit_type)}</td><td>${esc(t.floor.split(' ')[0])}</td>
     <td>${fmtDate(t.lease_end, { month: 'short', year: 'numeric' })}</td><td>${badge(...lease[t.lease_status])}</td>
     <td>${t.portal_active ? badge('Active', 'badge-blue') : badge('Inactive', 'badge-gray')}</td></tr>`).join('');
+}
+
+/* ── Website inbox ─────────────────────── */
+const ENQ_STATUS = {
+  new: ['New', 'badge-blue'], contacted: ['Contacted', 'badge-amber'],
+  booked: ['Booked', 'badge-green'], closed: ['Closed', 'badge-gray'],
+};
+const MSG_STATUS = { new: ['New', 'badge-blue'], replied: ['Replied', 'badge-green'], closed: ['Closed', 'badge-gray'] };
+const received = d => `${fmtDate(d)}, ${fmtTime(d)}`;
+// Emails are validated server-side (no spaces or reserved characters), so the address itself needs no encoding.
+const mailto = (email, subject) => `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+let enquiryCache = [];
+
+async function loadInbox() {
+  const [enquiries, messages] = await Promise.all([call('GET', '/enquiries'), call('GET', '/messages')]);
+  enquiryCache = enquiries;
+
+  const newEnq = enquiries.filter(e => e.status === 'new').length;
+  $('enquiries-count').textContent = `${newEnq} new`;
+  $('enquiries-body').innerHTML = enquiries.length ? enquiries.map(e => {
+    const contact = e.email
+      ? `<span class="cell-sub"><a href="${esc(mailto(e.email, 'Your Paralian stay enquiry'))}">${esc(e.email)}</a>${e.phone ? ' · ' + esc(e.phone) : ''}</span>`
+      : '<span class="cell-sub">No contact details</span>';
+    const stay = `${fmtDate(e.check_in)} – ${fmtDate(e.check_out)}`;
+    const actions = [];
+    if (e.status !== 'booked' && e.status !== 'closed') {
+      actions.push(`<button class="btn-sm primary" onclick="bookFromEnquiry(${e.id})">Create Booking</button>`);
+      if (e.status === 'new') actions.push(`<button class="btn-sm outline" onclick="setEnquiryStatus(${e.id}, 'contacted')">Mark Contacted</button>`);
+      actions.push(`<button class="btn-sm ghost" onclick="setEnquiryStatus(${e.id}, 'closed')">Close</button>`);
+    } else if (e.booking_ref) {
+      actions.push(`<button class="btn-sm ghost" onclick="viewBooking('${esc(e.booking_ref)}')">View ${esc(e.booking_ref)}</button>`);
+    } else {
+      actions.push(`<button class="btn-sm ghost" onclick="setEnquiryStatus(${e.id}, 'new')">Reopen</button>`);
+    }
+    return `<tr><td>${received(e.created_at)}</td><td>${esc(e.name || '—')}${contact}</td><td>${stay}</td>
+      <td>${esc(e.type_name || 'Any type')}</td><td>${e.guests}</td><td>${badge(...ENQ_STATUS[e.status])}</td>
+      <td><div class="row-actions">${actions.join('')}</div></td></tr>`;
+  }).join('') : emptyRow(7, 'No booking enquiries yet');
+
+  const newMsg = messages.filter(m => m.status === 'new').length;
+  $('messages-count').textContent = `${newMsg} new`;
+  $('messages-list').innerHTML = messages.length ? messages.map(m => {
+    const name = `${m.first_name} ${m.last_name}`;
+    const replyLink = `<a class="btn-sm primary" style="text-decoration:none" href="${esc(mailto(m.email, 'Re: ' + (m.subject || 'Your message to Paralian')))}" onclick="setMessageStatus(${m.id}, 'replied', true)">Reply by Email</a>`;
+    const actions = m.status === 'new'
+      ? `${replyLink}<button class="btn-sm ghost" onclick="setMessageStatus(${m.id}, 'closed')">Close</button>`
+      : `<button class="btn-sm ghost" onclick="setMessageStatus(${m.id}, 'new')">Reopen</button>`;
+    return `
+      <div class="request-item">
+        <div class="request-dot ${m.status === 'new' ? 'medium' : 'low'}"></div>
+        <div class="request-body">
+          <strong>${esc(m.subject || 'General Enquiry')} — ${esc(name)}</strong>
+          <p class="msg-text">${esc(m.message)}</p>
+          <div class="request-meta">${received(m.created_at)} · <a href="${esc(mailto(m.email, 'Re: ' + (m.subject || 'Your message to Paralian')))}">${esc(m.email)}</a></div>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-direction:column;align-items:flex-end">
+          ${badge(...MSG_STATUS[m.status])}<div class="row-actions">${actions}</div>
+        </div>
+      </div>`;
+  }).join('') : '<div class="empty-cell">No messages yet</div>';
+}
+
+async function setEnquiryStatus(id, status) {
+  try {
+    await call('PATCH', '/enquiries/' + id, { status });
+    showToast(`Enquiry marked ${status}`, 'success');
+    loadInbox().catch(() => {});
+    refreshBadges();
+  } catch { /* toast already shown */ }
+}
+
+async function setMessageStatus(id, status, quiet = false) {
+  try {
+    await call('PATCH', '/messages/' + id, { status });
+    if (!quiet) showToast(`Message marked ${status}`, 'success');
+    loadInbox().catch(() => {});
+    refreshBadges();
+  } catch { /* toast already shown */ }
+}
+
+/** Opens the New Booking form pre-filled from a website enquiry. */
+function bookFromEnquiry(id) {
+  const e = enquiryCache.find(x => x.id === id);
+  if (!e) return;
+  bookingFromEnquiry = id;
+  navTo('new-booking');
+  const [first, ...rest] = (e.name || '').split(' ');
+  $('nb-first').value = first || '';
+  $('nb-last').value = rest.join(' ');
+  $('nb-email').value = e.email || '';
+  $('nb-phone').value = e.phone || '';
+  $('nb-checkin').value = e.check_in < hotelToday() ? '' : e.check_in;
+  $('nb-checkout').value = e.check_out;
+  if (e.type_code) $('nb-room').value = e.type_code;
+  $('nb-guests').value = String(Math.min(e.guests, 4));
+  $('nb-source').value = 'Direct';
+  $('nb-notes').value = '';
+  const banner = $('nb-from-enquiry');
+  banner.textContent = `Creating a booking from ${e.name || 'a website'}'s enquiry. Check the details, then click Create Booking — the enquiry will be marked as booked.`;
+  banner.style.display = '';
+}
+
+/* ── Residence cleaning requests ───────── */
+const CLEAN_STATUS = {
+  pending: ['Pending', 'badge-amber'], in_progress: ['In Progress', 'badge-blue'],
+  done: ['Done', 'badge-green'], cancelled: ['Cancelled', 'badge-gray'],
+};
+const SERVICE = { standard: 'Standard Clean', deep: 'Deep Clean', linen: 'Linen Change', laundry: 'Laundry Service' };
+
+async function loadCleaning() {
+  const rows = await call('GET', '/cleaning-requests');
+  $('cleaning-body').innerHTML = rows.length ? rows.map(c => {
+    const actions = [];
+    if (c.status === 'pending') actions.push(`<button class="btn-sm primary" onclick="setCleaningStatus(${c.id}, 'in_progress')">Start</button>`);
+    if (c.status === 'in_progress') actions.push(`<button class="btn-sm primary" onclick="setCleaningStatus(${c.id}, 'done')">Mark Done</button>`);
+    if (c.status === 'pending' || c.status === 'in_progress') {
+      actions.push(`<button class="btn-sm ghost" onclick="cancelCleaning(${c.id})">Cancel</button>`);
+    }
+    return `<tr><td>${esc(c.tenant_apt)}</td><td>${esc(c.tenant_name)}</td><td>${esc(SERVICE[c.service_type] || c.service_type)}</td>
+      <td>${esc(c.areas.join(', ') || '—')}</td>
+      <td>${fmtDate(c.preferred_date, { weekday: 'short', day: 'numeric', month: 'short' })}${c.time_slot ? `<span class="cell-sub">${esc(c.time_slot)}</span>` : ''}</td>
+      <td>${esc(c.notes || '—')}</td><td>${badge(...CLEAN_STATUS[c.status])}</td>
+      <td><div class="row-actions">${actions.join('') || '—'}</div></td></tr>`;
+  }).join('') : emptyRow(8, 'No cleaning requests');
+}
+
+async function setCleaningStatus(id, status) {
+  try {
+    await call('PATCH', '/cleaning-requests/' + id, { status });
+    showToast(status === 'done' ? '✓ Cleaning marked done' : 'Cleaning started', 'success');
+    loadCleaning().catch(() => {});
+    refreshBadges();
+  } catch { /* toast already shown */ }
+}
+
+function cancelCleaning(id) {
+  if (!confirm('Cancel this cleaning request?')) return;
+  setCleaningStatus(id, 'cancelled');
 }
 
 /* ── Toast ──────────────────────────────── */

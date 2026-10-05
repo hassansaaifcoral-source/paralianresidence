@@ -40,9 +40,11 @@ test('health check', async () => {
   assert.deepEqual(r.data, { ok: true });
 });
 
+const CONTACT = { name: 'Test Guest', email: 'guest@example.com' };
+
 test('enquiry stores and returns availability; "studio" maps to the Nest', async () => {
   const r = await req('POST', '/api/enquiries', {
-    body: { checkin: today(30), checkout: today(33), room: 'studio', guests: 1 },
+    body: { checkin: today(30), checkout: today(33), room: 'studio', guests: 1, ...CONTACT },
   });
   assert.equal(r.status, 201);
   assert.equal(r.data.availability.length, 1);
@@ -51,13 +53,90 @@ test('enquiry stores and returns availability; "studio" maps to the Nest', async
 });
 
 test('enquiry validation rejects bad dates', async () => {
-  let r = await req('POST', '/api/enquiries', { body: { checkin: today(5), checkout: today(3) } });
+  let r = await req('POST', '/api/enquiries', { body: { checkin: today(5), checkout: today(3), ...CONTACT } });
   assert.equal(r.status, 400);
-  r = await req('POST', '/api/enquiries', { body: { checkin: 'tomorrow', checkout: today(3) } });
+  r = await req('POST', '/api/enquiries', { body: { checkin: 'tomorrow', checkout: today(3), ...CONTACT } });
   assert.equal(r.status, 400);
   assert.ok(r.data.details.checkin);
-  r = await req('POST', '/api/enquiries', { body: { checkin: today(-3), checkout: today(1) } });
+  r = await req('POST', '/api/enquiries', { body: { checkin: today(-3), checkout: today(1), ...CONTACT } });
   assert.equal(r.status, 400);
+});
+
+test('enquiry requires a name and a valid email', async () => {
+  const dates = { checkin: today(10), checkout: today(12) };
+  let r = await req('POST', '/api/enquiries', { body: dates });
+  assert.equal(r.status, 400);
+  assert.ok(r.data.details.name);
+  assert.ok(r.data.details.email);
+  r = await req('POST', '/api/enquiries', { body: { ...dates, name: 'A', email: 'not-an-email' } });
+  assert.equal(r.status, 400);
+  assert.ok(r.data.details.email);
+});
+
+/* ── Staff inbox ────────────────────────────────────── */
+
+test('website enquiry shows in the staff inbox and can be turned into a booking', async () => {
+  const sent = await req('POST', '/api/enquiries', {
+    body: { checkin: today(60), checkout: today(63), room: 'palms', guests: 2, name: 'Inbox Tester', email: 'Inbox@Example.com', phone: '+960 7000000' },
+  });
+  assert.equal(sent.status, 201);
+  const token = await staffLogin();
+  const list = (await req('GET', '/api/admin/enquiries', { token })).data;
+  const e = list.find(x => x.id === sent.data.id);
+  assert.equal(e.name, 'Inbox Tester');
+  assert.equal(e.email, 'inbox@example.com');
+  assert.equal(e.phone, '+960 7000000');
+  assert.equal(e.type_name, 'Palms View Deluxe');
+  assert.equal(e.status, 'new');
+  assert.equal(list[0].status, 'new', 'new enquiries are listed first');
+
+  const counts = (await req('GET', '/api/admin/overview', { token })).data.counts;
+  assert.ok(counts.new_enquiries >= 1);
+
+  const b = await req('POST', '/api/admin/bookings', {
+    token, body: { guest_name: e.name, email: e.email, checkin: e.check_in, checkout: e.check_out, room: e.type_code, guests: e.guests },
+  });
+  assert.equal(b.status, 201);
+  const upd = await req('PATCH', `/api/admin/enquiries/${e.id}`, { token, body: { status: 'booked', booking_ref: b.data.ref } });
+  assert.equal(upd.status, 200);
+  assert.equal(upd.data.status, 'booked');
+  assert.equal(upd.data.booking_ref, b.data.ref);
+
+  const bad = await req('PATCH', `/api/admin/enquiries/${e.id}`, { token, body: { status: 'booked', booking_ref: 'PRL-999' } });
+  assert.equal(bad.status, 400);
+  assert.equal((await req('PATCH', '/api/admin/enquiries/99999', { token, body: { status: 'closed' } })).status, 404);
+});
+
+test('contact message shows in the staff inbox and can be marked replied', async () => {
+  const sent = await req('POST', '/api/contact', {
+    body: { first_name: 'Ina', last_name: 'Box', email: 'ina@example.com', subject: 'Room Booking', message: 'Line one\nLine two' },
+  });
+  const token = await staffLogin();
+  const msgs = (await req('GET', '/api/admin/messages', { token })).data;
+  const m = msgs.find(x => x.id === sent.data.id);
+  assert.equal(m.message, 'Line one\nLine two');
+  assert.equal(m.status, 'new');
+  const upd = await req('PATCH', `/api/admin/messages/${m.id}`, { token, body: { status: 'replied' } });
+  assert.equal(upd.data.status, 'replied');
+  assert.equal((await req('PATCH', `/api/admin/messages/${m.id}`, { token, body: { status: 'spam' } })).status, 400);
+});
+
+test('tenant cleaning request moves through the staff workflow', async () => {
+  const tenant = await tenantLogin('APT-501');
+  const c = (await req('POST', '/api/tenant/cleaning', {
+    token: tenant, body: { service_type: 'standard', areas: ['Kitchen'], preferred_date: today(1) },
+  })).data;
+  const staff = await staffLogin();
+  const list = (await req('GET', '/api/admin/cleaning-requests', { token: staff })).data;
+  const row = list.find(x => x.id === c.id);
+  assert.equal(row.tenant_name, 'Zaha Waheed');
+  assert.deepEqual(row.areas, ['Kitchen']);
+  await req('PATCH', `/api/admin/cleaning-requests/${c.id}`, { token: staff, body: { status: 'in_progress' } });
+  const done = await req('PATCH', `/api/admin/cleaning-requests/${c.id}`, { token: staff, body: { status: 'done' } });
+  assert.equal(done.data.status, 'done');
+  assert.ok(done.data.completed_at);
+  const mine = (await req('GET', '/api/tenant/cleaning', { token: tenant })).data;
+  assert.equal(mine.find(x => x.id === c.id).status, 'done');
 });
 
 test('contact form requires a valid email', async () => {
@@ -258,4 +337,27 @@ test('serves the website but not backend files', async () => {
   assert.equal((await fetch(base + '/server/db.js')).status, 404);
   assert.equal((await fetch(base + '/package.json')).status, 404);
   assert.equal((await fetch(base + '/test/api.test.js')).status, 404);
+});
+
+/* ── Database upgrade ───────────────────────────────── */
+
+test('older databases gain the new enquiry columns on startup', () => {
+  const { DatabaseSync } = require('node:sqlite');
+  const { openDb } = require('../server/db');
+  const file = require('node:path').join(require('node:os').tmpdir(), `paralian-migrate-${process.pid}.db`);
+  const old = new DatabaseSync(file);
+  old.exec(`CREATE TABLE enquiries (id INTEGER PRIMARY KEY AUTOINCREMENT, check_in TEXT NOT NULL, check_out TEXT NOT NULL,
+    type_code TEXT, guests INTEGER NOT NULL, name TEXT, email TEXT, status TEXT NOT NULL DEFAULT 'new',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')))`);
+  old.exec("INSERT INTO enquiries (check_in, check_out, guests) VALUES ('2026-01-01', '2026-01-02', 1)");
+  old.close();
+  try {
+    const db = openDb(file);
+    const cols = db.prepare('PRAGMA table_info(enquiries)').all().map(c => c.name);
+    assert.ok(cols.includes('phone') && cols.includes('booking_ref'));
+    assert.equal(db.prepare('SELECT COUNT(*) AS n FROM enquiries').get().n, 1);
+    db.close();
+  } finally {
+    for (const ext of ['', '-wal', '-shm']) require('node:fs').rmSync(file + ext, { force: true });
+  }
 });

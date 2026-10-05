@@ -41,15 +41,16 @@ module.exports = function publicRoutes(db, config) {
       checkout: { type: 'date', required: true },
       guests: { type: 'int', min: 1, max: 8, default: 1 },
       room: { type: 'string', max: 40 },
-      name: { type: 'string', max: 120 },
-      email: { type: 'email' },
+      name: { type: 'string', required: true, max: 120 },
+      email: { type: 'email', required: true },
+      phone: { type: 'string', max: 40 },
     });
     checkDates(body.checkin, body.checkout);
     const typeCode = typeOrThrow(body.room);
     const info = db.prepare(`
-      INSERT INTO enquiries (check_in, check_out, type_code, guests, name, email, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`)
-      .run(body.checkin, body.checkout, typeCode, body.guests, body.name ?? null, body.email ?? null,
+      INSERT INTO enquiries (check_in, check_out, type_code, guests, name, email, phone, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+      .run(body.checkin, body.checkout, typeCode, body.guests, body.name, body.email, body.phone ?? null,
         new Date().toISOString());
     res.status(201).json({
       id: Number(info.lastInsertRowid),

@@ -159,6 +159,23 @@ function seed(db, { reset = false } = {}) {
     insPkg.run('APT-101', 'DHL', 'Medium box', 'expected', null, today(3));
     insPkg.run('APT-302', 'Aramex', 'Document envelope', 'arrived', iso(0, '10:15'), null);
 
+    const insEnq = db.prepare(`
+      INSERT INTO enquiries (check_in, check_out, type_code, guests, name, email, phone, status, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    insEnq.run(today(14), today(18), 'sunrise', 2, 'Elena Rossi', 'elena.rossi@example.com', '+39 333 123 4567', 'new', iso(0, '07:40'));
+    insEnq.run(today(30), today(37), null, 3, 'Daniel Kim', 'daniel.kim@example.com', null, 'new', iso(-1, '21:15'));
+    insEnq.run(today(6), today(8), 'classic', 1, 'Aishath Nazeeha', 'nazeeha@example.com', '+960 777 8899', 'contacted', iso(-3, '12:05'));
+
+    const insMsg = db.prepare(`
+      INSERT INTO contact_messages (first_name, last_name, email, subject, message, status, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`);
+    insMsg.run('Sarah', 'Lindqvist', 'sarah.l@example.com', 'Activity Enquiry',
+      'Hi! Do you organise sandbank trips or snorkelling with turtles? We are staying 5 nights next month.', 'new', iso(0, '06:55'));
+    insMsg.run('Omar', 'Faisal', 'omar.f@example.com', 'Long-Stay / Residence',
+      'I am relocating to Malé for work and need a 1-bedroom apartment for 6 months from next month. Is anything available?', 'new', iso(-1, '15:30'));
+    insMsg.run('Mei', 'Chen', 'mei.chen@example.com', 'Café Reservation',
+      'Can we book a table for 8 for a birthday dinner on Saturday?', 'replied', iso(-4, '10:10'));
+
     const insNotice = db.prepare('INSERT INTO notices (title, body, important, posted_at) VALUES (?, ?, ?, ?)');
     insNotice.run('Paralian Café — Resident Discount',
       'All Paralian Residence tenants are entitled to a 10% discount on all food and beverage orders at Paralian Café. Simply show your apartment key card or mention your apartment number when ordering. This discount applies to dine-in only and cannot be combined with other offers.',

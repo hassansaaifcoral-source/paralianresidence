@@ -78,6 +78,8 @@ CREATE TABLE IF NOT EXISTS enquiries (
   guests     INTEGER NOT NULL,
   name       TEXT,
   email      TEXT,
+  phone      TEXT,
+  booking_ref TEXT,
   status     TEXT NOT NULL DEFAULT 'new',
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -174,7 +176,15 @@ function openDb(dbPath) {
   db.exec('PRAGMA foreign_keys = ON;');
   if (dbPath !== ':memory:') db.exec('PRAGMA journal_mode = WAL;');
   db.exec(SCHEMA);
+  migrate(db);
   return db;
+}
+
+/** Adds columns introduced after a database was first created. */
+function migrate(db) {
+  const has = (table, col) => db.prepare(`PRAGMA table_info(${table})`).all().some(c => c.name === col);
+  if (!has('enquiries', 'phone')) db.exec('ALTER TABLE enquiries ADD COLUMN phone TEXT');
+  if (!has('enquiries', 'booking_ref')) db.exec('ALTER TABLE enquiries ADD COLUMN booking_ref TEXT');
 }
 
 /** Runs fn inside a transaction, rolling back if it throws. */

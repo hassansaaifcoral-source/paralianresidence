@@ -49,6 +49,19 @@ to the site's origin on the server, and add this before the other scripts on eac
 (`POST /api/tenant/password`), and staff can reset a tenant's with
 `PATCH /api/admin/tenants/:apt`. Passwords are stored as salted scrypt hashes.
 
+## Staff dashboard
+
+Besides the hotel pages (bookings, rooms, guests, housekeeping, café) and residence pages
+(tenants, maintenance), the dashboard has:
+
+- **Website Inbox** — booking enquiries and contact messages sent from the website, newest and
+  unhandled first. Enquiries can be turned into a booking in one click (the New Booking form is
+  pre-filled and the enquiry is marked *booked*), marked contacted, or closed. Messages have a
+  *Reply by Email* button that opens your mail app.
+- **Cleaning Requests** — cleaning booked by tenants in the portal; start, mark done or cancel.
+
+Sidebar badges show how many items are waiting on each page.
+
 ## API
 
 All endpoints take and return JSON. Signed-in endpoints need an
@@ -65,7 +78,7 @@ amounts are MVR.
 | `GET  /api/health` | Health check |
 | `GET  /api/room-types` | Room types, nightly prices and capacity |
 | `GET  /api/availability?checkin=&checkout=&guests=&room=` | Free rooms per type for a date range |
-| `POST /api/enquiries` | Hotel quick-enquiry form `{checkin, checkout, room?, guests?, name?, email?}`; returns availability |
+| `POST /api/enquiries` | Hotel quick-enquiry form `{checkin, checkout, name, email, phone?, room?, guests?}`; saves the lead and returns availability |
 | `POST /api/contact` | Contact form `{first_name, last_name, email, subject?, message}` |
 | `POST /api/auth/staff/login` | `{username, password}` → `{token, expiresAt, user}` |
 | `POST /api/auth/tenant/login` | `{apt, password}` → `{token, expiresAt, tenant}` |
@@ -93,7 +106,7 @@ Failed logins are rate-limited (10 per 15 minutes per IP).
 | `GET` / `POST /invoices` · `POST /invoices/:id/pay` | Tenant billing |
 | `GET` / `POST /packages` · `PATCH /packages/:id` | Parcels held at the front desk |
 | `GET` / `POST /notices` · `DELETE /notices/:id` | Residence announcements |
-| `GET /enquiries` · `PATCH /enquiries/:id` | Website booking enquiries |
+| `GET /enquiries` · `PATCH /enquiries/:id` | Website booking enquiries; status `new \| contacted \| booked \| closed`, optional `booking_ref` |
 | `GET /messages` · `PATCH /messages/:id` | Website contact messages |
 
 ### Tenant — `/api/tenant/*`

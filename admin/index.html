@@ -385,6 +385,11 @@
     .request-body p { font-size: .82rem; color: #888; }
     .request-meta { font-size: .78rem; color: #bbb; }
     .empty-cell { padding: 1.25rem; color: #aaa; font-size: .85rem; text-align: center; }
+    .cell-sub { display: block; font-size: .76rem; color: #999; margin-top: .15rem; }
+    .cell-sub a, .request-meta a { color: var(--coral); text-decoration: none; }
+    .row-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .msg-text { white-space: pre-wrap; color: #555 !important; margin: .35rem 0; }
+    .from-enquiry { background: #E3F2FD; color: #1565C0; border-radius: 10px; padding: .8rem 1.1rem; font-size: .85rem; margin-bottom: 1rem; }
     .btn-sm {
       padding: .35rem .85rem;
       border-radius: 6px;
@@ -529,9 +534,17 @@
       <div class="nav-item" onclick="showPage('new-booking',this)">
         <span class="icon">➕</span> New Booking
       </div>
+      <div class="nav-item" onclick="showPage('inbox',this)">
+        <span class="icon">📥</span> Website Inbox
+        <span class="nav-badge" id="badge-inbox" style="display:none"></span>
+      </div>
       <div class="nav-section-title" style="margin-top:.75rem">Residence — Malé</div>
       <div class="nav-item" onclick="showPage('tenants',this)">
         <span class="icon">🏠</span> Tenants
+      </div>
+      <div class="nav-item" onclick="showPage('cleaning',this)">
+        <span class="icon">🧽</span> Cleaning Requests
+        <span class="nav-badge" id="badge-cleaning" style="display:none"></span>
       </div>
       <div class="nav-item" onclick="showPage('maintenance',this)">
         <span class="icon">🔧</span> Maintenance
@@ -744,9 +757,43 @@
         </div>
       </div>
 
+      <!-- ── Website Inbox Page ────────────── -->
+      <div class="page" id="page-inbox">
+        <div class="section-header"><h2>Website Inbox</h2></div>
+        <div class="card-box">
+          <div class="card-box-header">
+            <h3>Booking Enquiries</h3>
+            <span class="badge badge-blue" id="enquiries-count">—</span>
+          </div>
+          <table>
+            <thead><tr><th>Received</th><th>Guest</th><th>Stay</th><th>Room</th><th>Guests</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="enquiries-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="card-box">
+          <div class="card-box-header">
+            <h3>Contact Messages</h3>
+            <span class="badge badge-blue" id="messages-count">—</span>
+          </div>
+          <div id="messages-list"><div class="empty-cell">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ── Cleaning Requests Page ──────────── -->
+      <div class="page" id="page-cleaning">
+        <div class="section-header"><h2>Residence Cleaning Requests</h2></div>
+        <div class="card-box">
+          <table>
+            <thead><tr><th>Apt</th><th>Tenant</th><th>Service</th><th>Areas</th><th>Requested For</th><th>Notes</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="cleaning-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- ── New Booking Page ──────────────── -->
       <div class="page" id="page-new-booking">
         <div class="section-header"><h2>New Booking</h2></div>
+        <div id="nb-from-enquiry" class="from-enquiry" style="display:none"></div>
         <div class="card-box">
           <div style="padding:1.5rem">
             <div class="form-row">

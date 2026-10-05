@@ -126,6 +126,13 @@ function showToast(msg, type = 'success', duration = 3500) {
       return;
     }
 
+    const name = (data.get('name') || '').trim();
+    const email = (data.get('email') || '').trim();
+    if (!name || !email) {
+      showToast('Please add your name and email so we can get back to you.', 'error');
+      return;
+    }
+
     const btn = form.querySelector('[type="submit"]');
     btn.disabled = true;
     try {
@@ -135,19 +142,23 @@ function showToast(msg, type = 'success', duration = 3500) {
           checkout,
           room: data.get('room') || undefined,
           guests: parseInt(data.get('guests'), 10) || 1,
+          name,
+          email,
+          phone: (data.get('phone') || '').trim() || undefined,
         },
       });
       const options = res.availability.filter(a => a.rooms_available > 0 && a.fits_party);
+      const first = name.split(' ')[0];
       if (options.length) {
         const best = options[options.length - 1];
-        const msg = options.length === 1
-          ? `✓ ${best.name} is available — from $${best.price_usd}/night. We'll confirm your booking shortly.`
-          : `✓ ${options.length} room types available from $${best.price_usd}/night. We'll confirm your booking shortly.`;
-        showToast(msg, 'success', 6000);
-        form.reset();
+        const what = options.length === 1
+          ? `${best.name} is available from $${best.price_usd}/night`
+          : `${options.length} room types are available from $${best.price_usd}/night`;
+        showToast(`✓ Thanks ${first}! ${what}. We'll email you at ${email} to confirm your booking.`, 'success', 7000);
       } else {
-        showToast('Sorry, nothing matching is available for those dates. Try other dates or contact us.', 'error', 6000);
+        showToast(`Thanks ${first} — we're full for those exact dates, but we've saved your enquiry and will email you alternatives.`, 'success', 7000);
       }
+      form.reset();
     } catch (err) {
       showToast(err.message, 'error', 5000);
     } finally {
