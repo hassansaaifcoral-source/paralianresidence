@@ -7,11 +7,13 @@ const $ = id => document.getElementById(id);
 
 /* ── Auth ── */
 async function doLogin() {
-  const apt = $('aptSelect').value;
+  // Accept "APT-101", "apt 101" or just "101".
+  const raw = $('aptSelect').value.trim().toUpperCase().replace(/\s+/g, '');
+  const apt = /^\d+$/.test(raw) ? 'APT-' + raw : raw.replace(/^APT-?/, 'APT-');
   const password = $('aptPassword').value;
   const err = $('loginError');
   err.classList.remove('visible');
-  if (!apt || !password) { err.textContent = 'Please choose your apartment and enter your password.'; err.classList.add('visible'); return; }
+  if (!raw || !password) { err.textContent = 'Please enter your apartment number and password.'; err.classList.add('visible'); return; }
   try {
     const res = await window.ParalianAPI.request('POST', '/auth/tenant/login', { body: { apt, password } });
     api.set(res.token);

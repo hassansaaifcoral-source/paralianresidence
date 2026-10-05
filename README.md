@@ -16,11 +16,12 @@ database server to install).
 
 ```bash
 npm install
-npm start            # http://localhost:3000
+npm start
+#  Paralian website:  http://localhost:3000            (public site + tenant portal)
+#  Staff portal:      http://localhost:3001/admin/     (separate — see below)
 ```
 
-The server hosts both the website and the API at `/api`. On first start it creates
-`data/paralian.db` and fills it with demo data. Other scripts:
+On first start the server creates `data/paralian.db` and fills it with demo data. Other scripts:
 
 | Command        | What it does                                   |
 | -------------- | ---------------------------------------------- |
@@ -28,8 +29,26 @@ The server hosts both the website and the API at `/api`. On first start it creat
 | `npm run seed` | Wipe the database and reload the demo data     |
 | `npm test`     | Run the API test suite (in-memory database)    |
 
-Configuration is via environment variables or a `.env` file — see [`.env.example`](.env.example)
-(`PORT`, `DB_PATH`, `CORS_ORIGIN`, `SESSION_TTL_HOURS`).
+Configuration is via environment variables or a `.env` file — see [`.env.example`](.env.example).
+
+### The staff portal is kept off the public website
+
+The public website (and the tenant portal) never serves the staff portal: `/admin/`, the staff
+login and the whole `/api/admin` API return *404 Not found* there, and no public page links to it.
+The staff portal runs as a separate server that serves nothing else. Choose how to expose it:
+
+| Setup | How | Good for |
+| --- | --- | --- |
+| **Own port** (default) | `ADMIN_PORT=3001`. Firewall that port, or set `ADMIN_BIND=127.0.0.1` so only the server itself can reach it and staff connect through a VPN or SSH tunnel. | A VPS / your own server |
+| **Own web address** | `ADMIN_HOST=staff.paralian.mv` (point that DNS name at the same server). The staff portal answers only on that hostname; the public address never shows it. | Hosts that give you a single port (Render, Railway, …) |
+
+On top of either, `ADMIN_ALLOWED_IPS=203.0.113.7,198.51.100.20` limits the staff portal to the
+hotel's own internet connections — everyone else gets *404*. If the app sits behind a load
+balancer, set `TRUST_PROXY=1` so the real client IP is used.
+
+Keeping the address private is an extra layer, not the main protection: staff still need their
+password, failed logins are rate-limited, and the pages are marked `noindex` so search engines
+skip them.
 
 If the website is hosted separately from the API (e.g. on GitHub Pages), set `CORS_ORIGIN`
 to the site's origin on the server, and add this before the other scripts on each page:
@@ -42,8 +61,8 @@ to the site's origin on the server, and add this before the other scripts on eac
 
 | Portal                      | Login                                       |
 | --------------------------- | ------------------------------------------- |
-| Staff (`/admin/`)           | `admin` / `paralian2025`, `front` / `desk2025` |
-| Tenant (`/residence/tenant.html`) | any apartment, password `paralian2025` (APT-401's portal is deactivated) |
+| Staff (`http://localhost:3001/admin/`) | `admin` / `paralian2025`, `front` / `desk2025` |
+| Tenant (`/residence/tenant.html`) | apartment number such as `APT-101` (or just `101`), password `paralian2025` (APT-401's portal is deactivated) |
 
 **Change these before going live.** Tenants can change their own password
 (`POST /api/tenant/password`), and staff can reset a tenant's with
@@ -80,14 +99,14 @@ amounts are MVR.
 | `GET  /api/availability?checkin=&checkout=&guests=&room=` | Free rooms per type for a date range |
 | `POST /api/enquiries` | Hotel quick-enquiry form `{checkin, checkout, name, email, phone?, room?, guests?}`; saves the lead and returns availability |
 | `POST /api/contact` | Contact form `{first_name, last_name, email, subject?, message}` |
-| `POST /api/auth/staff/login` | `{username, password}` → `{token, expiresAt, user}` |
-| `POST /api/auth/tenant/login` | `{apt, password}` → `{token, expiresAt, tenant}` |
+| `POST /api/auth/staff/login` | `{username, password}` → `{token, expiresAt, user}` — staff server only |
+| `POST /api/auth/tenant/login` | `{apt, password}` → `{token, expiresAt, tenant}` — public server only |
 | `POST /api/auth/logout` | Ends the current session |
 | `GET  /api/auth/me` | Who the current token belongs to |
 
 Failed logins are rate-limited (10 per 15 minutes per IP).
 
-### Staff — `/api/admin/*`
+### Staff — `/api/admin/*` (staff server only)
 
 | Method & path | Purpose |
 | --- | --- |

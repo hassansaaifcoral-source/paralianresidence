@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Paralian Residence — Tenant Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -659,22 +660,12 @@
     <div class="login-divider"></div>
     <div class="login-form">
       <h2>Sign in to your account</h2>
-      <p>Use your apartment number and the default password provided by management.</p>
+      <p>Enter your apartment number (for example APT-101) and the password provided by management.</p>
     </div>
     <div class="login-error" id="loginError">Incorrect apartment number or password. Please try again.</div>
     <div class="form-group">
       <label>Apartment</label>
-      <select id="aptSelect">
-        <option value="">Select your apartment…</option>
-        <option value="APT-101">APT-101 — Ahmed Hassan</option>
-        <option value="APT-102">APT-102 — Mariyam Khalid</option>
-        <option value="APT-201">APT-201 — Mohamed Ibrahim</option>
-        <option value="APT-202">APT-202 — Fathimath Ali</option>
-        <option value="APT-301">APT-301 — Ali Rasheed</option>
-        <option value="APT-302">APT-302 — Aminath Saeed</option>
-        <option value="APT-401">APT-401 — Hassan Shareef</option>
-        <option value="APT-501">APT-501 — Zaha Waheed</option>
-      </select>
+      <input type="text" id="aptSelect" placeholder="e.g. APT-101" autocomplete="username" autocapitalize="characters" spellcheck="false" maxlength="20" />
     </div>
     <div class="form-group">
       <label>Password</label>
