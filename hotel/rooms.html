@@ -794,12 +794,17 @@
 </div>
 <div id="toast" class="toast"></div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/main.js"></script>
 <script>
   // Thumbnail switcher
   function swapImg(mainId, thumbEl, src) {
     const main = document.getElementById(mainId);
-    if (main) main.src = src;
+    if (main) {
+      main.src = src;
+      const zoom = main.closest('[data-lightbox]');
+      if (zoom) zoom.dataset.lightbox = src;
+    }
     const siblings = thumbEl.parentElement.querySelectorAll('.thumb');
     siblings.forEach(s => s.classList.remove('active'));
     thumbEl.classList.add('active');

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>Paralian Staff Portal</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -217,6 +218,7 @@
     .main {
       margin-left: var(--sidebar-w);
       flex: 1;
+      min-width: 0;
       min-height: 100vh;
     }
     .topbar {
@@ -286,8 +288,10 @@
       border-radius: 12px;
       border: 1px solid var(--border);
       overflow: hidden;
+      overflow-x: auto;
       margin-bottom: 1.5rem;
     }
+    .card-box table { min-width: 560px; }
     .card-box-header {
       padding: 1.2rem 1.5rem;
       border-bottom: 1px solid var(--border);
@@ -381,6 +385,12 @@
     .request-body strong { font-size: .9rem; color: var(--navy); display: block; margin-bottom: .2rem; }
     .request-body p { font-size: .82rem; color: #888; }
     .request-meta { font-size: .78rem; color: #bbb; }
+    .empty-cell { padding: 1.25rem; color: #aaa; font-size: .85rem; text-align: center; }
+    .cell-sub { display: block; font-size: .76rem; color: #999; margin-top: .15rem; }
+    .cell-sub a, .request-meta a { color: var(--coral); text-decoration: none; }
+    .row-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .msg-text { white-space: pre-wrap; color: #555 !important; margin: .35rem 0; }
+    .from-enquiry { background: #E3F2FD; color: #1565C0; border-radius: 10px; padding: .8rem 1.1rem; font-size: .85rem; margin-bottom: 1rem; }
     .btn-sm {
       padding: .35rem .85rem;
       border-radius: 6px;
@@ -440,8 +450,12 @@
       background: var(--navy);
     }
 
+    .overview-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .overview-split > .card-box { min-width: 0; }
+
     @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .overview-split { grid-template-columns: 1fr; gap: 0; }
     }
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
@@ -461,6 +475,7 @@
     }
     @media (max-width: 480px) {
       .stats-grid { grid-template-columns: 1fr; }
+      .topbar-date { display: none; }
       .content { padding: 1rem; }
     }
   </style>
@@ -482,7 +497,6 @@
       <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
     </div>
     <button class="btn-login" onclick="doLogin()">Sign In</button>
-    <p class="login-hint">Default: admin / paralian2025</p>
   </div>
 </div>
 
@@ -504,7 +518,7 @@
       </div>
       <div class="nav-item" onclick="showPage('bookings',this)">
         <span class="icon">📅</span> Bookings
-        <span class="nav-badge">3</span>
+        <span class="nav-badge" id="badge-bookings" style="display:none"></span>
       </div>
       <div class="nav-item" onclick="showPage('rooms',this)">
         <span class="icon">🛏</span> Room Status
@@ -521,21 +535,29 @@
       <div class="nav-item" onclick="showPage('new-booking',this)">
         <span class="icon">➕</span> New Booking
       </div>
+      <div class="nav-item" onclick="showPage('inbox',this)">
+        <span class="icon">📥</span> Website Inbox
+        <span class="nav-badge" id="badge-inbox" style="display:none"></span>
+      </div>
       <div class="nav-section-title" style="margin-top:.75rem">Residence — Malé</div>
       <div class="nav-item" onclick="showPage('tenants',this)">
         <span class="icon">🏠</span> Tenants
       </div>
+      <div class="nav-item" onclick="showPage('cleaning',this)">
+        <span class="icon">🧽</span> Cleaning Requests
+        <span class="nav-badge" id="badge-cleaning" style="display:none"></span>
+      </div>
       <div class="nav-item" onclick="showPage('maintenance',this)">
         <span class="icon">🔧</span> Maintenance
-        <span class="nav-badge">2</span>
+        <span class="nav-badge" id="badge-maintenance" style="display:none"></span>
       </div>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="user-avatar">A</div>
+        <div class="user-avatar" id="user-avatar">A</div>
         <div>
-          <div class="user-name">Admin</div>
-          <div class="user-role">Hotel Manager</div>
+          <div class="user-name" id="user-name">Admin</div>
+          <div class="user-role" id="user-role">Hotel Manager</div>
         </div>
       </div>
       <button class="btn-logout" onclick="doLogout()">Sign Out</button>
@@ -554,7 +576,6 @@
       </div>
       <div class="topbar-right">
         <span class="topbar-date" id="topbar-date"></span>
-        <a href="../" class="topbar-back">← Paralian</a>
       </div>
     </div>
 
@@ -565,42 +586,36 @@
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-card-label">Occupied Rooms</div>
-            <div class="stat-card-value coral">18</div>
-            <div class="stat-card-sub">of 22 rooms tonight</div>
+            <div class="stat-card-value coral" id="stat-occupied">—</div>
+            <div class="stat-card-sub" id="stat-occupied-sub"></div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Occupancy Rate</div>
-            <div class="stat-card-value green">82%</div>
-            <div class="stat-card-sub">↑ 4% vs last week</div>
+            <div class="stat-card-value green" id="stat-occupancy">—</div>
+            <div class="stat-card-sub" id="stat-occupancy-sub"></div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Check-ins Today</div>
-            <div class="stat-card-value" style="color:var(--blue)">5</div>
-            <div class="stat-card-sub">3 pending, 2 checked in</div>
+            <div class="stat-card-value" style="color:var(--blue)" id="stat-checkins">—</div>
+            <div class="stat-card-sub" id="stat-checkins-sub"></div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Revenue (Month)</div>
-            <div class="stat-card-value">$28,400</div>
-            <div class="stat-card-sub">↑ 12% vs last month</div>
+            <div class="stat-card-value" id="stat-revenue">—</div>
+            <div class="stat-card-sub" id="stat-revenue-sub"></div>
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="overview-split">
           <!-- Today's arrivals -->
           <div class="card-box">
             <div class="card-box-header">
               <h3>Today's Arrivals</h3>
-              <span class="badge badge-blue">5 guests</span>
+              <span class="badge badge-blue" id="arrivals-count">—</span>
             </div>
             <table>
               <thead><tr><th>Guest</th><th>Room</th><th>ETA</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td>Ahmed Al-Rashid</td><td>Suite 401</td><td>2:00 PM</td><td><span class="badge badge-green">Checked In</span></td></tr>
-                <tr><td>Sofia Mendes</td><td>202</td><td>3:30 PM</td><td><span class="badge badge-green">Checked In</span></td></tr>
-                <tr><td>Lena Hartmann</td><td>Sunrise 301</td><td>4:00 PM</td><td><span class="badge badge-amber">Pending</span></td></tr>
-                <tr><td>Yuki Tanaka</td><td>105</td><td>5:00 PM</td><td><span class="badge badge-amber">Pending</span></td></tr>
-                <tr><td>Carlos Rivera</td><td>Nest 201</td><td>6:00 PM</td><td><span class="badge badge-amber">Pending</span></td></tr>
-              </tbody>
+              <tbody id="arrivals-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
             </table>
           </div>
 
@@ -608,26 +623,9 @@
           <div class="card-box">
             <div class="card-box-header">
               <h3>Pending Requests</h3>
-              <span class="badge badge-amber">2 open</span>
+              <span class="badge badge-amber" id="requests-count">—</span>
             </div>
-            <div class="request-item">
-              <div class="request-dot high"></div>
-              <div class="request-body">
-                <strong>AC not cooling — Room 302</strong>
-                <p>Guest reported warm room since morning. High priority.</p>
-                <div class="request-meta">Reported 9:14 AM · Assigned: Maintenance</div>
-              </div>
-              <button class="btn-sm primary" onclick="resolveRequest(this,'Room 302 — AC')">Resolve</button>
-            </div>
-            <div class="request-item">
-              <div class="request-dot medium"></div>
-              <div class="request-body">
-                <strong>Extra towels — Room 104</strong>
-                <p>Guest requested 4 additional bath towels.</p>
-                <div class="request-meta">Reported 11:02 AM · Assigned: Housekeeping</div>
-              </div>
-              <button class="btn-sm ghost" onclick="resolveRequest(this,'Room 104 — Towels')">Done</button>
-            </div>
+            <div id="overview-requests"><div class="empty-cell">Loading…</div></div>
           </div>
         </div>
 
@@ -635,15 +633,11 @@
         <div class="card-box" style="margin-top:0">
           <div class="card-box-header">
             <h3>Today's Departures</h3>
-            <span class="badge badge-gray">3 check-outs</span>
+            <span class="badge badge-gray" id="departures-count">—</span>
           </div>
           <table>
             <thead><tr><th>Guest</th><th>Room</th><th>Stay</th><th>Balance</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>Wang Fang</td><td>103</td><td>4 nights</td><td>$0 — Paid</td><td><span class="badge badge-green">Checked Out</span></td></tr>
-              <tr><td>Priya Nair</td><td>Sunrise 302</td><td>2 nights</td><td>$240 due</td><td><span class="badge badge-amber">Pending Payment</span></td></tr>
-              <tr><td>James O'Brien</td><td>Palms 205</td><td>5 nights</td><td>$0 — Paid</td><td><span class="badge badge-amber">Pending</span></td></tr>
-            </tbody>
+            <tbody id="departures-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -657,15 +651,7 @@
         <div class="card-box">
           <table>
             <thead><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Source</th><th>Status</th><th>Action</th></tr></thead>
-            <tbody id="bookings-body">
-              <tr><td>PRL-001</td><td>Ahmed Al-Rashid</td><td>Signature 401</td><td>Sep 27</td><td>Oct 1</td><td>2</td><td>Direct</td><td><span class="badge badge-green">Active</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-001')">View</button></td></tr>
-              <tr><td>PRL-002</td><td>Sofia Mendes</td><td>Classic 202</td><td>Sep 27</td><td>Sep 30</td><td>1</td><td>Direct</td><td><span class="badge badge-green">Active</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-002')">View</button></td></tr>
-              <tr><td>PRL-003</td><td>Lena Hartmann</td><td>Sunrise 301</td><td>Sep 27</td><td>Oct 4</td><td>2</td><td>Booking.com</td><td><span class="badge badge-amber">Arriving</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-003')">View</button></td></tr>
-              <tr><td>PRL-004</td><td>Yuki Tanaka</td><td>Nest 105</td><td>Sep 27</td><td>Sep 29</td><td>1</td><td>Direct</td><td><span class="badge badge-amber">Arriving</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-004')">View</button></td></tr>
-              <tr><td>PRL-005</td><td>Carlos Rivera</td><td>Palms 205</td><td>Sep 28</td><td>Oct 2</td><td>2</td><td>Expedia</td><td><span class="badge badge-blue">Upcoming</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-005')">View</button></td></tr>
-              <tr><td>PRL-006</td><td>Wang Fang</td><td>Classic 103</td><td>Sep 23</td><td>Sep 27</td><td>1</td><td>Direct</td><td><span class="badge badge-gray">Checked Out</span></td><td><button class="btn-sm ghost" onclick="viewBooking('PRL-006')">View</button></td></tr>
-              <tr><td>PRL-007</td><td>Priya Nair</td><td>Sunrise 302</td><td>Sep 25</td><td>Sep 27</td><td>2</td><td>Direct</td><td><span class="badge badge-red">Pending Pay</span></td><td><button class="btn-sm primary" onclick="settleBooking('PRL-007')">Settle</button></td></tr>
-            </tbody>
+            <tbody id="bookings-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -692,13 +678,7 @@
         <div class="card-box">
           <table>
             <thead><tr><th>Name</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Nights Left</th><th>Notes</th></tr></thead>
-            <tbody>
-              <tr><td>Ahmed Al-Rashid</td><td>Signature 401</td><td>Sep 27</td><td>Oct 1</td><td>4</td><td>VIP — anniversary trip</td></tr>
-              <tr><td>Sofia Mendes</td><td>Classic 202</td><td>Sep 27</td><td>Sep 30</td><td>3</td><td>Solo traveller</td></tr>
-              <tr><td>Lena &amp; Klaus Hartmann</td><td>Sunrise 301</td><td>Sep 27</td><td>Oct 4</td><td>7</td><td>Honeymoon — special setup requested</td></tr>
-              <tr><td>Wang Fang</td><td>Nest 103</td><td>Sep 24</td><td>Sep 29</td><td>2</td><td>Business travel</td></tr>
-              <tr><td>Priya &amp; Raj Nair</td><td>Palms 205</td><td>Sep 25</td><td>Sep 30</td><td>3</td><td>Early breakfast (7 AM)</td></tr>
-            </tbody>
+            <tbody id="guests-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -709,44 +689,7 @@
           <h2>Maintenance Requests</h2>
           <button class="btn-sm primary" onclick="openNewMaintenance()">+ Log Request</button>
         </div>
-        <div class="card-box">
-          <div class="request-item">
-            <div class="request-dot high"></div>
-            <div class="request-body">
-              <strong>AC not cooling — Room 302</strong>
-              <p>Guest reported the room is warm. Air conditioning not reaching set temperature.</p>
-              <div class="request-meta">Sep 27, 9:14 AM · Assigned: Ali (Maintenance)</div>
-            </div>
-            <div style="display:flex;gap:.5rem;flex-direction:column;align-items:flex-end">
-              <span class="badge badge-red">High Priority</span>
-              <button class="btn-sm primary" onclick="resolveRequest(this,'302 AC')">Resolve</button>
-            </div>
-          </div>
-          <div class="request-item">
-            <div class="request-dot medium"></div>
-            <div class="request-body">
-              <strong>Shower drain slow — Room 104</strong>
-              <p>Water draining slowly in the en-suite shower.</p>
-              <div class="request-meta">Sep 26, 4:30 PM · Assigned: Plumbing team</div>
-            </div>
-            <div style="display:flex;gap:.5rem;flex-direction:column;align-items:flex-end">
-              <span class="badge badge-amber">Medium Priority</span>
-              <button class="btn-sm ghost" onclick="resolveRequest(this,'104 Drain')">Done</button>
-            </div>
-          </div>
-          <div class="request-item">
-            <div class="request-dot low"></div>
-            <div class="request-body">
-              <strong>Light bulb replacement — Room 501</strong>
-              <p>Bathroom light flickering. Needs bulb replacement.</p>
-              <div class="request-meta">Sep 25, 2:00 PM · Assigned: Maintenance</div>
-            </div>
-            <div style="display:flex;gap:.5rem;flex-direction:column;align-items:flex-end">
-              <span class="badge badge-green">Resolved</span>
-              <button class="btn-sm ghost" disabled style="opacity:.4">Done</button>
-            </div>
-          </div>
-        </div>
+        <div class="card-box" id="maintenance-list"><div class="empty-cell">Loading…</div></div>
 
         <!-- Log form -->
         <div class="card-box" id="new-maintenance-form" style="display:none">
@@ -754,20 +697,20 @@
           <div style="padding:1.5rem">
             <div class="form-row">
               <div class="form-group">
-                <label>Room Number</label>
-                <select><option>Room 101</option><option>Room 102</option><option>Room 201</option><option>Room 202</option><option>Room 301</option><option>Room 302</option></select>
+                <label>Room / Apartment</label>
+                <select id="mf-room"></select>
               </div>
               <div class="form-group">
                 <label>Priority</label>
-                <select><option>High</option><option>Medium</option><option>Low</option></select>
+                <select id="mf-priority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
               </div>
               <div class="form-group full">
                 <label>Description</label>
-                <textarea rows="3" placeholder="Describe the issue..."></textarea>
+                <textarea id="mf-desc" rows="3" placeholder="Describe the issue..."></textarea>
               </div>
               <div class="form-group">
                 <label>Assign To</label>
-                <select><option>Maintenance Team</option><option>Plumbing</option><option>Electrical</option><option>Housekeeping</option></select>
+                <select id="mf-assign"><option>Maintenance Team</option><option>Plumbing</option><option>Electrical</option><option>Housekeeping</option></select>
               </div>
             </div>
             <button class="btn-sm primary" onclick="submitMaintenance()">Submit Request</button>
@@ -782,14 +725,7 @@
         <div class="card-box">
           <table>
             <thead><tr><th>Room</th><th>Type</th><th>Last Cleaned</th><th>Status</th><th>Assigned</th><th>Action</th></tr></thead>
-            <tbody>
-              <tr><td>101</td><td>Classic</td><td>Sep 27 7:30 AM</td><td><span class="badge badge-green">Clean</span></td><td>Hawa</td><td><button class="btn-sm ghost" onclick="markClean(this)">Mark Clean</button></td></tr>
-              <tr><td>104</td><td>Classic</td><td>Sep 26 8:00 AM</td><td><span class="badge badge-amber">Due</span></td><td>Unassigned</td><td><button class="btn-sm primary" onclick="markClean(this)">Mark Clean</button></td></tr>
-              <tr><td>202</td><td>Classic</td><td>Sep 27 8:15 AM</td><td><span class="badge badge-green">Clean</span></td><td>Shifza</td><td><button class="btn-sm ghost" onclick="markClean(this)">Mark Clean</button></td></tr>
-              <tr><td>301</td><td>Sunrise</td><td>Sep 27 9:00 AM</td><td><span class="badge badge-green">Clean</span></td><td>Hawa</td><td><button class="btn-sm ghost" onclick="markClean(this)">Mark Clean</button></td></tr>
-              <tr><td>302</td><td>Sunrise</td><td>Sep 26 8:30 AM</td><td><span class="badge badge-red">Occupied</span></td><td>—</td><td><button class="btn-sm ghost" disabled>Occupied</button></td></tr>
-              <tr><td>401</td><td>Signature</td><td>Sep 27 10:00 AM</td><td><span class="badge badge-green">Clean</span></td><td>Shifza</td><td><button class="btn-sm ghost" onclick="markClean(this)">Mark Clean</button></td></tr>
-            </tbody>
+            <tbody id="housekeeping-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -798,19 +734,14 @@
       <div class="page" id="page-cafe-orders">
         <div class="section-header"><h2>Café Orders — Today</h2></div>
         <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
-          <div class="stat-card"><div class="stat-card-label">Total Orders</div><div class="stat-card-value">24</div></div>
-          <div class="stat-card"><div class="stat-card-label">Revenue</div><div class="stat-card-value green">MVR 4,820</div></div>
-          <div class="stat-card"><div class="stat-card-label">Avg. Order</div><div class="stat-card-value">MVR 201</div></div>
+          <div class="stat-card"><div class="stat-card-label">Total Orders</div><div class="stat-card-value" id="cafe-count">—</div></div>
+          <div class="stat-card"><div class="stat-card-label">Revenue</div><div class="stat-card-value green" id="cafe-revenue">—</div></div>
+          <div class="stat-card"><div class="stat-card-label">Avg. Order</div><div class="stat-card-value" id="cafe-avg">—</div></div>
         </div>
         <div class="card-box">
           <table>
             <thead><tr><th>Order #</th><th>Table / Room</th><th>Items</th><th>Total</th><th>Time</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>#024</td><td>Room 401</td><td>Full Breakfast × 2</td><td>MVR 560</td><td>9:05 AM</td><td><span class="badge badge-green">Delivered</span></td></tr>
-              <tr><td>#023</td><td>Table 3</td><td>Cappuccino × 3, Croissant × 2</td><td>MVR 385</td><td>9:00 AM</td><td><span class="badge badge-green">Delivered</span></td></tr>
-              <tr><td>#022</td><td>Room 301</td><td>Eggs Your Way, Fresh Juice</td><td>MVR 270</td><td>8:45 AM</td><td><span class="badge badge-amber">In Progress</span></td></tr>
-              <tr><td>#021</td><td>Table 1</td><td>Avocado Toast × 1, Latte × 2</td><td>MVR 430</td><td>8:30 AM</td><td><span class="badge badge-green">Delivered</span></td></tr>
-            </tbody>
+            <tbody id="cafe-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -821,16 +752,40 @@
         <div class="card-box">
           <table>
             <thead><tr><th>Apt</th><th>Tenant</th><th>Type</th><th>Floor</th><th>Lease End</th><th>Status</th><th>Portal</th></tr></thead>
-            <tbody>
-              <tr><td>APT-101</td><td>Ahmed Hassan</td><td>Studio</td><td>1st</td><td>Dec 2025</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-              <tr><td>APT-102</td><td>Mariyam Khalid</td><td>Studio</td><td>1st</td><td>Nov 2025</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-              <tr><td>APT-201</td><td>Mohamed Ibrahim</td><td>1-Bedroom</td><td>2nd</td><td>Mar 2026</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-              <tr><td>APT-202</td><td>Fathimath Ali</td><td>1-Bedroom</td><td>2nd</td><td>Feb 2026</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-              <tr><td>APT-301</td><td>Ali Rasheed</td><td>2-Bedroom</td><td>3rd</td><td>Jun 2026</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-              <tr><td>APT-302</td><td>Aminath Saeed</td><td>2-Bedroom</td><td>3rd</td><td>Jan 2026</td><td><span class="badge badge-amber">Renewal Due</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-              <tr><td>APT-401</td><td>Hassan Shareef</td><td>Studio</td><td>4th</td><td>Sep 2025</td><td><span class="badge badge-red">Expired</span></td><td><span class="badge badge-gray">Inactive</span></td></tr>
-              <tr><td>APT-501</td><td>Zaha Waheed</td><td>2-Bedroom</td><td>5th</td><td>Aug 2026</td><td><span class="badge badge-green">Active</span></td><td><span class="badge badge-blue">Active</span></td></tr>
-            </tbody>
+            <tbody id="tenants-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Website Inbox Page ────────────── -->
+      <div class="page" id="page-inbox">
+        <div class="section-header"><h2>Website Inbox</h2></div>
+        <div class="card-box">
+          <div class="card-box-header">
+            <h3>Booking Enquiries</h3>
+            <span class="badge badge-blue" id="enquiries-count">—</span>
+          </div>
+          <table>
+            <thead><tr><th>Received</th><th>Guest</th><th>Stay</th><th>Room</th><th>Guests</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="enquiries-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="card-box">
+          <div class="card-box-header">
+            <h3>Contact Messages</h3>
+            <span class="badge badge-blue" id="messages-count">—</span>
+          </div>
+          <div id="messages-list"><div class="empty-cell">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ── Cleaning Requests Page ──────────── -->
+      <div class="page" id="page-cleaning">
+        <div class="section-header"><h2>Residence Cleaning Requests</h2></div>
+        <div class="card-box">
+          <table>
+            <thead><tr><th>Apt</th><th>Tenant</th><th>Service</th><th>Areas</th><th>Requested For</th><th>Notes</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="cleaning-body"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -838,50 +793,51 @@
       <!-- ── New Booking Page ──────────────── -->
       <div class="page" id="page-new-booking">
         <div class="section-header"><h2>New Booking</h2></div>
+        <div id="nb-from-enquiry" class="from-enquiry" style="display:none"></div>
         <div class="card-box">
           <div style="padding:1.5rem">
             <div class="form-row">
               <div class="form-group">
                 <label>First Name</label>
-                <input type="text" placeholder="Ahmed">
+                <input id="nb-first" type="text" placeholder="Ahmed">
               </div>
               <div class="form-group">
                 <label>Last Name</label>
-                <input type="text" placeholder="Hassan">
+                <input id="nb-last" type="text" placeholder="Hassan">
               </div>
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" placeholder="guest@email.com">
+                <input id="nb-email" type="email" placeholder="guest@email.com">
               </div>
               <div class="form-group">
                 <label>Phone</label>
-                <input type="tel" placeholder="+960 xxx xxxx">
+                <input id="nb-phone" type="tel" placeholder="+960 xxx xxxx">
               </div>
               <div class="form-group">
                 <label>Check-in Date</label>
-                <input type="date">
+                <input id="nb-checkin" type="date">
               </div>
               <div class="form-group">
                 <label>Check-out Date</label>
-                <input type="date">
+                <input id="nb-checkout" type="date">
               </div>
               <div class="form-group">
                 <label>Room Type</label>
-                <select>
-                  <option>Signature Suite</option>
-                  <option>Sunrise Suite</option>
-                  <option>Classic Room</option>
-                  <option>Palms View Deluxe</option>
-                  <option>Dwellers Nest</option>
+                <select id="nb-room">
+                  <option value="suite">Signature Suite</option>
+                  <option value="sunrise">Sunrise Suite</option>
+                  <option value="classic">Classic Room</option>
+                  <option value="palms">Palms View Deluxe</option>
+                  <option value="nest">Dwellers Nest</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Number of Guests</label>
-                <select><option>1</option><option>2</option><option>3</option><option>4</option></select>
+                <select id="nb-guests"><option>1</option><option>2</option><option>3</option><option>4</option></select>
               </div>
               <div class="form-group">
                 <label>Booking Source</label>
-                <select>
+                <select id="nb-source">
                   <option>Direct</option>
                   <option>Booking.com</option>
                   <option>Expedia</option>
@@ -891,7 +847,7 @@
               </div>
               <div class="form-group">
                 <label>Payment Method</label>
-                <select>
+                <select id="nb-payment">
                   <option>BML Transfer</option>
                   <option>Visa/Mastercard</option>
                   <option>Cash</option>
@@ -900,7 +856,7 @@
               </div>
               <div class="form-group full">
                 <label>Special Requests / Notes</label>
-                <textarea rows="3" placeholder="e.g. Honeymoon setup, early check-in, dietary requirements..."></textarea>
+                <textarea id="nb-notes" rows="3" placeholder="e.g. Honeymoon setup, early check-in, dietary requirements..."></textarea>
               </div>
             </div>
             <button class="btn-sm primary" onclick="saveBooking()">Create Booking</button>
@@ -937,228 +893,13 @@
       <div id="bm-balance-row"><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.3rem">Balance Due</div><div style="font-size:.92rem;color:var(--coral);font-weight:700" id="bm-balance"></div></div>
     </div>
     <div style="margin-top:1.5rem;display:flex;gap:.75rem;justify-content:flex-end;border-top:1px solid #f0f0f0;padding-top:1.2rem">
+      <span id="bm-actions" style="display:flex;gap:.75rem"></span>
       <button class="btn-sm ghost" onclick="closeBookingModal()">Close</button>
     </div>
   </div>
 </div>
 
-<script>
-  /* ── Auth ──────────────────────────────── */
-  const ADMINS = { admin: 'paralian2025', manager: 'paralian2025', front: 'desk2025' };
-
-  function doLogin() {
-    const u = document.getElementById('login-user').value.trim().toLowerCase();
-    const p = document.getElementById('login-pass').value;
-    if (ADMINS[u] && ADMINS[u] === p) {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('dashboard').classList.add('active');
-      setDate();
-      initRoomGrid();
-      sessionStorage.setItem('paralian-admin', u);
-    } else {
-      document.getElementById('login-err').textContent = 'Invalid username or password. Try admin / paralian2025.';
-    }
-  }
-
-  document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-  // Auto-login if session active
-  if (sessionStorage.getItem('paralian-admin')) {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('dashboard').classList.add('active');
-    setDate();
-    initRoomGrid();
-  }
-
-  function doLogout() {
-    sessionStorage.removeItem('paralian-admin');
-    document.getElementById('login-screen').classList.remove('hidden');
-    document.getElementById('dashboard').classList.remove('active');
-    document.getElementById('login-user').value = '';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-err').textContent = '';
-  }
-
-  /* ── Navigation ────────────────────────── */
-  const pageTitles = {
-    overview: 'Dashboard', bookings: 'Bookings', rooms: 'Room Status',
-    guests: 'Current Guests', maintenance: 'Maintenance', housekeeping: 'Housekeeping',
-    'cafe-orders': 'Café Orders', tenants: 'Tenants', 'new-booking': 'New Booking'
-  };
-
-  function showPage(id, navEl) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const pg = document.getElementById('page-' + id);
-    if (pg) pg.classList.add('active');
-    if (navEl) navEl.classList.add('active');
-    document.getElementById('page-title').textContent = pageTitles[id] || id;
-    closeSidebar();
-  }
-
-  /* ── Sidebar Mobile ────────────────────── */
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('open');
-  }
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('overlay').classList.remove('open');
-  }
-
-  /* ── Date ──────────────────────────────── */
-  function setDate() {
-    const d = new Date();
-    document.getElementById('topbar-date').textContent =
-      d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-  }
-
-  /* ── Room Grid ─────────────────────────── */
-  const ROOMS = [
-    {num:'101',type:'Classic',status:'occupied'},{num:'102',type:'Classic',status:'available'},
-    {num:'103',type:'Classic',status:'occupied'},{num:'104',type:'Classic',status:'occupied'},
-    {num:'105',type:'Nest',status:'available'},{num:'201',type:'Palms',status:'available'},
-    {num:'202',type:'Classic',status:'occupied'},{num:'203',type:'Classic',status:'maintenance'},
-    {num:'204',type:'Palms',status:'occupied'},{num:'205',type:'Palms',status:'occupied'},
-    {num:'301',type:'Sunrise',status:'occupied'},{num:'302',type:'Sunrise',status:'occupied'},
-    {num:'303',type:'Classic',status:'available'},{num:'304',type:'Classic',status:'available'},
-    {num:'401',type:'Suite',status:'occupied'},{num:'402',type:'Suite',status:'available'},
-    {num:'403',type:'Suite',status:'occupied'},{num:'501',type:'Suite',status:'occupied'},
-    {num:'502',type:'Suite',status:'maintenance'},{num:'503',type:'Classic',status:'available'},
-    {num:'601',type:'Suite',status:'occupied'},{num:'602',type:'Suite',status:'available'},
-  ];
-
-  function initRoomGrid() {
-    const grid = document.getElementById('room-grid');
-    if (!grid) return;
-    grid.innerHTML = ROOMS.map(r => `
-      <div class="room-tile ${r.status}" onclick="showRoomInfo('${r.num}','${r.type}','${r.status}')">
-        <div class="room-num">${r.num}</div>
-        <div class="room-type">${r.type}</div>
-        <div class="room-status">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</div>
-      </div>
-    `).join('');
-  }
-
-  /* ── Actions ───────────────────────────── */
-  function resolveRequest(btn, name) {
-    const item = btn.closest('.request-item');
-    const dot = item.querySelector('.request-dot');
-    dot.style.background = '#4CAF50';
-    btn.textContent = '✓ Done';
-    btn.className = 'btn-sm ghost';
-    btn.disabled = true;
-    const badge = item.querySelector('.badge');
-    if (badge) { badge.textContent = 'Resolved'; badge.className = 'badge badge-green'; }
-    showToast('✓ Request resolved', 'success');
-  }
-
-  function markClean(btn) {
-    const tr = btn.closest('tr');
-    const statusCell = tr.children[3];
-    statusCell.innerHTML = '<span class="badge badge-green">Clean</span>';
-    const now = new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
-    tr.children[2].textContent = 'Today ' + now;
-    btn.textContent = '✓ Done';
-    btn.disabled = true;
-    showToast('Room marked clean', 'success');
-  }
-
-  function openNewMaintenance() {
-    const f = document.getElementById('new-maintenance-form');
-    f.style.display = f.style.display === 'none' ? 'block' : 'none';
-  }
-
-  function submitMaintenance() {
-    document.getElementById('new-maintenance-form').style.display = 'none';
-    showToast('✓ Maintenance request logged', 'success');
-  }
-
-  function saveBooking() {
-    showToast('✓ Booking created successfully!', 'success');
-    setTimeout(() => showPage('bookings', document.querySelector('[onclick*=bookings]')), 1200);
-  }
-
-  /* ── Toast ──────────────────────────────── */
-  function showToast(msg, type) {
-    let t = document.getElementById('admin-toast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = 'admin-toast';
-      t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:var(--navy);color:white;padding:1rem 1.5rem;border-radius:10px;font-size:.88rem;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:3000;transition:all .3s;transform:translateY(8px);opacity:0;font-family:Inter,sans-serif;';
-      document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.style.borderLeft = type === 'success' ? '3px solid #4CAF50' : '3px solid var(--coral)';
-    t.style.opacity = '1'; t.style.transform = 'translateY(0)';
-    clearTimeout(t._t);
-    t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; }, 3000);
-  }
-
-  /* ── Room Info ─────────────────────────── */
-  function showRoomInfo(num, type, status) {
-    const colors = {occupied:'var(--coral)', available:'#4CAF50', maintenance:'#FF9800'};
-    const label = status.charAt(0).toUpperCase() + status.slice(1);
-    let t = document.getElementById('admin-toast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = 'admin-toast';
-      t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:var(--navy);color:white;padding:1rem 1.5rem;border-radius:10px;font-size:.88rem;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:3000;transition:all .3s;transform:translateY(8px);opacity:0;font-family:Inter,sans-serif;';
-      document.body.appendChild(t);
-    }
-    t.textContent = `Room ${num}  ·  ${type}  ·  ${label}`;
-    t.style.borderLeft = `3px solid ${colors[status] || '#2196F3'}`;
-    t.style.opacity = '1'; t.style.transform = 'translateY(0)';
-    clearTimeout(t._t);
-    t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; }, 2500);
-  }
-
-  /* ── Booking Detail ────────────────────── */
-  const BOOKING_DATA = {
-    'PRL-001': {guest:'Ahmed Al-Rashid', room:'Signature 401', checkin:'Sep 27', checkout:'Oct 1', nights:4, guests:2, source:'Direct', status:'Active', cls:'badge-green'},
-    'PRL-002': {guest:'Sofia Mendes', room:'Classic 202', checkin:'Sep 27', checkout:'Sep 30', nights:3, guests:1, source:'Direct', status:'Active', cls:'badge-green'},
-    'PRL-003': {guest:'Lena Hartmann', room:'Sunrise 301', checkin:'Sep 27', checkout:'Oct 4', nights:7, guests:2, source:'Booking.com', status:'Arriving', cls:'badge-amber'},
-    'PRL-004': {guest:'Yuki Tanaka', room:'Nest 105', checkin:'Sep 27', checkout:'Sep 29', nights:2, guests:1, source:'Direct', status:'Arriving', cls:'badge-amber'},
-    'PRL-005': {guest:'Carlos Rivera', room:'Palms 205', checkin:'Sep 28', checkout:'Oct 2', nights:4, guests:2, source:'Expedia', status:'Upcoming', cls:'badge-blue'},
-    'PRL-006': {guest:'Wang Fang', room:'Classic 103', checkin:'Sep 23', checkout:'Sep 27', nights:4, guests:1, source:'Direct', status:'Checked Out', cls:'badge-gray'},
-    'PRL-007': {guest:'Priya Nair', room:'Sunrise 302', checkin:'Sep 25', checkout:'Sep 27', nights:2, guests:2, source:'Direct', status:'Pending Payment', cls:'badge-red', balance:'$240'},
-  };
-
-  function viewBooking(ref) {
-    const b = BOOKING_DATA[ref]; if (!b) return;
-    document.getElementById('bm-ref').textContent = ref;
-    document.getElementById('bm-guest').textContent = b.guest;
-    document.getElementById('bm-room').textContent = b.room;
-    document.getElementById('bm-checkin').textContent = b.checkin;
-    document.getElementById('bm-checkout').textContent = b.checkout;
-    document.getElementById('bm-nights').textContent = b.nights + ' night' + (b.nights === 1 ? '' : 's');
-    document.getElementById('bm-guests').textContent = b.guests + ' guest' + (b.guests === 1 ? '' : 's');
-    document.getElementById('bm-source').textContent = b.source;
-    const badge = document.getElementById('bm-status');
-    badge.textContent = b.status; badge.className = 'badge ' + b.cls;
-    const balRow = document.getElementById('bm-balance-row');
-    if (b.balance) { document.getElementById('bm-balance').textContent = b.balance; balRow.style.display = ''; }
-    else { balRow.style.display = 'none'; }
-    document.getElementById('booking-modal').style.display = 'flex';
-  }
-
-  function closeBookingModal() {
-    document.getElementById('booking-modal').style.display = 'none';
-  }
-
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBookingModal(); });
-
-  function settleBooking(ref) {
-    const b = BOOKING_DATA[ref]; if (!b) return;
-    b.balance = null; b.status = 'Paid'; b.cls = 'badge-green';
-    showToast(`✓ Payment settled for ${b.guest}`, 'success');
-    document.querySelectorAll('#bookings-body tr').forEach(row => {
-      if (row.cells[0].textContent === ref) {
-        row.cells[7].innerHTML = '<span class="badge badge-green">Paid</span>';
-        row.cells[8].innerHTML = `<button class="btn-sm ghost" onclick="viewBooking('${ref}')">View</button>`;
-      }
-    });
-  }
-</script>
+<script src="../assets/js/api.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>
