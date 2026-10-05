@@ -217,6 +217,7 @@
     .main {
       margin-left: var(--sidebar-w);
       flex: 1;
+      min-width: 0;
       min-height: 100vh;
     }
     .topbar {
@@ -286,8 +287,10 @@
       border-radius: 12px;
       border: 1px solid var(--border);
       overflow: hidden;
+      overflow-x: auto;
       margin-bottom: 1.5rem;
     }
+    .card-box table { min-width: 560px; }
     .card-box-header {
       padding: 1.2rem 1.5rem;
       border-bottom: 1px solid var(--border);
@@ -441,8 +444,12 @@
       background: var(--navy);
     }
 
+    .overview-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .overview-split > .card-box { min-width: 0; }
+
     @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .overview-split { grid-template-columns: 1fr; gap: 0; }
     }
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
@@ -462,6 +469,7 @@
     }
     @media (max-width: 480px) {
       .stats-grid { grid-template-columns: 1fr; }
+      .topbar-date { display: none; }
       .content { padding: 1rem; }
     }
   </style>
@@ -585,7 +593,7 @@
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="overview-split">
           <!-- Today's arrivals -->
           <div class="card-box">
             <div class="card-box-header">
