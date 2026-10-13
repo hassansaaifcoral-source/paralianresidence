@@ -133,6 +133,8 @@ function closeSidebar() {
   $('sidebar').classList.remove('open');
   $('sidebarOverlay').classList.remove('open');
 }
+// Don't leave the phone menu open when the window is widened to the desktop layout.
+window.matchMedia('(min-width: 769px)').addEventListener('change', e => { if (e.matches) closeSidebar(); });
 
 /* ── Request lists ── */
 const STATUS = {

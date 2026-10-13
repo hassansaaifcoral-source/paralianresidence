@@ -291,7 +291,6 @@
       overflow-x: auto;
       margin-bottom: 1.5rem;
     }
-    .card-box table { min-width: 560px; }
     .card-box-header {
       padding: 1.2rem 1.5rem;
       border-bottom: 1px solid var(--border);
@@ -450,18 +449,19 @@
       background: var(--navy);
     }
 
+    .stats-grid.stats-grid-3 { grid-template-columns: repeat(3, 1fr); }
     .overview-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     .overview-split > .card-box { min-width: 0; }
 
+    @media (max-width: 1280px) {
+      th, td { padding-left: .9rem; padding-right: .9rem; }
+    }
     @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .overview-split { grid-template-columns: 1fr; gap: 0; }
-    }
-    @media (max-width: 768px) {
+      /* Tablets and small windows: the sidebar becomes a slide-out menu so tables get the full width */
       .sidebar { transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); box-shadow: 0 0 40px rgba(0,0,0,.3); }
       .main { margin-left: 0; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
       .hamburger-sidebar { display: flex; }
       .sidebar-overlay {
         display: none;
@@ -471,11 +471,17 @@
         z-index: 99;
       }
       .sidebar-overlay.open { display: block; }
+      .overview-split { grid-template-columns: 1fr; gap: 0; }
+    }
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      .card-box table { min-width: 560px; }
     }
     @media (max-width: 480px) {
       .stats-grid { grid-template-columns: 1fr; }
       .topbar-date { display: none; }
+      .stats-grid.stats-grid-3 { grid-template-columns: 1fr; }
       .content { padding: 1rem; }
     }
   </style>
@@ -733,7 +739,7 @@
       <!-- ── Café Orders ───────────────────── -->
       <div class="page" id="page-cafe-orders">
         <div class="section-header"><h2>Café Orders — Today</h2></div>
-        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stats-grid stats-grid-3">
           <div class="stat-card"><div class="stat-card-label">Total Orders</div><div class="stat-card-value" id="cafe-count">—</div></div>
           <div class="stat-card"><div class="stat-card-label">Revenue</div><div class="stat-card-value green" id="cafe-revenue">—</div></div>
           <div class="stat-card"><div class="stat-card-label">Avg. Order</div><div class="stat-card-value" id="cafe-avg">—</div></div>

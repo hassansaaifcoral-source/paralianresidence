@@ -116,6 +116,8 @@ function closeSidebar() {
   $('sidebar').classList.remove('open');
   $('overlay').classList.remove('open');
 }
+// Don't leave the phone menu open when the window is widened to the desktop layout.
+window.matchMedia('(min-width: 1025px)').addEventListener('change', e => { if (e.matches) closeSidebar(); });
 
 /* ── Date ──────────────────────────────── */
 function setDate() {
