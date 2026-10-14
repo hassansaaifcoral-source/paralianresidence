@@ -29,6 +29,13 @@
         drawer.classList.remove('open');
       });
     });
+    // Close when the window is widened past the phone layout (the hamburger disappears)
+    window.addEventListener('resize', () => {
+      if (drawer.classList.contains('open') && getComputedStyle(hamburger).display === 'none') {
+        hamburger.classList.remove('open');
+        drawer.classList.remove('open');
+      }
+    }, { passive: true });
   }
 
   // Active link
