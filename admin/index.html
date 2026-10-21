@@ -484,6 +484,28 @@
       .stats-grid.stats-grid-3 { grid-template-columns: 1fr; }
       .content { padding: 1rem; }
     }
+
+    /* ── Inventory ───────────────────────────── */
+    .unit-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; border-bottom:2px solid var(--border); }
+    .unit-tab {
+      padding:.6rem 1.25rem; font-size:.88rem; font-weight:600; color:#888; cursor:pointer;
+      border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; border-radius:6px 6px 0 0;
+    }
+    .unit-tab:hover { color:var(--navy); background:rgba(0,0,0,.03); }
+    .unit-tab.active { color:var(--coral); border-bottom-color:var(--coral); }
+    .unit-info-bar {
+      background:white; border-radius:12px; border:1px solid var(--border); padding:1rem 1.5rem;
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;
+    }
+    .unit-label { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--navy); }
+    .unit-meta  { font-size:.82rem; color:#888; margin-top:.2rem; }
+    .badge-damaged { background:#FFEBEE; color:#C62828; }
+    .badge-missing { background:#EFEFEF; color:#757575; }
+    .badge-fair    { background:#FFF3E0; color:#E65100; }
+    .badge-good    { background:#E8F5E9; color:#2E7D32; }
+    .inv-flag-btn  { font-size:.72rem !important; padding:.25rem .65rem !important; }
+    .inv-flag-btn:hover { color:var(--coral) !important; background:#FFF3F3 !important; }
+    .inv-flag-btn.flagged { color:var(--coral) !important; background:#FFF3F3 !important; cursor:default; }
   </style>
 </head>
 <body>
@@ -556,6 +578,9 @@
       <div class="nav-item" onclick="showPage('maintenance',this)">
         <span class="icon">🔧</span> Maintenance
         <span class="nav-badge" id="badge-maintenance" style="display:none"></span>
+      </div>
+      <div class="nav-item" onclick="showPage('inventory',this)">
+        <span class="icon">&#128230;</span> Inventory
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -867,6 +892,105 @@
             </div>
             <button class="btn-sm primary" onclick="saveBooking()">Create Booking</button>
             <button class="btn-sm ghost" style="margin-left:.5rem" onclick="showPage('bookings', document.querySelector('[onclick*=bookings]'))">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── Inventory Page ──────────────────── -->
+      <div class="page" id="page-inventory">
+        <div class="section-header">
+          <h2>Unit Inventory &#8212; 4th Floor</h2>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn-sm outline" onclick="printInventory()">&#128438; Export</button>
+            <button class="btn-sm primary" onclick="openAddItem()">+ Add Item</button>
+          </div>
+        </div>
+        <div class="unit-tabs" id="unit-tabs">
+          <div class="unit-tab active" onclick="switchUnit('4A',this)">Unit 4A</div>
+          <div class="unit-tab" onclick="switchUnit('4B',this)">Unit 4B</div>
+          <div class="unit-tab" onclick="switchUnit('4C',this)">Unit 4C</div>
+          <div class="unit-tab" onclick="switchUnit('4D',this)">Unit 4D</div>
+        </div>
+        <div class="unit-info-bar">
+          <div>
+            <div class="unit-label" id="inv-unit-name">Unit 4A</div>
+            <div class="unit-meta" id="inv-unit-meta"></div>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:center">
+            <span id="inv-last-checked" style="font-size:.8rem;color:#aaa"></span>
+            <button class="btn-sm outline" onclick="markAllChecked()">&#10003; Mark All Checked</button>
+          </div>
+        </div>
+        <div class="stats-grid" id="inv-summary" style="grid-template-columns:repeat(4,1fr)"></div>
+        <div class="card-box">
+          <div class="card-box-header">
+            <h3 id="inv-table-title">Inventory List</h3>
+            <div style="display:flex;gap:.5rem;align-items:center">
+              <select id="inv-cat-filter" onchange="renderInventoryTable()" style="font-size:.8rem;padding:.3rem .7rem;border:1.5px solid var(--border);border-radius:6px;color:#555;cursor:pointer;font-family:'Inter',sans-serif">
+                <option value="">All Categories</option>
+                <option>Furniture</option><option>Appliances</option>
+                <option>Electronics</option><option>Furnishings</option>
+                <option>Kitchen</option><option>Security</option>
+              </select>
+              <select id="inv-cond-filter" onchange="renderInventoryTable()" style="font-size:.8rem;padding:.3rem .7rem;border:1.5px solid var(--border);border-radius:6px;color:#555;cursor:pointer;font-family:'Inter',sans-serif">
+                <option value="">All Conditions</option>
+                <option>Good</option><option>Fair</option>
+                <option>Damaged</option><option>Missing</option>
+              </select>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>Item</th><th>Category</th><th>Qty</th><th>Condition</th><th>Last Checked</th><th>Notes</th><th>Action</th></tr></thead>
+            <tbody id="inv-table-body"></tbody>
+          </table>
+          <div id="inv-empty" style="display:none;text-align:center;padding:2rem;color:#bbb;font-size:.9rem">No items match the current filter.</div>
+        </div>
+      </div>
+
+      <!-- Add Item Modal -->
+      <div id="add-item-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center" onclick="if(event.target===this)closeAddItem()">
+        <div style="background:white;border-radius:16px;padding:2rem;width:100%;max-width:440px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+            <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--navy)">Add Inventory Item</div>
+            <button onclick="closeAddItem()" style="background:none;border:none;cursor:pointer;font-size:1rem;color:#bbb">&#10005;</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Item Name</label>
+              <input type="text" id="ai-name" placeholder="e.g. Dining Table">
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="ai-cat">
+                <option>Furniture</option><option>Appliances</option><option>Electronics</option>
+                <option>Furnishings</option><option>Kitchen</option><option>Security</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" id="ai-qty" value="1" min="1">
+            </div>
+            <div class="form-group">
+              <label>Condition</label>
+              <select id="ai-cond">
+                <option>Good</option><option>Fair</option><option>Damaged</option><option>Missing</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Unit</label>
+              <select id="ai-unit">
+                <option>4A</option><option>4B</option><option>4C</option><option>4D</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Notes (optional)</label>
+              <input type="text" id="ai-notes" placeholder="Any relevant notes...">
+            </div>
+          </div>
+          <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;border-top:1px solid #f0f0f0;padding-top:1.2rem">
+            <button class="btn-sm ghost" onclick="closeAddItem()">Cancel</button>
+            <button class="btn-sm primary" onclick="saveNewItem()">Add Item</button>
           </div>
         </div>
       </div>

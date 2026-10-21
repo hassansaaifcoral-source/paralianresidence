@@ -77,7 +77,8 @@ const pageTitles = {
   overview: 'Dashboard', bookings: 'Bookings', rooms: 'Room Status',
   guests: 'Current Guests', maintenance: 'Maintenance', housekeeping: 'Housekeeping',
   'cafe-orders': 'Café Orders', tenants: 'Tenants', 'new-booking': 'New Booking',
-  inbox: 'Website Inbox', cleaning: 'Cleaning Requests'
+  inbox: 'Website Inbox', cleaning: 'Cleaning Requests',
+  inventory: 'Unit Inventory'
 };
 
 const loaders = {
@@ -92,6 +93,7 @@ const loaders = {
   'new-booking': () => resetBookingForm(),
   inbox: () => loadInbox(),
   cleaning: () => loadCleaning(),
+  inventory: () => { renderInventoryUnit(); return Promise.resolve(); },
 };
 
 function showPage(id, navEl) {
@@ -628,3 +630,242 @@ function showToast(msg, type) {
   clearTimeout(t._t);
   t._t = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; }, 3000);
 }
+
+/* ── Inventory ──────────────────────────── */
+let currentUnit = '4A';
+
+const INVENTORY = {
+  '4A': {
+    type:'2-Bedroom', tenant:'Hassan Shareef',
+    items:[
+      {id:1,  name:'Sofa (3-seater)',         cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:2,  name:'Armchairs',               cat:'Furniture',   qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:3,  name:'Coffee Table',            cat:'Furniture',   qty:1, cond:'Fair',    checked:'Oct 2026', notes:'Minor scratch on surface'},
+      {id:4,  name:'Dining Table (6-seater)', cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:5,  name:'Dining Chairs',           cat:'Furniture',   qty:6, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:6,  name:'TV Unit',                 cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:7,  name:'King Bed (Master)',        cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:8,  name:'Single Beds (Room 2)',     cat:'Furniture',   qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:9,  name:'Wardrobe (Master)',        cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:10, name:'Wardrobe (Room 2)',        cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:11, name:'Bedside Tables',           cat:'Furniture',   qty:4, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:12, name:'Refrigerator',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:13, name:'Washing Machine',          cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:14, name:'AC — Living Room',    cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:15, name:'AC — Master Bedroom', cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:16, name:'AC — Bedroom 2',      cat:'Appliances',  qty:1, cond:'Fair',    checked:'Sep 2026', notes:'Makes noise on startup'},
+      {id:17, name:'Water Heater',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:18, name:'Microwave',                cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:19, name:'Stove (2-burner)',          cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:20, name:'Television 55" (Living)',  cat:'Electronics', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:21, name:'Television 43" (Master)',  cat:'Electronics', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:22, name:'Curtains — Living',   cat:'Furnishings', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:23, name:'Curtains — Bedrooms', cat:'Furnishings', qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:24, name:'Door Keys',                cat:'Security',    qty:2, cond:'Good',    checked:'Oct 2026', notes:'1 spare held at front desk'},
+    ]
+  },
+  '4B': {
+    type:'1-Bedroom', tenant:'Vacant',
+    items:[
+      {id:1,  name:'Sofa (2-seater)',          cat:'Furniture',   qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:2,  name:'Coffee Table',             cat:'Furniture',   qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:3,  name:'Dining Table',             cat:'Furniture',   qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:4,  name:'Dining Chairs',            cat:'Furniture',   qty:4, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:5,  name:'TV Unit',                  cat:'Furniture',   qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:6,  name:'King Bed',                 cat:'Furniture',   qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:7,  name:'Wardrobe',                 cat:'Furniture',   qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:8,  name:'Bedside Tables',           cat:'Furniture',   qty:2, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:9,  name:'Refrigerator',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:10, name:'Washing Machine',          cat:'Appliances',  qty:1, cond:'Damaged', checked:'Sep 2026', notes:'Drum seal leaking — needs repair'},
+      {id:11, name:'AC — Living Room',    cat:'Appliances',  qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:12, name:'AC — Bedroom',        cat:'Appliances',  qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:13, name:'Water Heater',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:14, name:'Microwave',                cat:'Appliances',  qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:15, name:'Stove (2-burner)',          cat:'Appliances',  qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:16, name:'Television 43" (Living)',  cat:'Electronics', qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:17, name:'Curtains — Living',   cat:'Furnishings', qty:1, cond:'Good',    checked:'Sep 2026', notes:''},
+      {id:18, name:'Curtains — Bedroom',  cat:'Furnishings', qty:1, cond:'Fair',    checked:'Sep 2026', notes:'Fading on left panel'},
+      {id:19, name:'Door Keys',                cat:'Security',    qty:2, cond:'Good',    checked:'Sep 2026', notes:''},
+    ]
+  },
+  '4C': {
+    type:'Studio', tenant:'Mohamed Amir',
+    items:[
+      {id:1,  name:'Sofa Bed',                 cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:2,  name:'Coffee Table',             cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:3,  name:'Dining Table',             cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:4,  name:'Dining Chairs',            cat:'Furniture',   qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:5,  name:'Wardrobe',                 cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:6,  name:'Refrigerator',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:7,  name:'Washing Machine',          cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:8,  name:'AC — Studio',         cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:9,  name:'Water Heater',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:10, name:'Microwave',                cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:11, name:'Stove (1-burner)',          cat:'Appliances',  qty:1, cond:'Fair',    checked:'Oct 2026', notes:'One burner ignition faulty'},
+      {id:12, name:'Television 40"',           cat:'Electronics', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:13, name:'Curtains',                 cat:'Furnishings', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:14, name:'Door Keys',                cat:'Security',    qty:2, cond:'Good',    checked:'Oct 2026', notes:'Duplicate cut Oct 12'},
+    ]
+  },
+  '4D': {
+    type:'2-Bedroom', tenant:'Fathimath Zuha',
+    items:[
+      {id:1,  name:'Sofa (3-seater)',          cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:2,  name:'Armchairs',                cat:'Furniture',   qty:2, cond:'Fair',    checked:'Oct 2026', notes:'Fabric worn on right armchair'},
+      {id:3,  name:'Coffee Table',             cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:4,  name:'Dining Table (6-seater)',  cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:5,  name:'Dining Chairs',            cat:'Furniture',   qty:6, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:6,  name:'TV Unit',                  cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:7,  name:'King Bed (Master)',         cat:'Furniture',   qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:8,  name:'Single Beds (Room 2)',      cat:'Furniture',   qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:9,  name:'Wardrobes',                cat:'Furniture',   qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:10, name:'Bedside Tables',           cat:'Furniture',   qty:4, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:11, name:'Refrigerator',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:12, name:'Washing Machine',          cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:13, name:'AC — Living Room',    cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:14, name:'AC — Master Bedroom', cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:15, name:'AC — Bedroom 2',      cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:16, name:'Water Heater',             cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:17, name:'Microwave',                cat:'Appliances',  qty:1, cond:'Missing', checked:'Oct 2026', notes:'Not found during Oct inspection'},
+      {id:18, name:'Stove (2-burner)',          cat:'Appliances',  qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:19, name:'Television 55" (Living)',  cat:'Electronics', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:20, name:'Television 43" (Master)',  cat:'Electronics', qty:1, cond:'Damaged', checked:'Oct 2026', notes:'Cracked screen — tenant reported'},
+      {id:21, name:'Curtains — Living',   cat:'Furnishings', qty:1, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:22, name:'Curtains — Bedrooms', cat:'Furnishings', qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+      {id:23, name:'Door Keys',                cat:'Security',    qty:2, cond:'Good',    checked:'Oct 2026', notes:''},
+    ]
+  }
+};
+
+function switchUnit(unit, tabEl) {
+  currentUnit = unit;
+  document.querySelectorAll('.unit-tab').forEach(t => t.classList.remove('active'));
+  if (tabEl) tabEl.classList.add('active');
+  const cf = $('inv-cat-filter');  if (cf)  cf.value  = '';
+  const xf = $('inv-cond-filter'); if (xf)  xf.value  = '';
+  renderInventoryUnit();
+}
+
+function renderInventoryUnit() {
+  const unit = INVENTORY[currentUnit];
+  if (!unit) return;
+  $('inv-unit-name').textContent = 'Unit ' + currentUnit;
+  $('inv-unit-meta').textContent = unit.type + '  ·  Tenant: ' + unit.tenant;
+  const items = unit.items;
+  const total   = items.length;
+  const good    = items.filter(i => i.cond === 'Good').length;
+  const fair    = items.filter(i => i.cond === 'Fair').length;
+  const damaged = items.filter(i => i.cond === 'Damaged').length;
+  const missing = items.filter(i => i.cond === 'Missing').length;
+  const issues  = fair + damaged + missing;
+  const latestCheck = items.reduce((a, i) => i.checked > a ? i.checked : a, '');
+  $('inv-last-checked').textContent = 'Last checked: ' + latestCheck;
+  $('inv-summary').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-card-label">Total Items</div>
+      <div class="stat-card-value">${total}</div>
+      <div class="stat-card-sub">all categories</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Good Condition</div>
+      <div class="stat-card-value green">${good}</div>
+      <div class="stat-card-sub">${Math.round(good/total*100)}% of inventory</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Issues Flagged</div>
+      <div class="stat-card-value ${issues > 0 ? 'amber' : 'green'}">${issues}</div>
+      <div class="stat-card-sub">Fair / Damaged / Missing</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Needs Action</div>
+      <div class="stat-card-value ${(damaged+missing) > 0 ? 'coral' : 'green'}">${damaged + missing}</div>
+      <div class="stat-card-sub">Damaged or missing</div>
+    </div>
+  `;
+  renderInventoryTable();
+}
+
+function renderInventoryTable() {
+  const unit = INVENTORY[currentUnit];
+  if (!unit) return;
+  const catF  = ($('inv-cat-filter')  || {}).value || '';
+  const condF = ($('inv-cond-filter') || {}).value || '';
+  let items = unit.items;
+  if (catF)  items = items.filter(i => i.cat  === catF);
+  if (condF) items = items.filter(i => i.cond === condF);
+  const condClass = {Good:'badge-good', Fair:'badge-fair', Damaged:'badge-damaged', Missing:'badge-missing'};
+  $('inv-table-title').textContent = 'Unit ' + currentUnit + ' — ' + (catF || 'All Items') + ' (' + items.length + ')';
+  const tbody = $('inv-table-body');
+  const empty = $('inv-empty');
+  if (!items.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = items.map(item => `
+    <tr>
+      <td style="color:#ccc;font-size:.78rem;width:36px">${item.id}</td>
+      <td style="font-weight:500">${item.name}</td>
+      <td><span style="font-size:.78rem;color:#888">${item.cat}</span></td>
+      <td style="font-weight:600">${item.qty}</td>
+      <td><span class="badge ${condClass[item.cond] || 'badge-gray'}">${item.cond}</span></td>
+      <td style="color:#aaa;font-size:.82rem">${item.checked}</td>
+      <td style="font-size:.82rem;color:#888;max-width:180px">${item.notes || '—'}</td>
+      <td><button class="btn-sm ghost inv-flag-btn" id="flag-${currentUnit}-${item.id}"
+        onclick="flagItem('${currentUnit}',${item.id},this)">Flag</button></td>
+    </tr>
+  `).join('');
+}
+
+function flagItem(unit, id, btn) {
+  const u = INVENTORY[unit];
+  if (!u) return;
+  const item = u.items.find(i => i.id === id);
+  if (!item) return;
+  btn.textContent = '⚑ Flagged';
+  btn.classList.add('flagged');
+  btn.disabled = true;
+  showToast('Issue flagged: ' + item.name + ' in Unit ' + unit, 'error');
+}
+
+function markAllChecked() {
+  const now = new Date().toLocaleDateString('en-US', {month:'short', year:'numeric'});
+  INVENTORY[currentUnit].items.forEach(i => i.checked = now);
+  renderInventoryUnit();
+  showToast('✓ Unit ' + currentUnit + ' fully checked — ' + now, 'success');
+}
+
+function openAddItem() {
+  const u = $('ai-unit'); if (u) u.value = currentUnit;
+  ['ai-name','ai-notes'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  const q = $('ai-qty'); if (q) q.value = '1';
+  $('add-item-modal').style.display = 'flex';
+}
+function closeAddItem() {
+  $('add-item-modal').style.display = 'none';
+}
+function saveNewItem() {
+  const name  = ($('ai-name')  || {}).value?.trim() || '';
+  const cat   = ($('ai-cat')   || {}).value || 'Furniture';
+  const qty   = parseInt(($('ai-qty') || {}).value) || 1;
+  const cond  = ($('ai-cond')  || {}).value || 'Good';
+  const unit  = ($('ai-unit')  || {}).value || currentUnit;
+  const notes = ($('ai-notes') || {}).value?.trim() || '';
+  if (!name) { showToast('Please enter an item name', 'error'); return; }
+  const arr   = INVENTORY[unit].items;
+  const newId = arr.length ? Math.max(...arr.map(i => i.id)) + 1 : 1;
+  const now   = new Date().toLocaleDateString('en-US', {month:'short', year:'numeric'});
+  arr.push({id:newId, name, cat, qty, cond, checked:now, notes});
+  closeAddItem();
+  if (unit !== currentUnit) {
+    currentUnit = unit;
+    document.querySelectorAll('.unit-tab').forEach((t, i) => {
+      t.classList.toggle('active', ['4A','4B','4C','4D'][i] === unit);
+    });
+  }
+  const cf = $('inv-cat-filter');  if (cf)  cf.value  = '';
+  const xf = $('inv-cond-filter'); if (xf)  xf.value  = '';
+  renderInventoryUnit();
+  showToast('✓ Item added: ' + name + ' (Unit ' + unit + ')', 'success');
+}
+function printInventory() {
+  showToast('Export — PDF / CSV coming soon', 'error');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAddItem(); });
