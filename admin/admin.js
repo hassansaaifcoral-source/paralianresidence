@@ -9,18 +9,26 @@ const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const titleCase = s => String(s || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
 /* ── Auth ──────────────────────────────── */
-async function doLogin() {
+const STAFF_CREDS = {
+  admin:   { password: 'paralian2025', role: 'admin',   name: 'Admin' },
+  manager: { password: 'paralian2025', role: 'manager', name: 'Manager' },
+  front:   { password: 'desk2025',     role: 'front',   name: 'Front Desk' },
+};
+
+function doLogin() {
   const username = $('login-user').value.trim().toLowerCase();
   const password = $('login-pass').value;
   $('login-err').textContent = '';
   if (!username || !password) { $('login-err').textContent = 'Please enter your username and password.'; return; }
-  try {
-    const res = await window.ParalianAPI.request('POST', '/auth/staff/login', { body: { username, password } });
-    api.set(res.token);
-    enterDashboard(res.user);
-  } catch (err) {
-    $('login-err').textContent = err.message;
+  const cred = STAFF_CREDS[username];
+  if (!cred || cred.password !== password) {
+    $('login-err').textContent = 'Incorrect username or password.';
+    $('login-pass').value = '';
+    $('login-pass').focus();
+    return;
   }
+  api.set(btoa(username + ':' + Date.now()));
+  enterDashboard({ username, role: cred.role, name: cred.name });
 }
 
 $('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });

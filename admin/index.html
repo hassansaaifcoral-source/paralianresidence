@@ -522,7 +522,10 @@
     </div>
     <div class="login-field">
       <label>Password</label>
-      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+      <div style="position:relative">
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:2.8rem;width:100%;box-sizing:border-box">
+        <button type="button" id="toggle-pass" onclick="(function(){var i=$('login-pass'),b=$('toggle-pass');if(i.type==='password'){i.type='text';b.textContent='🙈';}else{i.type='password';b.textContent='👁';}})()" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;padding:0;line-height:1;color:#aaa">👁</button>
+      </div>
     </div>
     <button class="btn-login" onclick="doLogin()">Sign In</button>
   </div>
